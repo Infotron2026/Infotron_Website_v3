@@ -19,25 +19,58 @@ const Home = () => {
   const observerRef = useRef(null);
   const heroRef = useRef(null);
   const oRef = useRef(null);
+  const videoCircleRef = useRef(null);
   const [heroProgress, setHeroProgress] = useState(0);
   const [oAnchor, setOAnchor] = useState({ x: 0, y: 0, r: 60 });
   const [viewport, setViewport] = useState({ w: 1, h: 1 });
 
-  // Measure initial O center + radius (used as starting point for the mask peephole)
+  // Measure the *visible* video circle (not the outer O span) so the scroll-mask
+  // peephole starts at the exact same position and radius as the inline portal —
+  // resulting in a perfectly seamless takeover with zero snap.
+  // We use ResizeObserver + IntersectionObserver-friendly remeasure to stay in sync
+  // with font loading, viewport resize, and any layout reflow.
   useLayoutEffect(() => {
     const measure = () => {
       setViewport({ w: window.innerWidth, h: window.innerHeight });
-      if (!oRef.current) return;
-      const r = oRef.current.getBoundingClientRect();
+      const target = videoCircleRef.current || oRef.current;
+      if (!target) return;
+      const r = target.getBoundingClientRect();
       setOAnchor({
         x: r.left + r.width / 2,
         y: r.top + r.height / 2,
         r: Math.min(r.width, r.height) / 2,
       });
     };
+
     measure();
     window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+
+    // Re-measure when fonts finish loading (Anton arrives async and shifts layout).
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready
+        .then(() => requestAnimationFrame(() => requestAnimationFrame(measure)))
+        .catch(() => {});
+    }
+
+    // Track the actual circle DOM with ResizeObserver — captures any reflow.
+    let ro;
+    if (videoCircleRef.current && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => measure());
+      ro.observe(videoCircleRef.current);
+    }
+
+    // Late safety remeasures to catch async layout settle on slow networks.
+    const t1 = setTimeout(measure, 200);
+    const t2 = setTimeout(measure, 800);
+    const t3 = setTimeout(measure, 2000);
+
+    return () => {
+      window.removeEventListener('resize', measure);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      if (ro) ro.disconnect();
+    };
   }, []);
 
   // Pinned scroll progress 0 → 1 (over heroSection.height − 100vh)
@@ -378,6 +411,7 @@ const Home = () => {
 
                           {/* Deep tunnel core — radial perspective */}
                           <span
+                            ref={videoCircleRef}
                             className="absolute rounded-full overflow-hidden"
                             style={{
                               inset: '11%',
