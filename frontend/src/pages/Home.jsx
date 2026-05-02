@@ -38,66 +38,179 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HERO SECTION - Split Layout */}
-      <section className="relative min-h-[90vh] flex items-center" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left - Text Content */}
-            <div className="animate-fade-in-up">
-              <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-600/20 border border-[#3B82F6]/30 text-blue-400 text-xs font-semibold tracking-wider uppercase mb-8">
-                Enterprise Technology Delivery
-              </span>
+      {/* HERO SECTION — Premium Enterprise Hero */}
+      <section
+        className="relative min-h-[92vh] flex items-center overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
+      >
+        {/* Animated mesh glow layer */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div
+            className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full opacity-40 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', animation: 'float-slow 14s ease-in-out infinite' }}
+          />
+          <div
+            className="absolute top-1/4 right-0 w-[640px] h-[640px] rounded-full opacity-30 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)', animation: 'float-slow 18s ease-in-out infinite reverse' }}
+          />
+          <div
+            className="absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full opacity-25 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 70%)', animation: 'float-slow 22s ease-in-out infinite' }}
+          />
+        </div>
 
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] mb-8 tracking-tight">
-                <span className="bg-gradient-to-r from-blue-500 to-violet-400 bg-clip-text text-transparent">
+        {/* Engineered grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+            backgroundSize: '64px 64px',
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)'
+          }}
+        />
+
+        {/* Scanline / vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050B1A]/60 pointer-events-none" />
+
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20 lg:py-28 relative z-10 w-full">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left — Copy */}
+            <div className="lg:col-span-7 animate-fade-in-up">
+              {/* Trust pill */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur border border-white/10 text-white/80 text-xs font-semibold tracking-[0.18em] uppercase mb-8">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-400" />
+                </span>
+                Trusted by enterprise delivery teams
+              </div>
+
+              <h1 className="text-[clamp(2.75rem,6vw,5.75rem)] font-black text-white leading-[1.02] mb-8 tracking-[-0.02em]">
+                <span className="bg-gradient-to-r from-blue-400 via-violet-300 to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]" style={{ animation: 'shimmer 6s linear infinite' }}>
                   Outcomes.
                 </span>
                 <br />
-                Not Headcount.
+                <span className="text-white">Not Headcount.</span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-gray-300 mb-6 leading-relaxed">
+              <p className="text-xl md:text-2xl text-gray-200 mb-5 leading-relaxed max-w-2xl font-medium">
                 Full-stack engineering teams that own delivery.
               </p>
-              <p className="text-lg text-gray-400 mb-10">
-                Built for CTOs who measure results, not hours.
+              <p className="text-base lg:text-lg text-gray-400 mb-10 max-w-2xl">
+                Built for technology leaders who measure results, not hours.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/contact?type=client">
-                  <Button 
-                    size="lg" 
-                    className="bg-gradient-to-r from-blue-600 to-violet-500 text-white hover:shadow-xl hover:shadow-blue-600/30 text-base font-semibold px-10 py-7 rounded-lg transition-all duration-300 hover:-translate-y-1"
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <Link to="/contact?type=client" data-testid="hero-primary-cta">
+                  <Button
+                    size="lg"
+                    className="relative bg-gradient-to-r from-blue-600 to-violet-500 text-white hover:shadow-[0_10px_40px_-10px_rgba(59,130,246,0.8)] text-base font-semibold px-10 py-7 rounded-lg transition-all duration-300 hover:-translate-y-0.5 group overflow-hidden"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="relative z-10 flex items-center gap-2">
                       Talk to Our Team
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </span>
+                    <span className="absolute inset-0 bg-gradient-to-r from-violet-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </Button>
                 </Link>
-                <Link to="/careers">
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="border-2 border-[#3B82F6]/50 text-blue-400 hover:bg-blue-600/20 hover:border-[#3B82F6] text-base font-semibold px-10 py-7 rounded-lg transition-all duration-300"
+                <Link to="/careers" data-testid="hero-secondary-cta">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border border-white/20 bg-white/[0.03] text-white hover:bg-white/[0.08] hover:border-white/40 text-base font-semibold px-10 py-7 rounded-lg transition-all duration-300 backdrop-blur"
                   >
                     View Open Positions
                   </Button>
                 </Link>
               </div>
+
+              {/* Trust indicators */}
+              <div className="pt-8 border-t border-white/10 max-w-xl">
+                <div className="grid grid-cols-3 gap-6">
+                  <div>
+                    <div className="text-2xl lg:text-3xl font-bold text-white tabular-nums">14d</div>
+                    <div className="text-[11px] text-gray-400 tracking-wider uppercase mt-1">Time to Deploy</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl lg:text-3xl font-bold text-white tabular-nums">92%</div>
+                    <div className="text-[11px] text-gray-400 tracking-wider uppercase mt-1">Client Retention</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl lg:text-3xl font-bold text-white tabular-nums">4</div>
+                    <div className="text-[11px] text-gray-400 tracking-wider uppercase mt-1">Global Delivery Hubs</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Right - Image */}
-            <div className="relative animate-fade-in">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#3B82F6]/20">
-                <img 
-                  src="https://images.pexels.com/photos/1181226/pexels-photo-1181226.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
-                  alt="Diverse women tech professionals collaborating"
-                  className="w-full h-[500px] lg:h-[600px] object-cover"
+            {/* Right — Abstract engineered visual */}
+            <div className="lg:col-span-5 relative animate-fade-in">
+              <div className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-8 lg:p-10 shadow-2xl shadow-blue-900/40 overflow-hidden">
+                {/* Top thin accent */}
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+
+                {/* Micro grid */}
+                <div
+                  className="absolute inset-0 opacity-[0.08] pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                  }}
                 />
+
+                {/* Panel header */}
+                <div className="flex items-center justify-between mb-8 relative">
+                  <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/80">
+                    Delivery System
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[10px] font-mono text-emerald-300/90 tracking-widest">LIVE</span>
+                  </span>
+                </div>
+
+                {/* Kinetic stack */}
+                <div className="space-y-3 relative">
+                  {[
+                    { label: 'Strategy & Discovery', value: '01', pct: 100 },
+                    { label: 'Team Assembly', value: '02', pct: 92 },
+                    { label: 'Architecture & Build', value: '03', pct: 78 },
+                    { label: 'Operate & Deliver', value: '04', pct: 64 },
+                    { label: 'Transfer & Scale', value: '05', pct: 46 }
+                  ].map((row, i) => (
+                    <div
+                      key={row.value}
+                      className="relative rounded-lg border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
+                      style={{ animation: `fade-in-up 0.6s ease-out ${0.15 * i}s both` }}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-mono text-blue-400/70 tracking-widest">{row.value}</span>
+                          <span className="text-sm text-white/90 font-medium">{row.label}</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-white/40">{row.pct}%</span>
+                      </div>
+                      <div className="h-1 w-full rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-400"
+                          style={{ width: `${row.pct}%`, animation: `slide-in-left 1.2s ease-out ${0.2 + 0.1 * i}s both` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom meta */}
+                <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-[11px] tracking-[0.22em] uppercase text-white/50">Engineered for Scale</span>
+                  <span className="text-[11px] font-mono text-white/40">Infotron</span>
+                </div>
               </div>
-              {/* Decorative elements */}
-              <div className="absolute -z-10 -top-6 -right-6 w-full h-full bg-gradient-to-br from-blue-700/30 to-violet-600/30 rounded-2xl"></div>
             </div>
           </div>
         </div>
@@ -184,40 +297,49 @@ const Home = () => {
             <div className="w-32 h-2 bg-gradient-to-r from-blue-600 to-violet-500 mx-auto rounded-full" />
           </div>
 
-          {/* Services Grid - BOLD GRAPHIC LAYOUT */}
+          {/* Services Grid - Unified Consistent Cards */}
           <div className="flex justify-center">
             <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-[1400px]">
             {services.map((service, index) => {
               const IconComponent = service.icon === 'Server' ? Server : service.icon === 'Users' ? Users : Briefcase;
-              const gradients = [
-                'from-[#1E3A8A] to-[#3B82F6]',
-                'from-[#3B82F6] to-[#7C3AED]',
-                'from-[#0A192F] to-[#1E3A8A]'
+              // Subtle accent variation only on the icon glow - NOT the card body
+              const accentGlows = [
+                'from-blue-400/30 to-blue-500/10',
+                'from-violet-400/30 to-blue-500/10',
+                'from-blue-400/30 to-violet-500/10'
               ];
-              
+
               return (
                 <Link
                   key={service.id}
                   to={service.href}
-                  className={`feature-card group relative bg-gradient-to-br ${gradients[index]} p-10 lg:p-14 rounded-2xl hover:scale-[1.03] hover:shadow-2xl hover:shadow-[#3B82F6]/20 transition-all duration-500 scroll-reveal delay-${index * 200 + 200}`}
+                  data-testid={`service-card-${service.id}`}
+                  className={`feature-card group relative p-10 lg:p-14 rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2E4BA8] to-[#4C3CA8] border border-white/10 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/30 hover:border-white/20 transition-all duration-500 overflow-hidden scroll-reveal delay-${index * 200 + 200}`}
                 >
-                  {/* Background Pattern */}
-                  <div className="absolute inset-0 opacity-10">
+                  {/* Top thin accent line */}
+                  <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+
+                  {/* Unified dot pattern */}
+                  <div className="absolute inset-0 opacity-[0.08] pointer-events-none" aria-hidden="true">
                     <div className="absolute inset-0" style={{
                       backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
                       backgroundSize: '40px 40px'
                     }} />
                   </div>
 
+                  {/* Subtle hover glow (same for all cards) */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/0 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+
                   {/* Content */}
                   <div className="relative z-10">
-                    {/* Large Icon */}
+                    {/* Icon with subtle accent variation */}
                     <div className="mb-8">
-                      <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                        <IconComponent className="w-12 h-12 text-white" strokeWidth={2.5} />
+                      <div className={`relative w-24 h-24 rounded-2xl flex items-center justify-center mb-6 bg-white/15 backdrop-blur-sm border border-white/15 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${accentGlows[index]} opacity-60`} />
+                        <IconComponent className="w-11 h-11 text-white relative z-10" strokeWidth={2} />
                       </div>
-                      <div className="text-sm font-black tracking-wider text-white/70 uppercase">
-                        0{index + 1}
+                      <div className="text-xs font-mono tracking-[0.2em] text-white/60 uppercase">
+                        0{index + 1} / 03
                       </div>
                     </div>
 
@@ -237,9 +359,6 @@ const Home = () => {
                       <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" strokeWidth={3} />
                     </div>
                   </div>
-
-                  {/* Hover Glow Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
                 </Link>
               );
             })}
@@ -285,44 +404,141 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Professional Team Banner */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      {/* Enterprise Outcomes Strip — Premium Editorial Panels */}
+      <section className="py-20 bg-[#0A192F] relative overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+            backgroundSize: '48px 48px'
+          }}
+        />
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative">
+          <div className="mb-12 flex items-end justify-between flex-wrap gap-4">
+            <div>
+              <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/80 mb-3 block">
+                How Enterprise Teams Win
+              </span>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white leading-tight max-w-2xl">
+                Built for the pace and scale of real delivery.
+              </h2>
+            </div>
+          </div>
+
           <div className="grid lg:grid-cols-3 gap-6">
-            <div className="relative rounded-2xl overflow-hidden h-72 shadow-xl group">
-              <img 
-                src="https://images.unsplash.com/photo-1758873268663-5a362616b5a7?w=800&h=600&fit=crop&auto=format" 
-                alt="Diverse professional team" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
-              <div className="absolute bottom-6 left-6 text-white">
-                <div className="text-2xl font-bold">Global Teams</div>
-                <div className="text-sm opacity-90">Diverse talent across continents</div>
+            {/* Global Delivery */}
+            <div
+              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500"
+              data-testid="banner-global-delivery"
+              style={{ background: 'linear-gradient(140deg, #0A192F 0%, #1E3A8A 55%, #2563EB 100%)' }}
+            >
+              {/* Abstract mesh glow */}
+              <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full blur-3xl opacity-40 transition-opacity duration-700 group-hover:opacity-60"
+                style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)' }} />
+              {/* Grid */}
+              <div className="absolute inset-0 opacity-[0.09]"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+                  backgroundSize: '40px 40px'
+                }} />
+              {/* Orbit rings */}
+              <svg className="absolute right-6 top-6 opacity-30" width="180" height="180" viewBox="0 0 180 180" fill="none">
+                <circle cx="90" cy="90" r="70" stroke="#ffffff" strokeWidth="0.7" strokeDasharray="2 4" />
+                <circle cx="90" cy="90" r="50" stroke="#ffffff" strokeWidth="0.7" />
+                <circle cx="90" cy="90" r="30" stroke="#ffffff" strokeWidth="0.7" strokeDasharray="2 4" />
+                <circle cx="90" cy="20" r="3" fill="#93C5FD" />
+                <circle cx="160" cy="90" r="3" fill="#A78BFA" />
+                <circle cx="90" cy="140" r="2.5" fill="#60A5FA" />
+              </svg>
+
+              <div className="relative h-full flex flex-col justify-between p-7">
+                <span className="text-[11px] font-mono tracking-[0.22em] uppercase text-white/60">01 / Delivery</span>
+                <div>
+                  <div className="text-2xl lg:text-3xl font-bold text-white leading-snug mb-2">Global Delivery, Locally Aligned</div>
+                  <div className="text-sm text-blue-100/80 leading-relaxed">
+                    Four hubs across the US, Canada, UK, and India moving in your time zone.
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="relative rounded-2xl overflow-hidden h-72 shadow-xl group">
-              <img 
-                src="https://images.pexels.com/photos/1367272/pexels-photo-1367272.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" 
-                alt="Multicultural team collaboration" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
-              <div className="absolute bottom-6 left-6 text-white">
-                <div className="text-2xl font-bold">Collaborative Culture</div>
-                <div className="text-sm opacity-90">World-class engineering teams</div>
+
+            {/* Ownership / Collaboration */}
+            <div
+              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500"
+              data-testid="banner-ownership"
+              style={{ background: 'linear-gradient(140deg, #0A192F 0%, #3730A3 55%, #6D28D9 100%)' }}
+            >
+              <div className="absolute -bottom-24 -left-20 w-96 h-96 rounded-full blur-3xl opacity-50 transition-opacity duration-700 group-hover:opacity-70"
+                style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 65%)' }} />
+              <div className="absolute inset-0 opacity-[0.08]"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+                  backgroundSize: '40px 40px'
+                }} />
+              {/* Network lines */}
+              <svg className="absolute top-0 right-0 w-full h-full opacity-[0.22]" viewBox="0 0 400 400" preserveAspectRatio="none">
+                <g stroke="#ffffff" strokeWidth="0.5" fill="none">
+                  <path d="M 40 60 L 200 120 L 340 60" />
+                  <path d="M 40 60 L 160 220 L 340 60" />
+                  <path d="M 200 120 L 160 220 L 280 280" />
+                  <path d="M 280 280 L 340 60" />
+                </g>
+                <g fill="#A78BFA">
+                  <circle cx="40" cy="60" r="3.5" />
+                  <circle cx="200" cy="120" r="3.5" />
+                  <circle cx="340" cy="60" r="3.5" />
+                  <circle cx="160" cy="220" r="3.5" />
+                  <circle cx="280" cy="280" r="3.5" />
+                </g>
+              </svg>
+
+              <div className="relative h-full flex flex-col justify-between p-7">
+                <span className="text-[11px] font-mono tracking-[0.22em] uppercase text-white/60">02 / Ownership</span>
+                <div>
+                  <div className="text-2xl lg:text-3xl font-bold text-white leading-snug mb-2">Teams That Own Outcomes</div>
+                  <div className="text-sm text-violet-100/80 leading-relaxed">
+                    Senior engineers accountable for delivery, not just hours.
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="relative rounded-2xl overflow-hidden h-72 shadow-xl group">
-              <img 
-                src="https://images.unsplash.com/photo-1621062089461-01f1eaebb66c?w=800&h=600&fit=crop&auto=format" 
-                alt="Executive professional" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
-              <div className="absolute bottom-6 left-6 text-white">
-                <div className="text-2xl font-bold">Executive Leadership</div>
-                <div className="text-sm opacity-90">Senior talent, real impact</div>
+
+            {/* Executive Delivery */}
+            <div
+              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500"
+              data-testid="banner-exec-delivery"
+              style={{ background: 'linear-gradient(140deg, #050B1A 0%, #1E3A8A 60%, #3B82F6 100%)' }}
+            >
+              <div className="absolute top-0 right-0 w-72 h-72 rounded-full blur-3xl opacity-35 transition-opacity duration-700 group-hover:opacity-55"
+                style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 65%)' }} />
+              <div className="absolute inset-0 opacity-[0.09]"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+                  backgroundSize: '40px 40px'
+                }} />
+              {/* Bar chart metaphor */}
+              <div className="absolute right-6 top-6 flex items-end gap-1.5 h-24">
+                {[40, 62, 48, 78, 92, 70, 88].map((h, i) => (
+                  <div
+                    key={i}
+                    className="w-2 rounded-sm bg-gradient-to-t from-blue-500/70 to-white/90"
+                    style={{ height: `${h}%`, animation: `slide-in-left 1.4s ease-out ${0.08 * i}s both` }}
+                  />
+                ))}
+              </div>
+
+              <div className="relative h-full flex flex-col justify-between p-7">
+                <span className="text-[11px] font-mono tracking-[0.22em] uppercase text-white/60">03 / Impact</span>
+                <div>
+                  <div className="text-2xl lg:text-3xl font-bold text-white leading-snug mb-2">Executive-Grade Delivery</div>
+                  <div className="text-sm text-blue-100/80 leading-relaxed">
+                    Senior leadership engaged from kickoff to transfer, measurable every step.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -345,8 +561,9 @@ const Home = () => {
             {caseStudies.slice(0, 2).map((study) => (
               <Link
                 key={study.id}
-                to={`/resources/case-studies/${study.id}`}
-                className="group bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all"
+                to={`/case-studies/${study.slug}`}
+                className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+                data-testid={`home-case-study-${study.slug}`}
               >
                 <div className="relative overflow-hidden h-64">
                   <img
@@ -354,24 +571,32 @@ const Home = () => {
                     alt={study.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <div className="absolute top-4 left-4">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/15 backdrop-blur border border-white/25 text-white text-[11px] font-semibold tracking-wider uppercase">
+                      {study.industry}
+                    </span>
+                  </div>
                   <div className="absolute bottom-4 left-6 text-white">
-                    <div className="text-sm font-semibold mb-1">{study.industry}</div>
                     <div className="text-xs opacity-90">{study.client}</div>
                   </div>
                 </div>
                 <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                     {study.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{study.challenge}</p>
+                  <p className="text-sm text-blue-600 font-semibold mb-3">{study.impact}</p>
+                  <p className="text-gray-600 mb-6 line-clamp-2">{study.challenge}</p>
                   <div className="flex items-center justify-between">
-                    <div className="flex gap-4 text-sm">
-                      <span className="text-gray-500">{study.duration}</span>
-                      <span className="text-gray-500">•</span>
-                      <span className="text-gray-500">{study.teamSize}</span>
+                    <div className="flex gap-3 text-xs text-gray-500">
+                      <span>{study.duration}</span>
+                      <span>•</span>
+                      <span>{study.teamSize}</span>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform" />
+                    <div className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 group-hover:gap-3 transition-all">
+                      View Case Study
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
                 </div>
               </Link>

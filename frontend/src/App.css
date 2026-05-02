@@ -28,6 +28,23 @@ html {
 .delay-300 { transition-delay: 300ms; }
 .delay-400 { transition-delay: 400ms; }
 .delay-500 { transition-delay: 500ms; }
+
+/* Hero premium animations */
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+@keyframes slide-in-left {
+    0% { width: 0%; opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
 .delay-600 { transition-delay: 600ms; }
 
 /* Premium Abstract Graphics */

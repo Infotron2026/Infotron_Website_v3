@@ -105,8 +105,9 @@ const Resources = () => {
                   {caseStudies.slice(0, 2).map((study, index) => (
                     <Link
                       key={study.id}
-                      to={`/resources/case-studies/${study.id}`}
+                      to={`/case-studies/${study.slug}`}
                       className={`scroll-reveal delay-${index * 100} group bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300`}
+                      data-testid={`case-study-card-${study.slug}`}
                     >
                       <div className="relative overflow-hidden h-64">
                         <img
@@ -115,19 +116,31 @@ const Resources = () => {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
+                        <div className="absolute top-4 left-4">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-[11px] font-semibold tracking-wider uppercase">
+                            {study.industry}
+                          </span>
+                        </div>
                         <div className="absolute bottom-4 left-6 text-white">
-                          <div className="text-sm font-semibold text-violet-400 mb-1">{study.industry}</div>
                           <div className="text-xs text-gray-300">{study.client}</div>
                         </div>
                       </div>
                       <div className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-violet-400 transition-colors">
+                        <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-violet-400 transition-colors">
                           {study.title}
                         </h3>
-                        <p className="text-gray-400 mb-6">{study.challenge}</p>
-                        <div className="flex items-center text-violet-400 font-semibold">
-                          Read Case Study
-                          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        <p className="text-sm text-blue-300/90 font-medium mb-3">{study.impact}</p>
+                        <p className="text-gray-400 mb-6 line-clamp-2">{study.challenge}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-3 text-xs text-gray-500">
+                            <span>{study.duration}</span>
+                            <span>•</span>
+                            <span>{study.teamSize}</span>
+                          </div>
+                          <div className="inline-flex items-center gap-2 text-sm font-semibold text-violet-400 group-hover:gap-3 transition-all">
+                            View Case Study
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </div>
                         </div>
                       </div>
                     </Link>
@@ -192,8 +205,9 @@ const Resources = () => {
               {caseStudies.map((study, index) => (
                 <Link
                   key={study.id}
-                  to={`/resources/case-studies/${study.id}`}
+                  to={`/case-studies/${study.slug}`}
                   className={`scroll-reveal delay-${index * 100} group bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300`}
+                  data-testid={`case-study-card-${study.slug}`}
                 >
                   <div className="relative overflow-hidden h-64">
                     <img
@@ -202,23 +216,31 @@ const Resources = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-[11px] font-semibold tracking-wider uppercase">
+                        {study.industry}
+                      </span>
+                    </div>
                     <div className="absolute bottom-4 left-6 text-white">
-                      <div className="text-sm font-semibold text-violet-400 mb-1">{study.industry}</div>
                       <div className="text-xs text-gray-300">{study.client}</div>
                     </div>
                   </div>
                   <div className="p-8">
-                    <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-violet-400 transition-colors">
+                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-violet-400 transition-colors">
                       {study.title}
                     </h3>
-                    <p className="text-gray-400 mb-6">{study.challenge}</p>
+                    <p className="text-sm text-blue-300/90 font-medium mb-3">{study.impact}</p>
+                    <p className="text-gray-400 mb-6 line-clamp-2">{study.challenge}</p>
                     <div className="flex items-center justify-between">
-                      <div className="flex gap-4 text-sm text-gray-500">
+                      <div className="flex gap-3 text-xs text-gray-500">
                         <span>{study.duration}</span>
                         <span>•</span>
                         <span>{study.teamSize}</span>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />
+                      <div className="inline-flex items-center gap-2 text-sm font-semibold text-violet-400 group-hover:gap-3 transition-all">
+                        View Case Study
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </Link>
