@@ -10,12 +10,15 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Instant scroll to top, even when clicking the same route as current
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0A192F]/95 backdrop-blur-md border-b border-[#3B82F6]/20 shadow-lg">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between py-2">
           {/* Logo - proportionally scaled to fit header */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center" onClick={scrollTop}>
             <img 
               src="https://customer-assets.emergentagent.com/job_ba897003-eeca-4b0e-8e12-dd77cec76f35/artifacts/mcntdahb_INFOTRON%20Gradient%20Logo%20cropped.png" 
               alt="Infotron Solutions" 
@@ -28,6 +31,7 @@ const Header = () => {
           <nav className="hidden lg:flex items-center gap-8">
             <Link
               to="/"
+              onClick={scrollTop}
               className={`text-sm font-normal transition-colors duration-300 ${
                 isActive('/') ? 'text-[#3B82F6]' : 'text-gray-300 hover:text-[#3B82F6]'
               }`}
@@ -150,7 +154,7 @@ const Header = () => {
         {mobileMenuOpen && (
           <div className="lg:hidden py-6 border-t border-slate-700">
             <nav className="flex flex-col gap-4">
-              <Link to="/" className="text-sm font-medium text-gray-300" onClick={() => setMobileMenuOpen(false)}>
+              <Link to="/" className="text-sm font-medium text-gray-300" onClick={() => { setMobileMenuOpen(false); scrollTop(); }}>
                 Home
               </Link>
               <div className="text-sm font-medium text-gray-500 px-2">Services:</div>

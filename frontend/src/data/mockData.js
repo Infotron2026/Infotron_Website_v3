@@ -108,7 +108,7 @@ export const caseStudies = [
       "Eliminated maintenance-window deploys — release cadence moved from monthly to daily"
     ],
     techStack: ["Kubernetes (EKS)", "Kafka", "gRPC", "Go", "Java", "Redis", "PostgreSQL", "Terraform", "OpenTelemetry", "Prometheus", "Grafana", "AWS"],
-    image: "https://images.unsplash.com/photo-1635236066449-5f81ce4a2bef?w=1200&h=700&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=700&fit=crop&auto=format",
     duration: "6 months",
     teamSize: "12 engineers",
     deliveryModel: "Managed Services Pod"

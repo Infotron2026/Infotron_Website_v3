@@ -226,7 +226,7 @@ const Home = () => {
             {/* Right — INFOTRON Wordmark with Portal "O" */}
             <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
               {/* Background panel — clipped to rounded-2xl; all decorative layers live here */}
-              <div className="absolute inset-0 rounded-2xl border border-white/20 bg-[#04050E] shadow-2xl shadow-purple-900/50 overflow-hidden">
+              <div className="absolute inset-0 rounded-2xl border-2 border-white/30 bg-[#04050E] shadow-2xl shadow-purple-900/60 overflow-hidden ring-1 ring-inset ring-white/10">
 
                 {/* Deep galaxy base — near-black navy/purple */}
                 <div
