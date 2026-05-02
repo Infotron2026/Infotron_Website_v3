@@ -80,6 +80,16 @@ html {
     100% { background-position: -120% 50%; opacity: 0; }
 }
 
+@keyframes portal-ring-rotate {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes portal-streaks {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
 .delay-600 { transition-delay: 600ms; }
 
 /* Premium Abstract Graphics */

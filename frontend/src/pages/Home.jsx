@@ -38,11 +38,43 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HERO SECTION — Clean solid background. All decoration is scoped inside the right container only. */}
+      {/* HERO SECTION — Premium Enterprise Hero */}
       <section
         className="relative min-h-[92vh] flex items-center overflow-hidden"
-        style={{ backgroundColor: '#0A192F' }}
+        style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
       >
+        {/* Animated mesh glow layer */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div
+            className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full opacity-40 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', animation: 'float-slow 14s ease-in-out infinite' }}
+          />
+          <div
+            className="absolute top-1/4 right-0 w-[640px] h-[640px] rounded-full opacity-30 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)', animation: 'float-slow 18s ease-in-out infinite reverse' }}
+          />
+          <div
+            className="absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full opacity-25 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 70%)', animation: 'float-slow 22s ease-in-out infinite' }}
+          />
+        </div>
+
+        {/* Engineered grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+            backgroundSize: '64px 64px',
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)'
+          }}
+        />
+
+        {/* Bottom vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050B1A]/60 pointer-events-none" />
+
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20 lg:py-28 relative z-10 w-full">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left — Copy */}
@@ -161,14 +193,12 @@ const Home = () => {
                 {/* Top hairline accent */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent pointer-events-none" />
 
-                {/* Wordmark — premium INFOTRON brand element with portal "O" at index 3 */}
+                {/* Wordmark — cinematic INFOTRON with portal "O" as the literal 4th letter */}
                 <div
-                  className="relative z-10 flex items-end justify-center select-none w-full"
+                  className="relative z-10 flex items-center justify-center select-none w-full"
                   style={{
-                    transform: 'translateX(-4%)',
                     fontFamily:
-                      "'Inter', 'SF Pro Display', 'Helvetica Neue', system-ui, -apple-system, sans-serif",
-                    fontFeatureSettings: '"ss01", "cv11"'
+                      "'Inter', 'SF Pro Display', 'Helvetica Neue', system-ui, -apple-system, sans-serif"
                   }}
                   data-testid="hero-infotron-wordmark"
                   aria-label="INFOTRON"
@@ -176,117 +206,199 @@ const Home = () => {
                   {['I', 'N', 'F', 'O', 'T', 'R', 'O', 'N'].map((ch, i) => {
                     const isPortalO = i === 3;
 
+                    // Cinematic Portal O — still the 4th letter, just rendered as a portal
                     if (isPortalO) {
                       return (
                         <span
                           key={i}
-                          className="relative inline-flex items-end justify-center shrink-0"
+                          className="relative inline-flex items-center justify-center shrink-0"
                           style={{
-                            // 1.3x scale relative to neighbouring letters; baseline-aligned via items-end + line-height
-                            fontSize: 'clamp(2.95rem, 5.85vw, 5.3rem)',
-                            width: '1.05em',
-                            height: '1.05em',
+                            fontSize: 'clamp(3.6rem, 7.8vw, 6.4rem)', // ~1.5x scale of body letters
+                            width: '1.18em',
+                            height: '1.18em',
                             margin: '0 0.04em',
-                            lineHeight: 1
+                            verticalAlign: 'middle'
                           }}
                           aria-hidden="true"
                         >
-                          {/* Soft outer aura — stays subtle, no neon */}
+                          {/* Wide outer halo — soft purple/blue bloom */}
                           <span
-                            className="absolute inset-[-22%] rounded-full pointer-events-none"
+                            className="absolute rounded-full pointer-events-none"
                             style={{
+                              inset: '-32%',
                               background:
-                                'radial-gradient(circle, rgba(147,197,253,0.30) 0%, rgba(167,139,250,0.18) 38%, transparent 72%)',
-                              filter: 'blur(16px)',
+                                'radial-gradient(circle, rgba(139,92,246,0.45) 0%, rgba(59,130,246,0.28) 35%, rgba(139,92,246,0.10) 60%, transparent 78%)',
+                              filter: 'blur(28px)',
                               animation: 'portal-aura 7s ease-in-out infinite'
                             }}
                           />
 
-                          {/* Glass disc body */}
+                          {/* Chrome metallic ring (the rim of the portal) */}
                           <span
                             className="absolute inset-0 rounded-full"
                             style={{
                               background:
-                                'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.26) 0%, rgba(191,219,254,0.12) 30%, rgba(124,58,237,0.18) 70%, rgba(10,15,42,0.45) 100%)',
-                              boxShadow:
-                                'inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -10px 22px rgba(76,29,149,0.38), 0 14px 48px rgba(76,29,149,0.32)',
-                              backdropFilter: 'blur(6px)',
-                              WebkitBackdropFilter: 'blur(6px)'
+                                'conic-gradient(from 220deg, #C7D2FE 0%, #ffffff 12%, #A78BFA 28%, #4C1D95 45%, #1E3A8A 58%, #93C5FD 72%, #ffffff 86%, #C7D2FE 100%)',
+                              padding: '6%',
+                              animation: 'portal-ring-rotate 16s linear infinite'
                             }}
-                          />
+                          >
+                            {/* Inner cutout to leave only the ring visible */}
+                            <span
+                              className="block w-full h-full rounded-full"
+                              style={{ background: '#0A0F2A' }}
+                            />
+                          </span>
 
-                          {/* Inner glow core */}
-                          <span
-                            className="absolute inset-[16%] rounded-full pointer-events-none"
-                            style={{
-                              background:
-                                'radial-gradient(circle, rgba(219,234,254,0.55) 0%, rgba(196,181,253,0.22) 50%, transparent 80%)',
-                              animation: 'portal-core 6s ease-in-out infinite'
-                            }}
-                          />
-
-                          {/* Specular highlight (top-left) */}
+                          {/* Inner ring inset shading */}
                           <span
                             className="absolute rounded-full pointer-events-none"
                             style={{
-                              top: '7%',
-                              left: '13%',
-                              width: '38%',
-                              height: '22%',
+                              inset: '6.5%',
+                              boxShadow:
+                                'inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -2px 0 rgba(0,0,0,0.55), 0 0 28px rgba(139,92,246,0.45)'
+                            }}
+                          />
+
+                          {/* Deep tunnel core — radial perspective */}
+                          <span
+                            className="absolute rounded-full overflow-hidden"
+                            style={{
+                              inset: '11%',
                               background:
-                                'radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 75%)',
+                                'radial-gradient(circle at 50% 55%, #93C5FD 0%, #6366F1 8%, #1E3A8A 22%, #1E1B4B 50%, #050518 100%)'
+                            }}
+                          >
+                            {/* Rotating data-streak conic lines */}
+                            <span
+                              className="absolute inset-0"
+                              style={{
+                                background:
+                                  'conic-gradient(from 0deg, transparent 0deg, rgba(147,197,253,0.55) 8deg, transparent 16deg, transparent 40deg, rgba(196,181,253,0.45) 50deg, transparent 60deg, transparent 100deg, rgba(147,197,253,0.40) 110deg, transparent 120deg, transparent 170deg, rgba(196,181,253,0.50) 180deg, transparent 190deg, transparent 230deg, rgba(147,197,253,0.45) 240deg, transparent 250deg, transparent 300deg, rgba(196,181,253,0.40) 312deg, transparent 322deg, transparent 360deg)',
+                                mixBlendMode: 'screen',
+                                opacity: 0.9,
+                                animation: 'portal-streaks 10s linear infinite'
+                              }}
+                            />
+
+                            {/* Concentric perspective rings (depth tunnel) */}
+                            <span className="absolute inset-0 pointer-events-none">
+                              <span className="absolute rounded-full" style={{ inset: '8%',  border: '1px solid rgba(147,197,253,0.18)' }} />
+                              <span className="absolute rounded-full" style={{ inset: '20%', border: '1px solid rgba(147,197,253,0.22)' }} />
+                              <span className="absolute rounded-full" style={{ inset: '32%', border: '1px solid rgba(196,181,253,0.28)' }} />
+                              <span className="absolute rounded-full" style={{ inset: '42%', border: '1px solid rgba(196,181,253,0.35)' }} />
+                            </span>
+
+                            {/* Central light burst / lens flare */}
+                            <span
+                              className="absolute rounded-full pointer-events-none"
+                              style={{
+                                top: '50%',
+                                left: '50%',
+                                width: '32%',
+                                height: '32%',
+                                transform: 'translate(-50%, -50%)',
+                                background:
+                                  'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(191,219,254,0.55) 25%, rgba(167,139,250,0.20) 55%, transparent 80%)',
+                                filter: 'blur(2px)',
+                                animation: 'portal-core 4.5s ease-in-out infinite'
+                              }}
+                            />
+
+                            {/* Crisp center pinpoint */}
+                            <span
+                              className="absolute rounded-full pointer-events-none"
+                              style={{
+                                top: '50%',
+                                left: '50%',
+                                width: '7%',
+                                height: '7%',
+                                transform: 'translate(-50%, -50%)',
+                                background: '#ffffff',
+                                boxShadow: '0 0 14px 4px rgba(255,255,255,0.85), 0 0 32px 10px rgba(167,139,250,0.55)'
+                              }}
+                            />
+
+                            {/* Light shaft cross — anamorphic flare */}
+                            <span
+                              className="absolute pointer-events-none"
+                              style={{
+                                top: '50%',
+                                left: '50%',
+                                width: '120%',
+                                height: '2px',
+                                transform: 'translate(-50%, -50%)',
+                                background:
+                                  'linear-gradient(90deg, transparent 0%, rgba(147,197,253,0.6) 35%, rgba(255,255,255,0.95) 50%, rgba(196,181,253,0.6) 65%, transparent 100%)',
+                                filter: 'blur(0.6px)',
+                                opacity: 0.85
+                              }}
+                            />
+                            <span
+                              className="absolute pointer-events-none"
+                              style={{
+                                top: '50%',
+                                left: '50%',
+                                width: '2px',
+                                height: '120%',
+                                transform: 'translate(-50%, -50%)',
+                                background:
+                                  'linear-gradient(180deg, transparent 0%, rgba(147,197,253,0.45) 35%, rgba(255,255,255,0.9) 50%, rgba(196,181,253,0.45) 65%, transparent 100%)',
+                                filter: 'blur(0.6px)',
+                                opacity: 0.7
+                              }}
+                            />
+                          </span>
+
+                          {/* Top specular highlight on the chrome rim */}
+                          <span
+                            className="absolute rounded-full pointer-events-none"
+                            style={{
+                              top: '4%',
+                              left: '20%',
+                              width: '46%',
+                              height: '14%',
+                              background:
+                                'radial-gradient(ellipse, rgba(255,255,255,0.85) 0%, transparent 70%)',
+                              filter: 'blur(1.5px)'
+                            }}
+                          />
+
+                          {/* Bottom specular reflection */}
+                          <span
+                            className="absolute rounded-full pointer-events-none"
+                            style={{
+                              bottom: '5%',
+                              right: '18%',
+                              width: '36%',
+                              height: '10%',
+                              background:
+                                'radial-gradient(ellipse, rgba(196,181,253,0.55) 0%, transparent 75%)',
                               filter: 'blur(2px)'
                             }}
                           />
-
-                          {/* Thin outer highlight ring */}
-                          <span
-                            className="absolute inset-0 rounded-full pointer-events-none"
-                            style={{
-                              border: '1px solid rgba(255,255,255,0.28)',
-                              boxShadow:
-                                '0 0 0 1px rgba(167,139,250,0.20) inset, 0 0 26px rgba(147,197,253,0.18)'
-                            }}
-                          />
-
-                          {/* The "O" glyph — slightly brighter than other letters */}
-                          <span
-                            className="relative font-extrabold leading-none"
-                            style={{
-                              fontSize: '0.92em',
-                              letterSpacing: '-0.025em',
-                              background:
-                                'linear-gradient(180deg, #ffffff 0%, #E0F2FE 35%, #DDD6FE 100%)',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              backgroundClip: 'text',
-                              filter:
-                                'drop-shadow(0 1px 2px rgba(255,255,255,0.4)) drop-shadow(0 4px 14px rgba(167,139,250,0.45))'
-                            }}
-                          >
-                            O
-                          </span>
                         </span>
                       );
                     }
 
-                    // Other letters — premium gradient with subtle sheen
+                    // Other letters — premium chrome/blue gradient with subtle sheen
                     return (
                       <span
                         key={i}
                         className="relative font-extrabold leading-none shrink-0"
                         style={{
-                          fontSize: 'clamp(2.25rem, 4.5vw, 4.05rem)',
-                          letterSpacing: '0.005em',
+                          fontSize: 'clamp(2.4rem, 5.2vw, 4.3rem)',
+                          letterSpacing: '-0.01em',
                           background:
-                            'linear-gradient(180deg, #F1F5FF 0%, #DBE7FF 45%, #C6BCEA 100%)',
+                            'linear-gradient(180deg, #ffffff 0%, #DBE7FF 45%, #B4A8E0 100%)',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
-                          filter: 'drop-shadow(0 2px 10px rgba(30,58,138,0.30))'
+                          filter:
+                            'drop-shadow(0 1px 0 rgba(255,255,255,0.25)) drop-shadow(0 6px 20px rgba(76,29,149,0.45))'
                         }}
                       >
-                        {/* Soft sheen overlay (very subtle, slow) */}
+                        {/* Sheen overlay */}
                         <span
                           aria-hidden="true"
                           className="absolute inset-0 pointer-events-none"
