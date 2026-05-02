@@ -114,7 +114,7 @@ const Home = () => {
       <section
         ref={heroRef}
         className="relative"
-        style={{ height: '280vh' }}
+        style={{ height: '180vh' }}
       >
         <div
           className="sticky top-0 h-screen w-full flex items-center overflow-hidden"
@@ -182,15 +182,6 @@ const Home = () => {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left — Copy */}
             <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
-              {/* Trust pill */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur border border-white/10 text-white/80 text-xs font-semibold tracking-[0.18em] uppercase mb-8">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-400" />
-                </span>
-                Trusted by enterprise delivery teams
-              </div>
-
               <h1 className="text-[clamp(2.5rem,5.2vw,4.75rem)] font-black text-white leading-[1.05] mb-6 tracking-[-0.02em]">
                 <span className="bg-gradient-to-r from-blue-400 via-violet-300 to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]" style={{ animation: 'shimmer 6s linear infinite' }}>
                   Outcomes.
@@ -435,66 +426,6 @@ const Home = () => {
                               <span className="absolute rounded-full" style={{ inset: '32%', border: '1px solid rgba(196,181,253,0.28)' }} />
                               <span className="absolute rounded-full" style={{ inset: '42%', border: '1px solid rgba(196,181,253,0.35)' }} />
                             </span>
-
-                            {/* Central light burst / lens flare */}
-                            <span
-                              className="absolute rounded-full pointer-events-none"
-                              style={{
-                                top: '50%',
-                                left: '50%',
-                                width: '32%',
-                                height: '32%',
-                                transform: 'translate(-50%, -50%)',
-                                background:
-                                  'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(191,219,254,0.55) 25%, rgba(167,139,250,0.20) 55%, transparent 80%)',
-                                filter: 'blur(2px)',
-                                animation: 'portal-core 4.5s ease-in-out infinite'
-                              }}
-                            />
-
-                            {/* Crisp center pinpoint */}
-                            <span
-                              className="absolute rounded-full pointer-events-none"
-                              style={{
-                                top: '50%',
-                                left: '50%',
-                                width: '7%',
-                                height: '7%',
-                                transform: 'translate(-50%, -50%)',
-                                background: '#ffffff',
-                                boxShadow: '0 0 14px 4px rgba(255,255,255,0.85), 0 0 32px 10px rgba(167,139,250,0.55)'
-                              }}
-                            />
-
-                            {/* Light shaft cross — anamorphic flare */}
-                            <span
-                              className="absolute pointer-events-none"
-                              style={{
-                                top: '50%',
-                                left: '50%',
-                                width: '120%',
-                                height: '2px',
-                                transform: 'translate(-50%, -50%)',
-                                background:
-                                  'linear-gradient(90deg, transparent 0%, rgba(147,197,253,0.6) 35%, rgba(255,255,255,0.95) 50%, rgba(196,181,253,0.6) 65%, transparent 100%)',
-                                filter: 'blur(0.6px)',
-                                opacity: 0.85
-                              }}
-                            />
-                            <span
-                              className="absolute pointer-events-none"
-                              style={{
-                                top: '50%',
-                                left: '50%',
-                                width: '2px',
-                                height: '120%',
-                                transform: 'translate(-50%, -50%)',
-                                background:
-                                  'linear-gradient(180deg, transparent 0%, rgba(147,197,253,0.45) 35%, rgba(255,255,255,0.9) 50%, rgba(196,181,253,0.45) 65%, transparent 100%)',
-                                filter: 'blur(0.6px)',
-                                opacity: 0.7
-                              }}
-                            />
                           </span>
 
                           {/* Top specular highlight on the chrome rim */}
