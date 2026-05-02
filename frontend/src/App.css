@@ -14,40 +14,43 @@ html {
 /* ─── Premium scroll-reveal system ─────────────────────────────────────────
    Calm, controlled, cubic-bezier(0.22, 1, 0.36, 1) — used site-wide below
    the hero. Uses transform + opacity only for 60fps on mobile.
+   Tuned for low-latency: short translate distance, fast duration, no
+   permanent will-change (browser auto-promotes during transition).
    ──────────────────────────────────────────────────────────────────────── */
 
 .scroll-reveal {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translate3d(0, 16px, 0);
     transition:
-        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
+        opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .scroll-reveal.scroll-reveal-card {
-    transform: translateY(20px) scale(0.96);
+    transform: translate3d(0, 14px, 0) scale(0.98);
 }
 
 .scroll-reveal.scroll-reveal-image {
-    transform: scale(0.98);
+    transform: scale(0.985);
 }
 
 .animate-fade-in-up {
     opacity: 1 !important;
-    transform: translateY(0) scale(1) !important;
+    transform: translate3d(0, 0, 0) scale(1) !important;
 }
 
-/* Animation delays — extended for 6+ item staggers */
-.delay-100 { transition-delay: 100ms; }
-.delay-200 { transition-delay: 200ms; }
-.delay-300 { transition-delay: 300ms; }
-.delay-400 { transition-delay: 400ms; }
-.delay-500 { transition-delay: 500ms; }
-.delay-600 { transition-delay: 600ms; }
-.delay-700 { transition-delay: 700ms; }
-.delay-800 { transition-delay: 800ms; }
-.delay-900 { transition-delay: 900ms; }
+/* Animation delays — kept short for perceived snappiness (max 250ms stagger).
+   These are intentionally tight: long staggers feel like the site is
+   "loading", not animating. */
+.delay-100 { transition-delay: 60ms; }
+.delay-200 { transition-delay: 120ms; }
+.delay-300 { transition-delay: 180ms; }
+.delay-400 { transition-delay: 220ms; }
+.delay-500 { transition-delay: 260ms; }
+.delay-600 { transition-delay: 300ms; }
+.delay-700 { transition-delay: 340ms; }
+.delay-800 { transition-delay: 380ms; }
+.delay-900 { transition-delay: 420ms; }
 
 /* Hover lift — minimal premium micro-interaction */
 .hover-lift-premium {

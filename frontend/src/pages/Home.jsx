@@ -139,16 +139,23 @@ const Home = () => {
 
 
   useEffect(() => {
+    // Trigger animations slightly BEFORE the element enters the viewport
+    // (rootMargin bottom: +120px) so the user sees content already animating
+    // by the time it scrolls into view — eliminates the "waiting for content
+    // to appear" feel. threshold:0 = fire as soon as any pixel intersects.
     const options = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
+      threshold: 0,
+      rootMargin: '0px 0px 120px 0px'
     };
 
-    observerRef.current = new IntersectionObserver((entries) => {
+    observerRef.current = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('animate-fade-in-up');
           entry.target.classList.remove('scroll-reveal');
+          // Unobserve immediately so the browser frees the layer + observer slot
+          // (one-shot reveal — no retrigger). Critical for mobile GPU memory.
+          obs.unobserve(entry.target);
         }
       });
     }, options);
