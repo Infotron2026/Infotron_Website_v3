@@ -205,7 +205,7 @@ export const blogPosts = [
     date: "2025-01-15",
     readTime: "8 min",
     category: "Strategy",
-    image: "https://images.unsplash.com/photo-1763550662603-78aa2f2033bf?w=800&h=400&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1200&h=600&fit=crop&auto=format",
     slug: "total-cost-technology-talent",
     sections: [
       {
