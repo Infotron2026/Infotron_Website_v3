@@ -140,9 +140,14 @@ const Home = () => {
             playsInline
             preload="auto"
             data-testid="hero-portal-video"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+              transform: 'scale(1.05)',
+            }}
           >
-            <source src="/media/portal-tunnel.mp4" type="video/mp4" />
+            <source src="/videos/hero.mp4" type="video/mp4" />
           </video>
 
           {/* Dark mask with circular peephole — peephole grows from O's position to fill screen */}
@@ -391,7 +396,7 @@ const Home = () => {
                                 'radial-gradient(circle at 50% 55%, #93C5FD 0%, #6366F1 8%, #1E3A8A 22%, #1E1B4B 50%, #050518 100%)'
                             }}
                           >
-                            {/* Looping abstract video — initial state, plays inside the inline O */}
+                            {/* Custom hero video — clipped to circular shape of the "O" letter, plays on load */}
                             <video
                               autoPlay
                               muted
@@ -399,15 +404,16 @@ const Home = () => {
                               playsInline
                               preload="auto"
                               data-testid="hero-inline-portal-video"
-                              className="absolute top-1/2 left-1/2 w-full h-full object-cover pointer-events-none"
+                              className="absolute top-1/2 left-1/2 w-full h-full pointer-events-none"
                               style={{
-                                transform: 'translate(-50%, -50%) scale(0.92)',
-                                opacity: 0.82,
-                                filter: 'none',
-                                mixBlendMode: 'screen'
+                                transform: 'translate(-50%, -50%) scale(1.15)',
+                                objectFit: 'cover',
+                                objectPosition: 'center',
+                                opacity: 0.85,
+                                filter: 'none'
                               }}
                             >
-                              <source src="/media/portal-tunnel.mp4" type="video/mp4" />
+                              <source src="/videos/hero.mp4" type="video/mp4" />
                             </video>
 
                             {/* Rotating data-streak conic lines */}
