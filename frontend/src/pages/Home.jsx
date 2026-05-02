@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { 
@@ -7,8 +7,57 @@ import {
 } from 'lucide-react';
 import { clientLogos, services, whyInfotron, caseStudies, testimonials } from '../data/mockData';
 
+// cubic-bezier(0.22, 1, 0.36, 1) — close approximation via easeOutQuint
+const easeOutPortal = (t) => {
+  const c = Math.max(0, Math.min(1, t));
+  return 1 - Math.pow(1 - c, 5);
+};
+
 const Home = () => {
   const observerRef = useRef(null);
+  const heroRef = useRef(null);
+  const [heroProgress, setHeroProgress] = useState(0);
+
+  // Scroll-progress: 0 when hero top is at viewport top, 1 when scrolled past hero height
+  useEffect(() => {
+    let raf = 0;
+    const compute = () => {
+      const el = heroRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const h = rect.height || 1;
+      const scrolled = -rect.top;
+      const p = Math.max(0, Math.min(1, scrolled / h));
+      setHeroProgress(p);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(compute);
+    };
+    compute();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  // Phase 1: 0.25 → 0.45 — fade out non-O letters
+  const lettersOpacity = (() => {
+    if (heroProgress <= 0.25) return 1;
+    if (heroProgress >= 0.45) return 0;
+    return 1 - easeOutPortal((heroProgress - 0.25) / 0.20);
+  })();
+
+  // Phase 2: 0.45 → 0.70 — scale O from 1x to 8x (transform-origin center)
+  const oScale = (() => {
+    if (heroProgress <= 0.45) return 1;
+    if (heroProgress >= 0.70) return 8;
+    return 1 + 7 * easeOutPortal((heroProgress - 0.45) / 0.25);
+  })();
+
 
   useEffect(() => {
     const options = {
@@ -40,6 +89,7 @@ const Home = () => {
     <div className="min-h-screen bg-white">
       {/* HERO SECTION — Premium Enterprise Hero */}
       <section
+        ref={heroRef}
         className="relative min-h-[92vh] flex items-center overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
       >
@@ -136,7 +186,8 @@ const Home = () => {
 
             {/* Right — INFOTRON Wordmark with Portal "O" */}
             <div className="lg:col-span-5 relative animate-fade-in">
-              <div className="relative rounded-2xl border border-white/10 bg-[#04050E] backdrop-blur-xl p-8 lg:p-10 shadow-2xl shadow-purple-900/50 overflow-hidden min-h-[480px] lg:min-h-[560px] flex items-center justify-center">
+              {/* Background panel — clipped to rounded-2xl; all decorative layers live here */}
+              <div className="absolute inset-0 rounded-2xl border border-white/10 bg-[#04050E] shadow-2xl shadow-purple-900/50 overflow-hidden">
 
                 {/* Deep galaxy base — near-black navy/purple */}
                 <div
@@ -215,7 +266,11 @@ const Home = () => {
 
                 {/* Top hairline accent */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent pointer-events-none" />
+              </div>
+              {/* End of clipped background panel */}
 
+              {/* Wordmark layer — same min-height/padding as panel but NOT clipped, so the O can scale beyond */}
+              <div className="relative min-h-[480px] lg:min-h-[560px] p-8 lg:p-10 flex items-center justify-center">
                 {/* Wordmark — cinematic INFOTRON with portal "O" as the literal 4th letter */}
                 <div
                   className="relative z-10 flex items-center justify-center select-none w-full"
@@ -234,13 +289,16 @@ const Home = () => {
                       return (
                         <span
                           key={i}
-                          className="relative inline-flex items-center justify-center shrink-0"
+                          className="relative inline-flex items-center justify-center shrink-0 will-change-transform"
                           style={{
                             fontSize: 'clamp(3.6rem, 7.8vw, 6.4rem)', // ~1.5x scale of body letters
                             width: '1.18em',
                             height: '1.18em',
                             margin: '0 0.04em',
-                            verticalAlign: 'middle'
+                            verticalAlign: 'middle',
+                            transform: `scale(${oScale})`,
+                            transformOrigin: 'center center',
+                            zIndex: oScale > 1 ? 50 : 'auto'
                           }}
                           aria-hidden="true"
                         >
@@ -292,6 +350,25 @@ const Home = () => {
                                 'radial-gradient(circle at 50% 55%, #93C5FD 0%, #6366F1 8%, #1E3A8A 22%, #1E1B4B 50%, #050518 100%)'
                             }}
                           >
+                            {/* Looping abstract video — autoplays, muted, loops, no blur */}
+                            <video
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              preload="auto"
+                              data-testid="hero-portal-video"
+                              className="absolute top-1/2 left-1/2 w-full h-full object-cover pointer-events-none"
+                              style={{
+                                transform: 'translate(-50%, -50%) scale(0.92)',
+                                opacity: 0.78,
+                                filter: 'none',
+                                mixBlendMode: 'screen'
+                              }}
+                            >
+                              <source src="/media/portal-tunnel.mp4" type="video/mp4" />
+                            </video>
+
                             {/* Rotating data-streak conic lines */}
                             <span
                               className="absolute inset-0"
@@ -408,7 +485,7 @@ const Home = () => {
                     return (
                       <span
                         key={i}
-                        className="relative font-extrabold leading-none shrink-0"
+                        className="relative font-extrabold leading-none shrink-0 will-change-[opacity,transform]"
                         style={{
                           fontSize: 'clamp(2.4rem, 5.2vw, 4.3rem)',
                           letterSpacing: '-0.01em',
@@ -418,7 +495,8 @@ const Home = () => {
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
                           filter:
-                            'drop-shadow(0 1px 0 rgba(255,255,255,0.25)) drop-shadow(0 6px 20px rgba(76,29,149,0.45))'
+                            'drop-shadow(0 1px 0 rgba(255,255,255,0.25)) drop-shadow(0 6px 20px rgba(76,29,149,0.45))',
+                          opacity: lettersOpacity
                         }}
                       >
                         {/* Sheen overlay */}
