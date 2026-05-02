@@ -178,7 +178,7 @@ const Home = () => {
         style={{ height: '180vh' }}
       >
         <div
-          className="sticky top-0 h-screen w-full flex items-center overflow-hidden"
+          className="sticky top-0 h-screen w-full flex items-start lg:items-center overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
 
@@ -239,8 +239,8 @@ const Home = () => {
         {/* Bottom vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050B1A]/60 pointer-events-none" />
 
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-28 lg:pt-32 pb-12 lg:pb-16 relative z-10 w-full">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-24 lg:pt-32 pb-8 lg:pb-16 relative z-10 w-full">
+          <div className="grid lg:grid-cols-12 gap-6 lg:gap-16 items-center">
             {/* Left — Copy */}
             <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
               <h1 className="text-[clamp(2.5rem,5.2vw,4.75rem)] font-black text-white leading-[1.05] mb-6 tracking-[-0.02em]">
@@ -340,7 +340,7 @@ const Home = () => {
               {/* End of clipped background panel */}
 
               {/* Wordmark layer — defined panel height, NOT stretched to full row */}
-              <div className="relative min-h-[400px] lg:min-h-[460px] p-8 lg:p-10 flex items-center justify-center">
+              <div className="relative min-h-[260px] sm:min-h-[340px] lg:min-h-[460px] p-4 sm:p-8 lg:p-10 flex items-center justify-center">
                 {/* Wordmark — cinematic INFOTRON with portal "O" as the literal 4th letter */}
                 <div
                   className="relative z-10 flex items-center justify-center select-none w-full"
