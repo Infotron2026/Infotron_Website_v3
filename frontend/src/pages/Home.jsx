@@ -12,25 +12,26 @@ const easeOutPortal = (t) => {
   const c = Math.max(0, Math.min(1, t));
   return 1 - Math.pow(1 - c, 5);
 };
+const lerp = (a, b, t) => a + (b - a) * t;
 
 const Home = () => {
   const observerRef = useRef(null);
   const heroRef = useRef(null);
   const oRef = useRef(null);
   const [heroProgress, setHeroProgress] = useState(0);
-  const [oOffset, setOOffset] = useState({ x: 0, y: 0 });
+  const [oAnchor, setOAnchor] = useState({ x: 0, y: 0, r: 60 });
+  const [viewport, setViewport] = useState({ w: 1, h: 1 });
 
-  // Measure the inline O's offset from viewport center (for the centering translate)
-  // Only measured at progress=0 (untransformed) and on resize.
+  // Measure initial O center + radius (used as starting point for the mask peephole)
   useLayoutEffect(() => {
     const measure = () => {
+      setViewport({ w: window.innerWidth, h: window.innerHeight });
       if (!oRef.current) return;
       const r = oRef.current.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      setOOffset({
-        x: window.innerWidth / 2 - cx,
-        y: window.innerHeight / 2 - cy,
+      setOAnchor({
+        x: r.left + r.width / 2,
+        y: r.top + r.height / 2,
+        r: Math.min(r.width, r.height) / 2,
       });
     };
     measure();
@@ -38,7 +39,7 @@ const Home = () => {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // Pinned scroll progress: 0 → 1 over the pin range (heroSection.height − viewportHeight)
+  // Pinned scroll progress 0 → 1 (over heroSection.height − 100vh)
   useEffect(() => {
     let raf = 0;
     const compute = () => {
@@ -46,8 +47,7 @@ const Home = () => {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const total = Math.max(1, rect.height - window.innerHeight);
-      const scrolled = -rect.top;
-      const p = Math.max(0, Math.min(1, scrolled / total));
+      const p = Math.max(0, Math.min(1, -rect.top / total));
       setHeroProgress(p);
     };
     const onScroll = () => {
@@ -64,14 +64,22 @@ const Home = () => {
     };
   }, []);
 
-  // Phase A: text fade-out (left content + non-O letters)  → 0.00 → 0.18
-  const textOpacity = 1 - easeOutPortal(Math.max(0, Math.min(1, heroProgress / 0.18)));
-  // Phase B: O moves toward viewport center + scales massively → 0.10 → 0.95
-  const zoomT = Math.max(0, Math.min(1, (heroProgress - 0.10) / 0.85));
-  const zoomEased = easeOutPortal(zoomT);
-  const oTranslateX = oOffset.x * zoomEased;
-  const oTranslateY = oOffset.y * zoomEased;
-  const oScale = 1 + 21 * zoomEased; // 1x → 22x (covers viewport edges with the deep tunnel core)
+  // ----- Animation curves -----
+  // Hero content fade (BOTH left + right side fade in unison)
+  const heroContentOpacity = 1 - easeOutPortal(Math.max(0, Math.min(1, heroProgress / 0.18)));
+
+  // Overlay activation: fades in quickly so the mask peephole appears just as the inline O fades out
+  const overlayOpacity = easeOutPortal(Math.max(0, Math.min(1, heroProgress / 0.15)));
+
+  // Mask geometry — peephole expansion
+  const expandT = easeOutPortal(Math.max(0, Math.min(1, (heroProgress - 0.05) / 0.85)));
+  const viewportDiag = Math.sqrt(viewport.w * viewport.w + viewport.h * viewport.h);
+  const maskRadius = lerp(oAnchor.r, viewportDiag * 0.7, expandT); // grows past viewport bounds
+  const maskCenterX = lerp(oAnchor.x, viewport.w / 2, expandT);
+  const maskCenterY = lerp(oAnchor.y, viewport.h / 2, expandT);
+
+  // For backwards compatibility in JSX (was used; now disabled — everything fades together)
+  const textOpacity = heroContentOpacity;
 
 
   useEffect(() => {
@@ -102,7 +110,42 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HERO SECTION — Pinned scroll: section is tall, inner sticky stays in viewport while O zooms */}
+      {/* FULLSCREEN PORTAL OVERLAY — fixed, breaks out of layout, peephole expands to take over viewport */}
+      <div
+        className="fixed inset-0 pointer-events-none will-change-[opacity]"
+        style={{
+          opacity: overlayOpacity,
+          zIndex: 90,
+          // Hide entirely until activated to avoid any flicker on initial paint
+          visibility: heroProgress > 0.001 ? 'visible' : 'hidden',
+        }}
+        data-testid="hero-portal-overlay"
+        aria-hidden="true"
+      >
+        {/* Video layer — fullscreen, plays underneath the dark mask */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          data-testid="hero-portal-video"
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/media/portal-tunnel.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark mask with circular peephole — peephole grows from O's position to fill screen */}
+        <div
+          className="absolute inset-0 bg-[#04050E] will-change-[mask-image]"
+          style={{
+            WebkitMaskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
+            maskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
+          }}
+        />
+      </div>
+
+      {/* HERO SECTION — Pinned scroll: section is tall, inner sticky stays in viewport while overlay takes over */}
       <section
         ref={heroRef}
         className="relative"
@@ -134,7 +177,7 @@ const Home = () => {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20 lg:py-28 relative z-10 w-full">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left — Copy */}
-            <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: textOpacity }}>
+            <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
               {/* Trust pill */}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur border border-white/10 text-white/80 text-xs font-semibold tracking-[0.18em] uppercase mb-8">
                 <span className="relative flex h-2 w-2">
@@ -144,7 +187,7 @@ const Home = () => {
                 Trusted by enterprise delivery teams
               </div>
 
-              <h1 className="text-[clamp(2.75rem,6vw,5.75rem)] font-black text-white leading-[1.02] mb-8 tracking-[-0.02em]">
+              <h1 className="text-[clamp(2.5rem,5.2vw,4.75rem)] font-black text-white leading-[1.05] mb-6 tracking-[-0.02em]">
                 <span className="bg-gradient-to-r from-blue-400 via-violet-300 to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]" style={{ animation: 'shimmer 6s linear infinite' }}>
                   Outcomes.
                 </span>
@@ -160,7 +203,7 @@ const Home = () => {
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 mb-4">
                 <Link to="/contact?type=client" data-testid="hero-primary-cta">
                   <Button
                     size="lg"
@@ -183,28 +226,10 @@ const Home = () => {
                   </Button>
                 </Link>
               </div>
-
-              {/* Trust indicators */}
-              <div className="pt-8 border-t border-white/10 max-w-xl">
-                <div className="grid grid-cols-3 gap-6">
-                  <div>
-                    <div className="text-2xl lg:text-3xl font-bold text-white tabular-nums">14d</div>
-                    <div className="text-[11px] text-gray-400 tracking-wider uppercase mt-1">Time to Deploy</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl lg:text-3xl font-bold text-white tabular-nums">92%</div>
-                    <div className="text-[11px] text-gray-400 tracking-wider uppercase mt-1">Client Retention</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl lg:text-3xl font-bold text-white tabular-nums">4</div>
-                    <div className="text-[11px] text-gray-400 tracking-wider uppercase mt-1">Global Delivery Hubs</div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Right — INFOTRON Wordmark with Portal "O" */}
-            <div className="lg:col-span-5 relative animate-fade-in">
+            <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
               {/* Background panel — clipped to rounded-2xl; all decorative layers live here */}
               <div className="absolute inset-0 rounded-2xl border border-white/10 bg-[#04050E] shadow-2xl shadow-purple-900/50 overflow-hidden">
 
@@ -309,16 +334,13 @@ const Home = () => {
                         <span
                           key={i}
                           ref={oRef}
-                          className="relative inline-flex items-center justify-center shrink-0 will-change-transform"
+                          className="relative inline-flex items-center justify-center shrink-0"
                           style={{
                             fontSize: 'clamp(3.6rem, 7.8vw, 6.4rem)', // ~1.5x scale of body letters
                             width: '1.18em',
                             height: '1.18em',
                             margin: '0 0.04em',
-                            verticalAlign: 'middle',
-                            transform: `translate(${oTranslateX}px, ${oTranslateY}px) scale(${oScale})`,
-                            transformOrigin: 'center center',
-                            zIndex: zoomEased > 0 ? 60 : 'auto'
+                            verticalAlign: 'middle'
                           }}
                           aria-hidden="true"
                         >
@@ -370,18 +392,18 @@ const Home = () => {
                                 'radial-gradient(circle at 50% 55%, #93C5FD 0%, #6366F1 8%, #1E3A8A 22%, #1E1B4B 50%, #050518 100%)'
                             }}
                           >
-                            {/* Looping abstract video — autoplays, muted, loops, no blur */}
+                            {/* Looping abstract video — initial state, plays inside the inline O */}
                             <video
                               autoPlay
                               muted
                               loop
                               playsInline
                               preload="auto"
-                              data-testid="hero-portal-video"
+                              data-testid="hero-inline-portal-video"
                               className="absolute top-1/2 left-1/2 w-full h-full object-cover pointer-events-none"
                               style={{
                                 transform: 'translate(-50%, -50%) scale(0.92)',
-                                opacity: 0.78,
+                                opacity: 0.82,
                                 filter: 'none',
                                 mixBlendMode: 'screen'
                               }}
