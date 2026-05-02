@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { ChevronDown, Menu, X } from 'lucide-react';
+import { caseStudies, blogPosts } from '../data/mockData';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -99,14 +101,81 @@ const Header = () => {
               About
             </Link>
 
-            <Link
-              to="/resources"
-              className={`text-sm font-normal transition-colors ${
-                isActive('/resources') ? 'text-[#3B82F6]' : 'text-gray-300 hover:text-[#3B82F6]'
-              }`}
+            <div 
+              className="relative"
+              onMouseEnter={() => setResourcesOpen(true)}
+              onMouseLeave={() => setResourcesOpen(false)}
             >
-              Resources
-            </Link>
+              <Link
+                to="/resources"
+                onClick={scrollTop}
+                className={`flex items-center gap-1 text-sm font-normal transition-colors ${
+                  location.pathname.startsWith('/resources') || location.pathname.startsWith('/case-studies') || location.pathname.startsWith('/blog')
+                    ? 'text-[#3B82F6]' : 'text-gray-300 hover:text-[#3B82F6]'
+                }`}
+                data-testid="nav-resources"
+              >
+                Resources
+                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${resourcesOpen ? 'rotate-180' : ''}`} />
+              </Link>
+              {resourcesOpen && (
+                <div className="absolute top-full left-0 pt-3 w-[440px]" data-testid="resources-dropdown">
+                  <div className="bg-[#111827] border border-[#3B82F6]/20 rounded-xl shadow-2xl shadow-blue-900/40 overflow-hidden">
+                    <div className="grid grid-cols-2 gap-0 divide-x divide-white/5">
+                      {/* Case Studies column */}
+                      <div className="p-4">
+                        <div className="text-[10px] font-semibold tracking-[0.2em] uppercase text-blue-300/80 mb-3 px-2">Case Studies</div>
+                        <div className="space-y-1">
+                          {caseStudies.slice(0, 4).map((c) => (
+                            <Link
+                              key={c.slug}
+                              to={`/case-studies/${c.slug}`}
+                              onClick={() => { setResourcesOpen(false); window.scrollTo(0, 0); }}
+                              className="block px-2 py-2 rounded-md hover:bg-white/[0.04] transition-colors group"
+                              data-testid={`dropdown-cs-${c.slug}`}
+                            >
+                              <div className="text-[13px] font-medium text-white group-hover:text-[#3B82F6] line-clamp-2 leading-snug">
+                                {c.title}
+                              </div>
+                              <div className="text-[10px] text-gray-500 mt-0.5">{c.industry}</div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Blog column */}
+                      <div className="p-4">
+                        <div className="text-[10px] font-semibold tracking-[0.2em] uppercase text-violet-300/80 mb-3 px-2">From the Blog</div>
+                        <div className="space-y-1">
+                          {blogPosts.slice(0, 4).map((p) => (
+                            <Link
+                              key={p.slug}
+                              to={`/blog/${p.slug}`}
+                              onClick={() => { setResourcesOpen(false); window.scrollTo(0, 0); }}
+                              className="block px-2 py-2 rounded-md hover:bg-white/[0.04] transition-colors group"
+                              data-testid={`dropdown-blog-${p.slug}`}
+                            >
+                              <div className="text-[13px] font-medium text-white group-hover:text-violet-300 line-clamp-2 leading-snug">
+                                {p.title}
+                              </div>
+                              <div className="text-[10px] text-gray-500 mt-0.5">{p.category} · {p.readTime}</div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Footer link */}
+                    <Link
+                      to="/resources"
+                      onClick={() => { setResourcesOpen(false); scrollTop(); }}
+                      className="block px-4 py-3 text-[12px] font-semibold text-[#3B82F6] hover:text-white text-center bg-[#0F172A] border-t border-white/5 transition-colors"
+                    >
+                      View all resources →
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <Link
               to="/careers"

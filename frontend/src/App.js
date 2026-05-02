@@ -11,6 +11,7 @@ import CapitalProjects from "@/pages/CapitalProjects";
 import About from "@/pages/About";
 import Resources from "@/pages/Resources";
 import CaseStudyDetail from "@/pages/CaseStudyDetail";
+import BlogPostDetail from "@/pages/BlogPostDetail";
 import Careers from "@/pages/Careers";
 import JobDetail from "@/pages/JobDetail";
 import Contact from "@/pages/Contact";
@@ -34,7 +35,8 @@ function App() {
           <Route path="/resources" element={<Resources />} />
           <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
           <Route path="/resources/case-studies/:slug" element={<CaseStudyDetail />} />
-          <Route path="/resources/blog/:slug" element={<Resources />} />
+          <Route path="/blog/:slug" element={<BlogPostDetail />} />
+          <Route path="/resources/blog/:slug" element={<BlogPostDetail />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers/:jobId" element={<JobDetail />} />
           <Route path="/contact" element={<Contact />} />

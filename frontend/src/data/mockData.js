@@ -172,7 +172,7 @@ export const caseStudies = [
       "Closed research-to-production gap — strategies now deploy in hours, not weeks"
     ],
     techStack: ["Rust", "Python", "FIX Protocol", "Kafka", "ClickHouse", "Redis", "PostgreSQL", "Kubernetes", "Pandas", "NumPy", "Grafana"],
-    image: "https://images.unsplash.com/photo-1642790551116-18e150f248e5?w=1200&h=700&fit=crop&auto=format",
+    image: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=1200&h=700&fit=crop&auto=format",
     duration: "8 months",
     teamSize: "15 specialists",
     deliveryModel: "Dedicated Delivery Team"
@@ -206,7 +206,29 @@ export const blogPosts = [
     readTime: "8 min",
     category: "Strategy",
     image: "https://images.unsplash.com/photo-1763550662603-78aa2f2033bf?w=800&h=400&fit=crop&auto=format",
-    slug: "total-cost-technology-talent"
+    slug: "total-cost-technology-talent",
+    sections: [
+      {
+        heading: "The hidden price of \"affordable\" engineering",
+        body: "Most engineering leaders evaluate talent on a single dimension: hourly rate. The cheaper the resource, the better the deal. This framing is one of the most persistent and most expensive mistakes in enterprise technology delivery. The fully-loaded cost of a software engineer is not their bill rate. It is the time they consume from senior engineers, the rework they introduce, the technical debt they leave behind, and the velocity they fail to unlock for the rest of the team."
+      },
+      {
+        heading: "What \"elite\" actually changes in a delivery program",
+        body: "Senior engineers do four things that compound over time. They make architectural decisions that survive contact with production. They write code that other engineers can extend without rewriting it. They identify the highest-leverage problem on a roadmap and solve that one first. And they raise the floor of every engineer around them by leaving behind better documentation, cleaner abstractions, and clearer domain models. None of those four show up on a timesheet, but every one of them shows up on a P&L."
+      },
+      {
+        heading: "A simple framework: cost-to-outcome ratio",
+        body: "Stop optimizing on cost-per-hour. Start optimizing on cost-per-outcome. An engineer who is twice as expensive but ships a feature in one third of the time, with one fifth of the post-launch defects, is a 6–10x cheaper engineer once you measure what actually matters: time-to-revenue and total-cost-of-ownership. We have seen this pattern repeat across trading platforms, B2B SaaS migrations, and PMO digitization programs. The data is consistent: senior pods finish in weeks what mid-level teams stretch into quarters."
+      },
+      {
+        heading: "When to insist on senior, and when not to",
+        body: "Elite talent is not the right answer for every line of work. Repeatable, well-specified workstreams (UI flow implementation against a finalized design, batch data loading against a known schema, content migration with deterministic mapping) are well served by mid-level engineers paired with strong tooling. Where seniority is non-negotiable: greenfield architecture, latency-sensitive systems, integrations that must survive five years of evolution, and any program where the cost of being wrong exceeds the cost of being slow."
+      },
+      {
+        heading: "The bottom line",
+        body: "If you measure your engineering org by hours billed, you are buying activity. If you measure it by outcomes shipped per quarter, you are buying leverage. The leaders who consistently ship faster than their peers are not paying less for talent. They are paying differently for it, and they are paying for it once instead of three times."
+      }
+    ]
   },
   {
     id: 2,
@@ -217,7 +239,29 @@ export const blogPosts = [
     readTime: "12 min",
     category: "Insights",
     image: "https://images.unsplash.com/photo-1750768145268-a42806c391a4?w=800&h=400&fit=crop&auto=format",
-    slug: "staff-augmentation-vs-managed-services"
+    slug: "staff-augmentation-vs-managed-services",
+    sections: [
+      {
+        heading: "Two models, very different commitments",
+        body: "Staff augmentation and managed services are often discussed as substitutes. They are not. Staff augmentation extends the capacity of an existing team. Managed services transfer the responsibility for an outcome. The former is a multiplier on your existing engineering org; the latter is an alternative to building one. Treating these as interchangeable is the single biggest reason vendor engagements miss expectations on both sides."
+      },
+      {
+        heading: "Choose staff augmentation when…",
+        body: "Your team has clear ownership of the architecture, your roadmap is mature, your engineering managers can absorb new contributors quickly, and your bottleneck is throughput, not direction. Augmentation works best when you know exactly what to build and need more hands that can be steered by your existing leads. The risk: if your roadmap is ambiguous or your internal leadership is overloaded, augmented engineers will sit idle or build the wrong thing."
+      },
+      {
+        heading: "Choose managed services when…",
+        body: "You have a defined business outcome (a product launch, a platform migration, an SLA to hold) but you do not have, or do not want to build, the internal capability to deliver it end-to-end. A managed services pod owns architecture, delivery, and operations against a measurable target. The risk: vendor lock-in if the engagement is not designed for transfer from day one. Always demand a documented exit and ownership transition path before the contract is signed."
+      },
+      {
+        heading: "The hybrid model nobody talks about",
+        body: "The fastest-moving enterprise engineering orgs we work with do not pick one. They run a small managed-services pod for a high-uncertainty initiative (a new product line, a regulatory deadline) while running staff augmentation against a stable mature platform. The managed pod absorbs the unknowns; the augmented team accelerates the knowns. The CTO retains architectural authority across both."
+      },
+      {
+        heading: "How to choose, in three questions",
+        body: "1. Do I know what to build, or do I know what outcome I need? If the former, augment. If the latter, manage. 2. Is my internal team's bottleneck capacity, or capability? If capacity, augment. If capability, manage. 3. Will the deliverable live inside my codebase forever, or is it a discrete program? If forever, augment so the knowledge stays. If discrete, manage so the accountability stays. Get those three right and the engagement model picks itself."
+      }
+    ]
   },
   {
     id: 3,
@@ -228,7 +272,29 @@ export const blogPosts = [
     readTime: "15 min",
     category: "Technology",
     image: "https://images.pexels.com/photos/5256687/pexels-photo-5256687.jpeg?w=800&h=400&fit=crop&auto=format",
-    slug: "fintech-infrastructure-scaling"
+    slug: "fintech-infrastructure-scaling",
+    sections: [
+      {
+        heading: "The four properties every fintech platform needs",
+        body: "Across every multi-billion-dollar trading and asset platform we have helped build, four non-negotiable properties show up: deterministic execution, strict tenant isolation, full auditability, and a clean recovery story. None of these are exotic. All four are routinely under-engineered. The platforms that survive their own growth are the ones that engineered them in from the first commit, not the ones that retrofit them after a regulator visit."
+      },
+      {
+        heading: "Deterministic execution beats clever execution",
+        body: "Trading systems do not get points for elegance. They get points for behaving the same way at 9:30am on a quiet Tuesday and at 3:59pm on a Fed-decision Friday. Determinism comes from a small number of choices: a single-writer principle for state, an event log as the source of truth, idempotent handlers, and pure functions wherever the business logic lives. Build those four primitives and you can replay any trading day in your sleep, including the bad ones."
+      },
+      {
+        heading: "Tenant isolation: where shortcuts always come back",
+        body: "Multi-tenant fintech platforms tend to evolve through three phases. Phase one: shared everything. Phase two: shared compute, isolated data. Phase three: isolated compute, isolated data, shared control plane. Every team we have worked with has tried to skip phase three. None of them succeeded. The cost of going from phase two to three at 10x scale is roughly 30x the cost of building phase three at the start. Plan accordingly."
+      },
+      {
+        heading: "Auditability is a feature, not a logging concern",
+        body: "Every order, every fill, every risk check, every model input. Captured. Time-stamped. Replayable. Indexed by trade, by user, by strategy, by symbol. A real audit trail is a column in your data model, not a side effect of your logger. Treat it that way and the next regulatory request becomes a query, not a project."
+      },
+      {
+        heading: "The recovery story is the architecture",
+        body: "Ask yourself one question: if our primary region disappeared in the next sixty seconds, exactly what process would resume trading from a different region? If the answer is more than two paragraphs long, the architecture is not done yet. The platforms that scale to $100B+ in daily volume are the ones that can answer that in two sentences and run the drill quarterly. The technology stack matters less than the operational discipline that surrounds it."
+      }
+    ]
   },
   {
     id: 4,
@@ -239,7 +305,29 @@ export const blogPosts = [
     readTime: "10 min",
     category: "Talent",
     image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?w=800&h=400&fit=crop&auto=format",
-    slug: "team-composition-vs-individual-talent"
+    slug: "team-composition-vs-individual-talent",
+    sections: [
+      {
+        heading: "Why 10x engineers do not save 10x time",
+        body: "The \"10x engineer\" idea is correct in spirit and wrong in practice. There are engineers who outperform peers by an order of magnitude on raw output. There are very few teams in which their presence translates linearly into team output. The reason is mundane: engineering is overwhelmingly a coordination problem. A single engineer cannot review their own pull requests, cannot cover their own pager rotation, and cannot fill the room with the perspectives needed to spot a bad architectural decision before it ships."
+      },
+      {
+        heading: "What complementarity actually looks like",
+        body: "Strong teams pair four kinds of strength: a deep systems thinker who owns the architecture, a relentless executor who closes tickets faster than the backlog can grow, a domain translator who bridges product and engineering, and a quality gatekeeper who keeps the platform from rotting under release pressure. None of those four people need to be the strongest engineer in the room. All four need to be excellent at the specific job they own."
+      },
+      {
+        heading: "The composition trap most companies fall into",
+        body: "Too many staff plus, all chasing the same architectural decision, makes a team slower, not faster. Too many mids, all waiting for direction, makes a team productive at the wrong things. The healthiest pods we have run are roughly 1 senior engineer per 3 mid-level engineers per 1 quality engineer, with a tech lead who is half coder, half coordinator. That ratio sounds simple. It is. It is also very rarely held to."
+      },
+      {
+        heading: "Hire for the gap in the team, not the gap in the market",
+        body: "When you are hiring engineer number eight, do not ask \"who is the best engineer available?\" Ask \"who plugs the hole that engineer one through seven cannot?\" That question reorders priorities. Sometimes the best hire is the senior backend engineer everyone is chasing. More often, it is the boring, methodical SRE who will quietly own the on-call rotation and let the rest of the team focus."
+      },
+      {
+        heading: "The takeaway",
+        body: "Optimize for the team's vector, not its top scorer. Five engineers pointing in the same direction will out-deliver eight engineers each chasing their own hill, every quarter, on every metric that ends up on a board slide. Talent matters. Composition matters more."
+      }
+    ]
   }
 ];
 

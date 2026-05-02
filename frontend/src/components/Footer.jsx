@@ -108,21 +108,19 @@ const Footer = () => {
         {/* Global Offices */}
         <div className="border-t border-slate-800 mt-12 pt-8">
           <h4 className="text-sm font-semibold text-[#3B82F6] mb-6 uppercase tracking-wider">Global Offices</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-start gap-3">
               <MapPin className="w-4 h-4 text-[#3B82F6] mt-1 flex-shrink-0" />
               <div className="text-sm text-gray-400">
-                <span className="font-semibold text-white">USA</span><br />
-                3225 McLeod Dr. Ste 100<br />
-                Las Vegas, NV 89121
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <MapPin className="w-4 h-4 text-[#3B82F6] mt-1 flex-shrink-0" />
-              <div className="text-sm text-gray-400">
-                <span className="font-semibold text-white">USA</span><br />
-                27125 Sierra Hwy, Ste 325<br />
-                Santa Clarita, CA 91351
+                <span className="font-semibold text-white">USA</span>
+                <div className="mt-1.5">
+                  3225 McLeod Dr. Ste 100<br />
+                  Las Vegas, NV 89121
+                </div>
+                <div className="mt-3 pt-3 border-t border-white/5">
+                  27125 Sierra Hwy, Ste 325<br />
+                  Santa Clarita, CA 91351
+                </div>
               </div>
             </div>
             <div className="flex items-start gap-3">
