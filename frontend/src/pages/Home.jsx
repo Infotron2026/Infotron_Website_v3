@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { 
@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { clientLogos, services, whyInfotron, caseStudies, testimonials } from '../data/mockData';
 
-// cubic-bezier(0.22, 1, 0.36, 1) — close approximation via easeOutQuint
+// cubic-bezier(0.22, 1, 0.36, 1) — easeOutQuint approximation
 const easeOutPortal = (t) => {
   const c = Math.max(0, Math.min(1, t));
   return 1 - Math.pow(1 - c, 5);
@@ -16,18 +16,38 @@ const easeOutPortal = (t) => {
 const Home = () => {
   const observerRef = useRef(null);
   const heroRef = useRef(null);
+  const oRef = useRef(null);
   const [heroProgress, setHeroProgress] = useState(0);
+  const [oOffset, setOOffset] = useState({ x: 0, y: 0 });
 
-  // Scroll-progress: 0 when hero top is at viewport top, 1 when scrolled past hero height
+  // Measure the inline O's offset from viewport center (for the centering translate)
+  // Only measured at progress=0 (untransformed) and on resize.
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (!oRef.current) return;
+      const r = oRef.current.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      setOOffset({
+        x: window.innerWidth / 2 - cx,
+        y: window.innerHeight / 2 - cy,
+      });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  // Pinned scroll progress: 0 → 1 over the pin range (heroSection.height − viewportHeight)
   useEffect(() => {
     let raf = 0;
     const compute = () => {
       const el = heroRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const h = rect.height || 1;
+      const total = Math.max(1, rect.height - window.innerHeight);
       const scrolled = -rect.top;
-      const p = Math.max(0, Math.min(1, scrolled / h));
+      const p = Math.max(0, Math.min(1, scrolled / total));
       setHeroProgress(p);
     };
     const onScroll = () => {
@@ -44,19 +64,14 @@ const Home = () => {
     };
   }, []);
 
-  // Phase 1: 0.25 → 0.45 — fade out non-O letters
-  const lettersOpacity = (() => {
-    if (heroProgress <= 0.25) return 1;
-    if (heroProgress >= 0.45) return 0;
-    return 1 - easeOutPortal((heroProgress - 0.25) / 0.20);
-  })();
-
-  // Phase 2: 0.45 → 0.70 — scale O from 1x to 8x (transform-origin center)
-  const oScale = (() => {
-    if (heroProgress <= 0.45) return 1;
-    if (heroProgress >= 0.70) return 8;
-    return 1 + 7 * easeOutPortal((heroProgress - 0.45) / 0.25);
-  })();
+  // Phase A: text fade-out (left content + non-O letters)  → 0.00 → 0.18
+  const textOpacity = 1 - easeOutPortal(Math.max(0, Math.min(1, heroProgress / 0.18)));
+  // Phase B: O moves toward viewport center + scales massively → 0.10 → 0.95
+  const zoomT = Math.max(0, Math.min(1, (heroProgress - 0.10) / 0.85));
+  const zoomEased = easeOutPortal(zoomT);
+  const oTranslateX = oOffset.x * zoomEased;
+  const oTranslateY = oOffset.y * zoomEased;
+  const oScale = 1 + 21 * zoomEased; // 1x → 22x (covers viewport edges with the deep tunnel core)
 
 
   useEffect(() => {
@@ -87,12 +102,16 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HERO SECTION — Premium Enterprise Hero */}
+      {/* HERO SECTION — Pinned scroll: section is tall, inner sticky stays in viewport while O zooms */}
       <section
         ref={heroRef}
-        className="relative min-h-[92vh] flex items-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
+        className="relative"
+        style={{ height: '280vh' }}
       >
+        <div
+          className="sticky top-0 h-screen w-full flex items-center overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
+        >
         {/* Animated mesh glow layer */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
@@ -115,7 +134,7 @@ const Home = () => {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20 lg:py-28 relative z-10 w-full">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left — Copy */}
-            <div className="lg:col-span-7 animate-fade-in-up">
+            <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: textOpacity }}>
               {/* Trust pill */}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur border border-white/10 text-white/80 text-xs font-semibold tracking-[0.18em] uppercase mb-8">
                 <span className="relative flex h-2 w-2">
@@ -289,6 +308,7 @@ const Home = () => {
                       return (
                         <span
                           key={i}
+                          ref={oRef}
                           className="relative inline-flex items-center justify-center shrink-0 will-change-transform"
                           style={{
                             fontSize: 'clamp(3.6rem, 7.8vw, 6.4rem)', // ~1.5x scale of body letters
@@ -296,9 +316,9 @@ const Home = () => {
                             height: '1.18em',
                             margin: '0 0.04em',
                             verticalAlign: 'middle',
-                            transform: `scale(${oScale})`,
+                            transform: `translate(${oTranslateX}px, ${oTranslateY}px) scale(${oScale})`,
                             transformOrigin: 'center center',
-                            zIndex: oScale > 1 ? 50 : 'auto'
+                            zIndex: zoomEased > 0 ? 60 : 'auto'
                           }}
                           aria-hidden="true"
                         >
@@ -496,7 +516,7 @@ const Home = () => {
                           backgroundClip: 'text',
                           filter:
                             'drop-shadow(0 1px 0 rgba(255,255,255,0.25)) drop-shadow(0 6px 20px rgba(76,29,149,0.45))',
-                          opacity: lettersOpacity
+                          opacity: textOpacity
                         }}
                       >
                         {/* Sheen overlay */}
@@ -524,6 +544,7 @@ const Home = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
