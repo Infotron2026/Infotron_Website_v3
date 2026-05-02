@@ -11,23 +11,63 @@ html {
 }
 
 /* Scroll Reveal Animation */
+/* ─── Premium scroll-reveal system ─────────────────────────────────────────
+   Calm, controlled, cubic-bezier(0.22, 1, 0.36, 1) — used site-wide below
+   the hero. Uses transform + opacity only for 60fps on mobile.
+   ──────────────────────────────────────────────────────────────────────── */
+
 .scroll-reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transform: translateY(28px);
+    transition:
+        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+.scroll-reveal.scroll-reveal-card {
+    transform: translateY(20px) scale(0.96);
+}
+
+.scroll-reveal.scroll-reveal-image {
+    transform: scale(0.98);
 }
 
 .animate-fade-in-up {
     opacity: 1 !important;
-    transform: translateY(0) !important;
+    transform: translateY(0) scale(1) !important;
 }
 
-/* Animation delays */
+/* Animation delays — extended for 6+ item staggers */
 .delay-100 { transition-delay: 100ms; }
 .delay-200 { transition-delay: 200ms; }
 .delay-300 { transition-delay: 300ms; }
 .delay-400 { transition-delay: 400ms; }
 .delay-500 { transition-delay: 500ms; }
+.delay-600 { transition-delay: 600ms; }
+.delay-700 { transition-delay: 700ms; }
+.delay-800 { transition-delay: 800ms; }
+.delay-900 { transition-delay: 900ms; }
+
+/* Hover lift — minimal premium micro-interaction */
+.hover-lift-premium {
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hover-lift-premium:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 45px -18px rgba(59, 130, 246, 0.35);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .scroll-reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
 
 /* Hero premium animations */
 @keyframes shimmer {
@@ -507,9 +547,10 @@ a {
     animation: fadeIn 0.6s ease-out;
 }
 
-.animate-fade-in-up {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+/* NOTE: .animate-fade-in-up is intentionally defined ONCE near the top of this
+   file with the premium scroll-reveal system. The second definition that used
+   to live here has been removed to avoid overriding the transition-based
+   reveal logic used site-wide below the hero. */
 
 .animate-fade-in-left {
     animation: fadeInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -523,18 +564,8 @@ a {
     animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Staggered Animation Delays */
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-.delay-600 { animation-delay: 0.6s; }
-
-/* Initial state for scroll animations */
-.scroll-reveal {
-    opacity: 0;
-}
+/* (Stagger delays + .scroll-reveal initial state are defined once near the
+   top of the file with the premium system.) */
 
 /* Responsive image containers */
 .img-container {

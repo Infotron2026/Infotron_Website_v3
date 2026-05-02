@@ -545,21 +545,21 @@ const Home = () => {
       <section className="py-24 bg-[#0A192F]">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           {/* Section with subtle gradient background */}
-          <div className="relative bg-[#111827]/50 rounded-2xl border border-[#3B82F6]/20 p-12 lg:p-16 shadow-xl backdrop-blur">
+          <div className="relative bg-[#111827]/50 rounded-2xl border border-[#3B82F6]/20 p-12 lg:p-16 shadow-xl backdrop-blur scroll-reveal">
             {/* Subtle gradient accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-violet-500 to-blue-600 rounded-t-2xl" />
             
             <div className="text-center mb-10">
-              <h2 className="text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight">
+              <h2 className="text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight scroll-reveal">
                 Build. Operate. Transfer.
               </h2>
-              <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto scroll-reveal delay-100">
                 A delivery-first model designed for companies that want speed now, and ownership later.
               </p>
             </div>
 
             {/* Body Copy */}
-            <p className="text-lg text-gray-400 leading-relaxed mb-10 max-w-3xl mx-auto text-center">
+            <p className="text-lg text-gray-400 leading-relaxed mb-10 max-w-3xl mx-auto text-center scroll-reveal delay-200">
               We help companies build high-performing engineering teams, operate them to deliver real outcomes, 
               and transfer full ownership when the organization is ready. This model reduces execution risk, 
               accelerates time-to-market, and ensures long-term continuity, without vendor lock-in.
@@ -567,7 +567,7 @@ const Home = () => {
 
             {/* Three Pillars */}
             <div className="grid md:grid-cols-3 gap-8 mt-12">
-              <div className="text-center group">
+              <div className="text-center group scroll-reveal scroll-reveal-card delay-300">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-600/20 to-blue-700/10 border border-[#3B82F6]/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-3xl font-black text-blue-500">B</span>
                 </div>
@@ -577,7 +577,7 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="text-center group">
+              <div className="text-center group scroll-reveal scroll-reveal-card delay-400">
                 <div className="w-16 h-16 bg-gradient-to-br from-violet-500/20 to-violet-600/10 border border-violet-500/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-3xl font-black text-violet-400">O</span>
                 </div>
@@ -587,7 +587,7 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="text-center group">
+              <div className="text-center group scroll-reveal scroll-reveal-card delay-500">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-600/20 to-violet-500/10 border border-[#3B82F6]/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-3xl font-black bg-gradient-to-r from-blue-500 to-violet-400 bg-clip-text text-transparent">T</span>
                 </div>
@@ -774,7 +774,7 @@ const Home = () => {
       <section className="py-20 bg-[#0A192F] relative overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative">
           <div className="mb-12 flex items-end justify-between flex-wrap gap-4">
-            <div>
+            <div className="scroll-reveal">
               <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/80 mb-3 block">
                 How Enterprise Teams Win
               </span>
@@ -787,7 +787,7 @@ const Home = () => {
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Global Delivery */}
             <div
-              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500"
+              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500 scroll-reveal scroll-reveal-card delay-100"
               data-testid="banner-global-delivery"
               style={{ background: 'linear-gradient(140deg, #0A192F 0%, #1E3A8A 55%, #2563EB 100%)' }}
             >
@@ -822,7 +822,7 @@ const Home = () => {
 
             {/* Ownership / Collaboration */}
             <div
-              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500"
+              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500 scroll-reveal scroll-reveal-card delay-200"
               data-testid="banner-ownership"
               style={{ background: 'linear-gradient(140deg, #0A192F 0%, #3730A3 55%, #6D28D9 100%)' }}
             >
@@ -858,7 +858,7 @@ const Home = () => {
 
             {/* Executive Delivery */}
             <div
-              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500"
+              className="group relative rounded-2xl overflow-hidden h-80 border border-white/10 hover:border-white/25 transition-colors duration-500 scroll-reveal scroll-reveal-card delay-300"
               data-testid="banner-exec-delivery"
               style={{ background: 'linear-gradient(140deg, #050B1A 0%, #1E3A8A 60%, #3B82F6 100%)' }}
             >
@@ -892,7 +892,7 @@ const Home = () => {
       {/* Case Studies Preview */}
       <section className="py-24">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 scroll-reveal">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
               Client Success Stories
             </h2>
@@ -902,11 +902,11 @@ const Home = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
-            {caseStudies.slice(0, 2).map((study) => (
+            {caseStudies.slice(0, 2).map((study, index) => (
               <Link
                 key={study.id}
                 to={`/case-studies/${study.slug}`}
-                className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+                className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 scroll-reveal scroll-reveal-card delay-${index * 100 + 200}`}
                 data-testid={`home-case-study-${study.slug}`}
               >
                 <div className="relative overflow-hidden h-64">
@@ -947,7 +947,7 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 scroll-reveal delay-500">
             <Link to="/resources">
               <Button size="lg" variant="outline" className="border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white">
                 View All Case Studies
@@ -1010,7 +1010,7 @@ const Home = () => {
       <section className="py-24">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="scroll-reveal">
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
                 Built for Enterprise Delivery
               </h2>
@@ -1033,28 +1033,28 @@ const Home = () => {
             </div>
             {/* Professional Team Imagery Grid */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg">
+              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg scroll-reveal scroll-reveal-image delay-100">
                 <img 
                   src="https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=600&h=400&fit=crop&auto=format" 
                   alt="Professional business consultant" 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg">
+              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg scroll-reveal scroll-reveal-image delay-200">
                 <img 
                   src="https://images.unsplash.com/photo-1573167507387-6b4b98cb7c13?w=600&h=400&fit=crop&auto=format" 
                   alt="Team meeting in boardroom" 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg">
+              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg scroll-reveal scroll-reveal-image delay-300">
                 <img 
                   src="https://images.unsplash.com/photo-1580894732930-0babd100d356?w=600&h=400&fit=crop&auto=format" 
                   alt="Software engineer at work" 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg">
+              <div className="relative rounded-xl overflow-hidden h-48 shadow-lg scroll-reveal scroll-reveal-image delay-400">
                 <img 
                   src="https://images.unsplash.com/photo-1573497491207-618cc224f243?w=600&h=400&fit=crop&auto=format" 
                   alt="Business professional leader" 
