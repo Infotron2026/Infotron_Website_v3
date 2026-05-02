@@ -253,26 +253,25 @@ const Home = () => {
 
             {/* Right — INFOTRON Wordmark with Portal "O" — sits as a defined card with breathing room */}
             <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity] my-6 lg:my-8" style={{ opacity: heroContentOpacity }}>
-              {/* Background panel — clipped to rounded-[18px]; all decorative layers live here */}
-              <div className="absolute inset-0 rounded-[18px] border-2 border-white/30 bg-[#04050E] shadow-[0_18px_60px_-20px_rgba(76,29,149,0.5)] overflow-hidden ring-1 ring-inset ring-white/10">
+              {/* Background panel — fully transparent: no border/bg/shadow. Galaxy decorative layers blend into the hero background seamlessly. */}
+              <div className="absolute inset-0 overflow-visible pointer-events-none">
 
-                {/* Deep galaxy base — near-black navy/purple */}
+                {/* Deep galaxy base — extra-soft radial that fades early so it never reads as a rectangle */}
                 <div
-                  className="absolute inset-0 pointer-events-none"
+                  className="absolute -inset-20 pointer-events-none"
                   style={{
                     background:
-                      'linear-gradient(135deg, #02030A 0%, #060A22 30%, #0E0C2E 55%, #1B0B3A 78%, #2A0E4D 100%)',
-                    backgroundSize: '180% 180%',
+                      'radial-gradient(ellipse 60% 55% at 50% 50%, rgba(42,14,77,0.78) 0%, rgba(27,11,58,0.55) 30%, rgba(14,12,46,0.30) 55%, rgba(6,10,34,0.10) 75%, transparent 90%)',
                     animation: 'hero-bg-drift 22s ease-in-out infinite'
                   }}
                 />
 
-                {/* Darker purple radial — increases contrast directly behind wordmark */}
+                {/* Purple radial behind wordmark — concentrated on the letters, no hard edges */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      'radial-gradient(ellipse at center, rgba(67,28,121,0.65) 0%, rgba(35,15,75,0.55) 35%, rgba(10,8,28,0.35) 65%, transparent 90%)'
+                      'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(91,33,182,0.55) 0%, rgba(67,28,121,0.30) 35%, rgba(35,15,75,0.12) 65%, transparent 88%)'
                   }}
                 />
 
@@ -298,52 +297,12 @@ const Home = () => {
                   }}
                 />
 
-                {/* Starfield — tiny static specks (CSS only, no library) */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-90"
-                  style={{
-                    backgroundImage: `
-                      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.85), transparent 60%),
-                      radial-gradient(1px 1px at 28% 72%, rgba(255,255,255,0.75), transparent 60%),
-                      radial-gradient(1px 1px at 44% 36%, rgba(196,181,253,0.85), transparent 60%),
-                      radial-gradient(1.2px 1.2px at 62% 22%, rgba(255,255,255,0.95), transparent 60%),
-                      radial-gradient(1px 1px at 78% 64%, rgba(147,197,253,0.85), transparent 60%),
-                      radial-gradient(1px 1px at 88% 32%, rgba(255,255,255,0.7), transparent 60%),
-                      radial-gradient(1px 1px at 18% 88%, rgba(167,139,250,0.7), transparent 60%),
-                      radial-gradient(1px 1px at 56% 84%, rgba(255,255,255,0.6), transparent 60%),
-                      radial-gradient(1.4px 1.4px at 36% 12%, rgba(255,255,255,0.85), transparent 60%),
-                      radial-gradient(1px 1px at 72% 8%, rgba(196,181,253,0.7), transparent 60%),
-                      radial-gradient(1px 1px at 6% 52%, rgba(147,197,253,0.7), transparent 60%),
-                      radial-gradient(1px 1px at 92% 78%, rgba(255,255,255,0.7), transparent 60%)
-                    `,
-                    animation: 'starfield-twinkle 6s ease-in-out infinite'
-                  }}
-                />
+                {/* Starfield + grid texture removed — they were creating a rectangular patch.
+                    The soft purple/blue blob nebulae above (with blur-3xl) blend continuously into the hero. */}
 
-                {/* Faint grid texture (kept inside right container only) */}
-                <div
-                  className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-                    backgroundSize: '48px 48px',
-                    maskImage: 'radial-gradient(ellipse at center, black 50%, transparent 90%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 50%, transparent 90%)'
-                  }}
-                />
+                {/* Inner vignette removed — blend seamlessly with hero background */}
 
-                {/* Inner vignette for extra depth */}
-                <div
-                  className="absolute inset-0 pointer-events-none rounded-2xl"
-                  style={{
-                    background: 'radial-gradient(ellipse at center, transparent 35%, rgba(2,3,12,0.55) 85%, rgba(2,3,12,0.85) 100%)'
-                  }}
-                />
-
-                {/* Top hairline accent */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/60 to-transparent pointer-events-none" />
-                {/* Bottom hairline accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-300/50 to-transparent pointer-events-none" />
+                {/* Hairline accents removed — no isolated patch outlines */}
               </div>
               {/* End of clipped background panel */}
 
@@ -354,7 +313,7 @@ const Home = () => {
                   className="relative z-10 flex items-center justify-center select-none w-full"
                   style={{
                     fontFamily:
-                      "'Inter', 'SF Pro Display', 'Helvetica Neue', system-ui, -apple-system, sans-serif"
+                      "'Anton', 'Bebas Neue', 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif"
                   }}
                   data-testid="hero-infotron-wordmark"
                   aria-label="INFOTRON"
@@ -370,9 +329,9 @@ const Home = () => {
                           ref={oRef}
                           className="relative inline-flex items-center justify-center shrink-0"
                           style={{
-                            fontSize: 'clamp(3.6rem, 7.8vw, 6.4rem)', // ~1.5x scale of body letters
-                            width: '1.18em',
-                            height: '1.18em',
+                            fontSize: 'clamp(4.0rem, 8.6vw, 7.2rem)', // ~12% larger than before
+                            width: '1.32em',
+                            height: '1.32em',
                             margin: '0 0.04em',
                             verticalAlign: 'middle'
                           }}
@@ -498,14 +457,17 @@ const Home = () => {
                       );
                     }
 
-                    // Other letters — premium chrome/blue gradient with subtle sheen
+                    // Other letters — Anton display face with premium chrome/blue gradient & subtle sheen
                     return (
                       <span
                         key={i}
-                        className="relative font-black leading-none shrink-0 will-change-[opacity,transform]"
+                        className="relative leading-none shrink-0 will-change-[opacity,transform]"
                         style={{
-                          fontSize: 'clamp(2.4rem, 5.2vw, 4.3rem)',
-                          letterSpacing: '0.04em',
+                          fontFamily:
+                            "'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif",
+                          fontWeight: 400,
+                          fontSize: 'clamp(2.7rem, 5.8vw, 4.8rem)',
+                          letterSpacing: '0.015em',
                           background:
                             'linear-gradient(180deg, #ffffff 0%, #C7D7FF 45%, #A89BE6 100%)',
                           WebkitBackgroundClip: 'text',
