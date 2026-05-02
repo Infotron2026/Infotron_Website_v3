@@ -226,7 +226,7 @@ const Home = () => {
             {/* Right — INFOTRON Wordmark with Portal "O" */}
             <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
               {/* Background panel — clipped to rounded-2xl; all decorative layers live here */}
-              <div className="absolute inset-0 rounded-2xl border border-white/10 bg-[#04050E] shadow-2xl shadow-purple-900/50 overflow-hidden">
+              <div className="absolute inset-0 rounded-2xl border border-white/20 bg-[#04050E] shadow-2xl shadow-purple-900/50 overflow-hidden">
 
                 {/* Deep galaxy base — near-black navy/purple */}
                 <div
@@ -304,7 +304,9 @@ const Home = () => {
                 />
 
                 {/* Top hairline accent */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent pointer-events-none" />
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/60 to-transparent pointer-events-none" />
+                {/* Bottom hairline accent */}
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-300/50 to-transparent pointer-events-none" />
               </div>
               {/* End of clipped background panel */}
 
