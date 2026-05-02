@@ -59,19 +59,6 @@ const Home = () => {
           />
         </div>
 
-        {/* Engineered grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)'
-          }}
-        />
-
         {/* Bottom vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050B1A]/60 pointer-events-none" />
 
