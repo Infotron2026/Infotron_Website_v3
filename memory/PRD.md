@@ -130,6 +130,9 @@ Build a high-end, premium, global consulting website for **Infotron Solutions** 
 
 | Date | Changes |
 |------|---------|
+| May 2, 2026 | Hero video replaced with new Video2.mp4 (11.6MB) inside the 'O' wordmark; scroll progress smoothed via continuous rAF lerp (factor 0.12). Layer/masking unchanged. |
+| May 2, 2026 | Dynamic SEO via react-helmet-async: SEO component (`/components/SEO.jsx`) wired into 15 routes — Home, 3 Services, Capital Projects, About, Resources, Careers, Contact, Privacy, Terms, 3x Case Study detail, Blog detail. Per-page title/description/canonical/OG/Twitter tags. |
+| Feb 2026 | Cinematic Home hero: scroll-pinned video-in-O takeover with mask peephole expansion. CaseStudyDetail + BlogPostDetail pages with related cards. Resources dropdown in Header. USA office consolidation in Footer + Contact. |
 | March 5, 2026 | Final Content + Compliance: Privacy Policy (12 sections), Terms of Service (15 sections), Business Consulting new image, AI capabilities throughout services, link validation |
 | March 5, 2026 | Services + Page Theme Alignment: Dark theme for all Services, About, Resources pages. Key Benefits cards with icons. Methodology step-by-step visual process. Scroll fade-in animations |
 | March 5, 2026 | UI refinements: feature cards styling, WHY INFOTRON heading, services pages content cleanup, founding year update, culture images, CEIPAL styling, footer updates |
