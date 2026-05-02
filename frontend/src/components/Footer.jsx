@@ -16,7 +16,7 @@ const Footer = () => {
               data-testid="footer-logo"
             />
             <p className="text-gray-400 mb-6">
-              Delivering enterprise IT services, elite talent, and strategic consulting to global organizations.
+              Delivering enterprise services, elite talent, and strategic consulting to global organizations.
             </p>
             <a
               href="https://www.linkedin.com/company/infotronsolutions/"
