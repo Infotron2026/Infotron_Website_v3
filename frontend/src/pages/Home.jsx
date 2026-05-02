@@ -136,44 +136,80 @@ const Home = () => {
 
             {/* Right — INFOTRON Wordmark with Portal "O" */}
             <div className="lg:col-span-5 relative animate-fade-in">
-              <div className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-8 lg:p-10 shadow-2xl shadow-blue-900/40 overflow-hidden min-h-[480px] lg:min-h-[560px] flex items-center justify-center">
+              <div className="relative rounded-2xl border border-white/10 bg-[#04050E] backdrop-blur-xl p-8 lg:p-10 shadow-2xl shadow-purple-900/50 overflow-hidden min-h-[480px] lg:min-h-[560px] flex items-center justify-center">
 
-                {/* Slow drifting deep-navy → purple gradient */}
+                {/* Deep galaxy base — near-black navy/purple */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      'linear-gradient(135deg, #0A0F2A 0%, #14215A 35%, #2A1B6E 65%, #4A1E8A 100%)',
+                      'linear-gradient(135deg, #02030A 0%, #060A22 30%, #0E0C2E 55%, #1B0B3A 78%, #2A0E4D 100%)',
                     backgroundSize: '180% 180%',
                     animation: 'hero-bg-drift 22s ease-in-out infinite'
                   }}
                 />
 
-                {/* Soft ambient glow blobs */}
+                {/* Galaxy nebula clouds — deeper purples and indigos */}
                 <div
-                  className="absolute -top-24 -right-20 w-80 h-80 rounded-full blur-3xl opacity-40 pointer-events-none"
+                  className="absolute -top-24 -right-20 w-[22rem] h-[22rem] rounded-full blur-3xl opacity-55 pointer-events-none"
                   style={{
-                    background: 'radial-gradient(circle, rgba(124,58,237,0.55) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(76,29,149,0.65) 0%, rgba(49,16,107,0.30) 45%, transparent 75%)',
                     animation: 'hero-blob-a 18s ease-in-out infinite'
                   }}
                 />
                 <div
-                  className="absolute -bottom-28 -left-16 w-96 h-96 rounded-full blur-3xl opacity-35 pointer-events-none"
+                  className="absolute -bottom-28 -left-16 w-[26rem] h-[26rem] rounded-full blur-3xl opacity-45 pointer-events-none"
                   style={{
-                    background: 'radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(30,58,138,0.65) 0%, rgba(15,23,80,0.30) 45%, transparent 75%)',
                     animation: 'hero-blob-b 26s ease-in-out infinite'
                   }}
                 />
-
-                {/* Faint grid texture */}
                 <div
-                  className="absolute inset-0 opacity-[0.06] pointer-events-none"
+                  className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-30 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(91,33,182,0.55) 0%, transparent 70%)'
+                  }}
+                />
+
+                {/* Starfield — tiny static specks (CSS only, no library) */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-90"
+                  style={{
+                    backgroundImage: `
+                      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.85), transparent 60%),
+                      radial-gradient(1px 1px at 28% 72%, rgba(255,255,255,0.75), transparent 60%),
+                      radial-gradient(1px 1px at 44% 36%, rgba(196,181,253,0.85), transparent 60%),
+                      radial-gradient(1.2px 1.2px at 62% 22%, rgba(255,255,255,0.95), transparent 60%),
+                      radial-gradient(1px 1px at 78% 64%, rgba(147,197,253,0.85), transparent 60%),
+                      radial-gradient(1px 1px at 88% 32%, rgba(255,255,255,0.7), transparent 60%),
+                      radial-gradient(1px 1px at 18% 88%, rgba(167,139,250,0.7), transparent 60%),
+                      radial-gradient(1px 1px at 56% 84%, rgba(255,255,255,0.6), transparent 60%),
+                      radial-gradient(1.4px 1.4px at 36% 12%, rgba(255,255,255,0.85), transparent 60%),
+                      radial-gradient(1px 1px at 72% 8%, rgba(196,181,253,0.7), transparent 60%),
+                      radial-gradient(1px 1px at 6% 52%, rgba(147,197,253,0.7), transparent 60%),
+                      radial-gradient(1px 1px at 92% 78%, rgba(255,255,255,0.7), transparent 60%)
+                    `,
+                    animation: 'starfield-twinkle 6s ease-in-out infinite'
+                  }}
+                />
+
+                {/* Faint grid texture (kept inside right container only) */}
+                <div
+                  className="absolute inset-0 opacity-[0.05] pointer-events-none"
                   style={{
                     backgroundImage:
                       'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
                     backgroundSize: '48px 48px',
                     maskImage: 'radial-gradient(ellipse at center, black 50%, transparent 90%)',
                     WebkitMaskImage: 'radial-gradient(ellipse at center, black 50%, transparent 90%)'
+                  }}
+                />
+
+                {/* Inner vignette for extra depth */}
+                <div
+                  className="absolute inset-0 pointer-events-none rounded-2xl"
+                  style={{
+                    background: 'radial-gradient(ellipse at center, transparent 35%, rgba(2,3,12,0.55) 85%, rgba(2,3,12,0.85) 100%)'
                   }}
                 />
 

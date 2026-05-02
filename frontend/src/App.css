@@ -90,6 +90,11 @@ html {
     100% { transform: rotate(-360deg); }
 }
 
+@keyframes starfield-twinkle {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+}
+
 .delay-600 { transition-delay: 600ms; }
 
 /* Premium Abstract Graphics */
