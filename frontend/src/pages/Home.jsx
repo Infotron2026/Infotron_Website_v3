@@ -701,12 +701,32 @@ const Home = () => {
         <div className="absolute inset-0 geometric-pattern opacity-30" />
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
           <div className="text-center mb-20 scroll-reveal">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Why Infotron?
+            <h2
+              className="text-4xl lg:text-6xl font-semibold mb-7 text-slate-900"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.08,
+              }}
+            >
+              Why{' '}
+              <span
+                className="bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-700 bg-clip-text text-transparent italic"
+                style={{ fontWeight: 600 }}
+              >
+                Infotron
               </span>
+              ?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p
+              className="text-lg lg:text-[19px] text-slate-500 max-w-2xl mx-auto"
+              style={{
+                fontFamily: "'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif",
+                lineHeight: 1.65,
+                letterSpacing: '-0.005em',
+                fontWeight: 400,
+              }}
+            >
               Not another staffing firm. A delivery partner with skin in the game.
             </p>
           </div>
@@ -723,8 +743,29 @@ const Home = () => {
                   <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mb-6 icon-glow">
                     <IconComponent className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                  <h3
+                    className="text-xl text-slate-900 mb-3"
+                    style={{
+                      fontFamily: "'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif",
+                      fontWeight: 600,
+                      letterSpacing: '-0.015em',
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    className="text-slate-500"
+                    style={{
+                      fontFamily: "'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif",
+                      fontSize: '15px',
+                      lineHeight: 1.7,
+                      letterSpacing: '-0.003em',
+                      fontWeight: 400,
+                    }}
+                  >
+                    {item.description}
+                  </p>
                   <div className="mt-4 h-1 w-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                 </div>
               );
