@@ -38,43 +38,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HERO SECTION — Premium Enterprise Hero */}
+      {/* HERO SECTION — Clean solid background. All decoration is scoped inside the right container only. */}
       <section
         className="relative min-h-[92vh] flex items-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
+        style={{ backgroundColor: '#0A192F' }}
       >
-        {/* Animated mesh glow layer */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div
-            className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full opacity-40 blur-3xl"
-            style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 70%)', animation: 'float-slow 14s ease-in-out infinite' }}
-          />
-          <div
-            className="absolute top-1/4 right-0 w-[640px] h-[640px] rounded-full opacity-30 blur-3xl"
-            style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)', animation: 'float-slow 18s ease-in-out infinite reverse' }}
-          />
-          <div
-            className="absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full opacity-25 blur-3xl"
-            style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 70%)', animation: 'float-slow 22s ease-in-out infinite' }}
-          />
-        </div>
-
-        {/* Engineered grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)'
-          }}
-        />
-
-        {/* Scanline / vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050B1A]/60 pointer-events-none" />
-
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20 lg:py-28 relative z-10 w-full">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left — Copy */}
@@ -193,36 +161,44 @@ const Home = () => {
                 {/* Top hairline accent */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent pointer-events-none" />
 
-                {/* Wordmark — INFOTRON with portal O at index 3 */}
+                {/* Wordmark — premium INFOTRON brand element with portal "O" at index 3 */}
                 <div
-                  className="relative z-10 flex items-center justify-center select-none w-full"
-                  style={{ transform: 'translateX(-2%)' }}
+                  className="relative z-10 flex items-end justify-center select-none w-full"
+                  style={{
+                    transform: 'translateX(-4%)',
+                    fontFamily:
+                      "'Inter', 'SF Pro Display', 'Helvetica Neue', system-ui, -apple-system, sans-serif",
+                    fontFeatureSettings: '"ss01", "cv11"'
+                  }}
                   data-testid="hero-infotron-wordmark"
                   aria-label="INFOTRON"
                 >
                   {['I', 'N', 'F', 'O', 'T', 'R', 'O', 'N'].map((ch, i) => {
                     const isPortalO = i === 3;
+
                     if (isPortalO) {
                       return (
                         <span
                           key={i}
-                          className="relative inline-flex items-center justify-center shrink-0"
+                          className="relative inline-flex items-end justify-center shrink-0"
                           style={{
-                            fontSize: 'clamp(2.2rem, 4.4vw, 4rem)',
-                            width: '1em',
-                            height: '1em',
-                            margin: '0 0.015em'
+                            // 1.3x scale relative to neighbouring letters; baseline-aligned via items-end + line-height
+                            fontSize: 'clamp(2.95rem, 5.85vw, 5.3rem)',
+                            width: '1.05em',
+                            height: '1.05em',
+                            margin: '0 0.04em',
+                            lineHeight: 1
                           }}
                           aria-hidden="true"
                         >
-                          {/* Soft outer aura */}
+                          {/* Soft outer aura — stays subtle, no neon */}
                           <span
                             className="absolute inset-[-22%] rounded-full pointer-events-none"
                             style={{
                               background:
-                                'radial-gradient(circle, rgba(147,197,253,0.28) 0%, rgba(167,139,250,0.16) 40%, transparent 72%)',
-                              filter: 'blur(14px)',
-                              animation: 'portal-aura 6s ease-in-out infinite'
+                                'radial-gradient(circle, rgba(147,197,253,0.30) 0%, rgba(167,139,250,0.18) 38%, transparent 72%)',
+                              filter: 'blur(16px)',
+                              animation: 'portal-aura 7s ease-in-out infinite'
                             }}
                           />
 
@@ -231,9 +207,9 @@ const Home = () => {
                             className="absolute inset-0 rounded-full"
                             style={{
                               background:
-                                'radial-gradient(circle at 32% 28%, rgba(255,255,255,0.22) 0%, rgba(147,197,253,0.10) 32%, rgba(76,29,149,0.18) 70%, rgba(10,15,42,0.45) 100%)',
+                                'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.26) 0%, rgba(191,219,254,0.12) 30%, rgba(124,58,237,0.18) 70%, rgba(10,15,42,0.45) 100%)',
                               boxShadow:
-                                'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -8px 18px rgba(76,29,149,0.35), 0 12px 40px rgba(76,29,149,0.35)',
+                                'inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -10px 22px rgba(76,29,149,0.38), 0 14px 48px rgba(76,29,149,0.32)',
                               backdropFilter: 'blur(6px)',
                               WebkitBackdropFilter: 'blur(6px)'
                             }}
@@ -241,24 +217,24 @@ const Home = () => {
 
                           {/* Inner glow core */}
                           <span
-                            className="absolute inset-[18%] rounded-full pointer-events-none"
+                            className="absolute inset-[16%] rounded-full pointer-events-none"
                             style={{
                               background:
-                                'radial-gradient(circle, rgba(191,219,254,0.45) 0%, rgba(167,139,250,0.18) 50%, transparent 80%)',
-                              animation: 'portal-core 5s ease-in-out infinite'
+                                'radial-gradient(circle, rgba(219,234,254,0.55) 0%, rgba(196,181,253,0.22) 50%, transparent 80%)',
+                              animation: 'portal-core 6s ease-in-out infinite'
                             }}
                           />
 
-                          {/* Specular highlight */}
+                          {/* Specular highlight (top-left) */}
                           <span
                             className="absolute rounded-full pointer-events-none"
                             style={{
-                              top: '8%',
-                              left: '14%',
-                              width: '36%',
+                              top: '7%',
+                              left: '13%',
+                              width: '38%',
                               height: '22%',
                               background:
-                                'radial-gradient(ellipse, rgba(255,255,255,0.55) 0%, transparent 75%)',
+                                'radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 75%)',
                               filter: 'blur(2px)'
                             }}
                           />
@@ -267,23 +243,25 @@ const Home = () => {
                           <span
                             className="absolute inset-0 rounded-full pointer-events-none"
                             style={{
-                              border: '1px solid rgba(255,255,255,0.22)',
+                              border: '1px solid rgba(255,255,255,0.28)',
                               boxShadow:
-                                '0 0 0 1px rgba(167,139,250,0.18) inset, 0 0 24px rgba(147,197,253,0.18)'
+                                '0 0 0 1px rgba(167,139,250,0.20) inset, 0 0 26px rgba(147,197,253,0.18)'
                             }}
                           />
 
-                          {/* The visible "O" glyph — anchors as the 4th letter */}
+                          {/* The "O" glyph — slightly brighter than other letters */}
                           <span
-                            className="relative font-black leading-none tracking-[-0.02em]"
+                            className="relative font-extrabold leading-none"
                             style={{
-                              fontSize: '0.9em',
+                              fontSize: '0.92em',
+                              letterSpacing: '-0.025em',
                               background:
-                                'linear-gradient(180deg, #ffffff 0%, #DBEAFE 45%, #C4B5FD 100%)',
+                                'linear-gradient(180deg, #ffffff 0%, #E0F2FE 35%, #DDD6FE 100%)',
                               WebkitBackgroundClip: 'text',
                               WebkitTextFillColor: 'transparent',
                               backgroundClip: 'text',
-                              filter: 'drop-shadow(0 2px 6px rgba(167,139,250,0.35))'
+                              filter:
+                                'drop-shadow(0 1px 2px rgba(255,255,255,0.4)) drop-shadow(0 4px 14px rgba(167,139,250,0.45))'
                             }}
                           >
                             O
@@ -292,20 +270,39 @@ const Home = () => {
                       );
                     }
 
+                    // Other letters — premium gradient with subtle sheen
                     return (
                       <span
                         key={i}
-                        className="font-black leading-none tracking-[-0.02em] shrink-0"
+                        className="relative font-extrabold leading-none shrink-0"
                         style={{
-                          fontSize: 'clamp(2.2rem, 4.4vw, 4rem)',
+                          fontSize: 'clamp(2.25rem, 4.5vw, 4.05rem)',
+                          letterSpacing: '0.005em',
                           background:
-                            'linear-gradient(180deg, #ffffff 0%, #E5E7FB 50%, #B4B9D6 100%)',
+                            'linear-gradient(180deg, #F1F5FF 0%, #DBE7FF 45%, #C6BCEA 100%)',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
-                          filter: 'drop-shadow(0 2px 8px rgba(30,58,138,0.35))'
+                          filter: 'drop-shadow(0 2px 10px rgba(30,58,138,0.30))'
                         }}
                       >
+                        {/* Soft sheen overlay (very subtle, slow) */}
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 pointer-events-none"
+                          style={{
+                            background:
+                              'linear-gradient(110deg, transparent 38%, rgba(255,255,255,0.55) 50%, transparent 62%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            backgroundSize: '220% 100%',
+                            animation: `wordmark-sheen 9s ease-in-out ${i * 0.25}s infinite`,
+                            mixBlendMode: 'screen'
+                          }}
+                        >
+                          {ch}
+                        </span>
                         {ch}
                       </span>
                     );
