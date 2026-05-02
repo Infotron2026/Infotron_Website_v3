@@ -110,41 +110,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* FULLSCREEN PORTAL OVERLAY — fixed, breaks out of layout, peephole expands to take over viewport */}
-      <div
-        className="fixed inset-0 pointer-events-none will-change-[opacity]"
-        style={{
-          opacity: overlayOpacity,
-          zIndex: 90,
-          // Hide entirely until activated to avoid any flicker on initial paint
-          visibility: heroProgress > 0.001 ? 'visible' : 'hidden',
-        }}
-        data-testid="hero-portal-overlay"
-        aria-hidden="true"
-      >
-        {/* Video layer — fullscreen, plays underneath the dark mask */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          data-testid="hero-portal-video"
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/media/portal-tunnel.mp4" type="video/mp4" />
-        </video>
-
-        {/* Dark mask with circular peephole — peephole grows from O's position to fill screen */}
-        <div
-          className="absolute inset-0 bg-[#04050E] will-change-[mask-image]"
-          style={{
-            WebkitMaskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
-            maskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
-          }}
-        />
-      </div>
-
       {/* HERO SECTION — Pinned scroll: section is tall, inner sticky stays in viewport while overlay takes over */}
       <section
         ref={heroRef}
@@ -155,6 +120,40 @@ const Home = () => {
           className="sticky top-0 h-screen w-full flex items-center overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
+
+        {/* FULLSCREEN PORTAL OVERLAY — absolute inside sticky inner, so it scrolls away with the hero after the pin releases */}
+        <div
+          className="absolute inset-0 pointer-events-none will-change-[opacity]"
+          style={{
+            opacity: overlayOpacity,
+            zIndex: 70,
+            visibility: heroProgress > 0.001 ? 'visible' : 'hidden',
+          }}
+          data-testid="hero-portal-overlay"
+          aria-hidden="true"
+        >
+          {/* Video layer — fills the sticky viewport, plays underneath the dark mask */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            data-testid="hero-portal-video"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/media/portal-tunnel.mp4" type="video/mp4" />
+          </video>
+
+          {/* Dark mask with circular peephole — peephole grows from O's position to fill screen */}
+          <div
+            className="absolute inset-0 bg-[#04050E] will-change-[mask-image]"
+            style={{
+              WebkitMaskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
+              maskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
+            }}
+          />
+        </div>
         {/* Animated mesh glow layer */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
