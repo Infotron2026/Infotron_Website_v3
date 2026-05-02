@@ -178,7 +178,7 @@ const Home = () => {
         {/* Bottom vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050B1A]/60 pointer-events-none" />
 
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-20 lg:py-28 relative z-10 w-full">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-28 lg:pt-32 pb-12 lg:pb-16 relative z-10 w-full">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left — Copy */}
             <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
@@ -223,10 +223,10 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right — INFOTRON Wordmark with Portal "O" */}
-            <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
-              {/* Background panel — clipped to rounded-2xl; all decorative layers live here */}
-              <div className="absolute inset-0 rounded-2xl border-2 border-white/30 bg-[#04050E] shadow-2xl shadow-purple-900/60 overflow-hidden ring-1 ring-inset ring-white/10">
+            {/* Right — INFOTRON Wordmark with Portal "O" — sits as a defined card with breathing room */}
+            <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity] my-6 lg:my-8" style={{ opacity: heroContentOpacity }}>
+              {/* Background panel — clipped to rounded-[18px]; all decorative layers live here */}
+              <div className="absolute inset-0 rounded-[18px] border-2 border-white/30 bg-[#04050E] shadow-[0_18px_60px_-20px_rgba(76,29,149,0.5)] overflow-hidden ring-1 ring-inset ring-white/10">
 
                 {/* Deep galaxy base — near-black navy/purple */}
                 <div
@@ -236,6 +236,15 @@ const Home = () => {
                       'linear-gradient(135deg, #02030A 0%, #060A22 30%, #0E0C2E 55%, #1B0B3A 78%, #2A0E4D 100%)',
                     backgroundSize: '180% 180%',
                     animation: 'hero-bg-drift 22s ease-in-out infinite'
+                  }}
+                />
+
+                {/* Darker purple radial — increases contrast directly behind wordmark */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse at center, rgba(67,28,121,0.65) 0%, rgba(35,15,75,0.55) 35%, rgba(10,8,28,0.35) 65%, transparent 90%)'
                   }}
                 />
 
@@ -310,8 +319,8 @@ const Home = () => {
               </div>
               {/* End of clipped background panel */}
 
-              {/* Wordmark layer — same min-height/padding as panel but NOT clipped, so the O can scale beyond */}
-              <div className="relative min-h-[480px] lg:min-h-[560px] p-8 lg:p-10 flex items-center justify-center">
+              {/* Wordmark layer — defined panel height, NOT stretched to full row */}
+              <div className="relative min-h-[400px] lg:min-h-[460px] p-8 lg:p-10 flex items-center justify-center">
                 {/* Wordmark — cinematic INFOTRON with portal "O" as the literal 4th letter */}
                 <div
                   className="relative z-10 flex items-center justify-center select-none w-full"
@@ -465,17 +474,17 @@ const Home = () => {
                     return (
                       <span
                         key={i}
-                        className="relative font-extrabold leading-none shrink-0 will-change-[opacity,transform]"
+                        className="relative font-black leading-none shrink-0 will-change-[opacity,transform]"
                         style={{
                           fontSize: 'clamp(2.4rem, 5.2vw, 4.3rem)',
-                          letterSpacing: '-0.01em',
+                          letterSpacing: '0.04em',
                           background:
-                            'linear-gradient(180deg, #ffffff 0%, #DBE7FF 45%, #B4A8E0 100%)',
+                            'linear-gradient(180deg, #ffffff 0%, #C7D7FF 45%, #A89BE6 100%)',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
                           filter:
-                            'drop-shadow(0 1px 0 rgba(255,255,255,0.25)) drop-shadow(0 6px 20px rgba(76,29,149,0.45))',
+                            'drop-shadow(0 1px 0 rgba(255,255,255,0.30)) drop-shadow(0 0 18px rgba(167,139,250,0.35)) drop-shadow(0 6px 22px rgba(76,29,149,0.55))',
                           opacity: textOpacity
                         }}
                       >
@@ -698,14 +707,6 @@ const Home = () => {
 
       {/* Enterprise Outcomes Strip — Premium Editorial Panels */}
       <section className="py-20 bg-[#0A192F] relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.05] pointer-events-none"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-            backgroundSize: '48px 48px'
-          }}
-        />
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative">
           <div className="mb-12 flex items-end justify-between flex-wrap gap-4">
             <div>
@@ -729,12 +730,10 @@ const Home = () => {
               <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full blur-3xl opacity-40 transition-opacity duration-700 group-hover:opacity-60"
                 style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)' }} />
               {/* Grid */}
-              <div className="absolute inset-0 opacity-[0.09]"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-                  backgroundSize: '40px 40px'
-                }} />
+              <div
+                className="absolute inset-0 opacity-0"
+                style={{ backgroundSize: '40px 40px' }}
+              />
               {/* Orbit rings */}
               <svg className="absolute right-6 top-6 opacity-30" width="180" height="180" viewBox="0 0 180 180" fill="none">
                 <circle cx="90" cy="90" r="70" stroke="#ffffff" strokeWidth="0.7" strokeDasharray="2 4" />
@@ -764,12 +763,6 @@ const Home = () => {
             >
               <div className="absolute -bottom-24 -left-20 w-96 h-96 rounded-full blur-3xl opacity-50 transition-opacity duration-700 group-hover:opacity-70"
                 style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 65%)' }} />
-              <div className="absolute inset-0 opacity-[0.08]"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-                  backgroundSize: '40px 40px'
-                }} />
               {/* Network lines */}
               <svg className="absolute top-0 right-0 w-full h-full opacity-[0.22]" viewBox="0 0 400 400" preserveAspectRatio="none">
                 <g stroke="#ffffff" strokeWidth="0.5" fill="none">
@@ -806,12 +799,6 @@ const Home = () => {
             >
               <div className="absolute top-0 right-0 w-72 h-72 rounded-full blur-3xl opacity-35 transition-opacity duration-700 group-hover:opacity-55"
                 style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 65%)' }} />
-              <div className="absolute inset-0 opacity-[0.09]"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-                  backgroundSize: '40px 40px'
-                }} />
               {/* Bar chart metaphor */}
               <div className="absolute right-6 top-6 flex items-end gap-1.5 h-24">
                 {[40, 62, 48, 78, 92, 70, 88].map((h, i) => (
