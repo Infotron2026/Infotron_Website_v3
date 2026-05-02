@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { blogPosts, caseStudies } from '../data/mockData';
 import { ArrowRight, Calendar, Clock, Tag } from 'lucide-react';
@@ -36,6 +37,11 @@ const Resources = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
+      <SEO
+        title="Resources & Insights"
+        description="Case studies, expert perspectives, and field-tested playbooks on enterprise technology delivery, talent strategy, AI adoption, and platform transformation."
+        path="/resources"
+      />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">

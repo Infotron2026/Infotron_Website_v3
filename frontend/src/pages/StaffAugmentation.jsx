@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { ArrowRight, CheckCircle, Users, Zap, Globe, Shield, Clock, Target, Award } from 'lucide-react';
 
@@ -52,6 +53,11 @@ const StaffAugmentation = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
+      <SEO
+        title="Staff Augmentation"
+        description="Senior, vetted engineers embedded with your team in two weeks. Pre-qualified specialists across cloud, data, security, AI, and product engineering — billed per outcome, not per seat."
+        path="/services/staff-augmentation"
+      />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import {
   ArrowLeft, ArrowRight, CheckCircle, Clock, Users, Layers,
@@ -40,6 +41,13 @@ const CaseStudyDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20" data-testid="case-study-detail">
+      <SEO
+        title={study.title}
+        description={study.impact ? `${study.impact}. ${study.challenge}` : study.challenge}
+        path={`/case-studies/${study.slug}`}
+        image={study.image}
+        type="article"
+      />
       {/* Breadcrumb / Back nav */}
       <div className="border-b border-white/5 bg-[#0A192F]/80 backdrop-blur">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-12 py-5 flex items-center justify-between">

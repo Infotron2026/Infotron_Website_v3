@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
@@ -28,6 +29,11 @@ const Careers = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
+      <SEO
+        title="Careers — Join World-Class Technology Teams"
+        description="Open roles at Infotron Solutions. Work on high-impact engineering, AI, cloud, and platform programs with Fortune 500 clients across Americas, EMEA, and APAC."
+        path="/careers"
+      />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">

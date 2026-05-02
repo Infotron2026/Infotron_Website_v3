@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { ArrowRight, CheckCircle, Code, Handshake, Rocket, BookOpen, Eye } from 'lucide-react';
 import { companyValues, aboutStats } from '../data/mockData';
@@ -35,6 +36,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
+      <SEO
+        title="About Us"
+        description="Infotron Solutions is a US-headquartered IT services and talent solutions firm built for enterprise technology delivery — Managed Services, Staff Augmentation, and Business Consulting."
+        path="/about"
+      />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">

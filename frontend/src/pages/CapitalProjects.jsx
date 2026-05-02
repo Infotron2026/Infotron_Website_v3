@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { ArrowRight, CheckCircle, BarChart3, Users, DollarSign, HardHat, LineChart, Building2, Factory, Radio, Server, Warehouse, Target, UserCheck, Globe, Activity, Zap } from 'lucide-react';
 
@@ -139,6 +140,11 @@ const CapitalProjects = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
+      <SEO
+        title="Capital Projects — Talent & Execution Partner"
+        description="Specialized talent and program execution support for capital projects across energy, infrastructure, manufacturing, telecom, and life sciences. Field-ready engineers, PMO acceleration, and cross-discipline delivery."
+        path="/capital-projects"
+      />
       {/* HERO SECTION */}
       <section className="py-24 lg:py-32 relative overflow-hidden" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
         <div className="absolute inset-0 opacity-20">

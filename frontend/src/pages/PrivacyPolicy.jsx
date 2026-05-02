@@ -1,8 +1,14 @@
 import React from 'react';
+import SEO from '../components/SEO';
 
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-[#0A192F] pt-24 pb-20">
+      <SEO
+        title="Privacy Policy"
+        description="How Infotron Solutions collects, uses, and protects information from clients, candidates, and website visitors."
+        path="/privacy"
+      />
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">Privacy Policy</h1>
         <p className="text-gray-400 mb-12">Last updated: March 5, 2026</p>

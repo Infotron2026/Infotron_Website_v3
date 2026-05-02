@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { 
   Server, Users, Briefcase, Zap, Target, Award, 
@@ -40,21 +41,43 @@ const Home = () => {
   }, []);
 
   // Pinned scroll progress 0 → 1 (over heroSection.height − 100vh)
+  // We separate the *raw* scroll position from a smoothed value that lerps toward it
+  // every frame. This produces a buttery, cinematic transition independent of scroll
+  // input cadence (mouse wheel vs trackpad vs keyboard).
   useEffect(() => {
     let raf = 0;
-    const compute = () => {
+    let target = 0;
+    let current = 0;
+    const SMOOTH = 0.12; // 0 = instant, 1 = never. ~0.12 ≈ 120ms critically-damped feel
+
+    const computeTarget = () => {
       const el = heroRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const total = Math.max(1, rect.height - window.innerHeight);
-      const p = Math.max(0, Math.min(1, -rect.top / total));
-      setHeroProgress(p);
+      target = Math.max(0, Math.min(1, -rect.top / total));
     };
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(compute);
+
+    const tick = () => {
+      // Critically-damped lerp toward target
+      const delta = target - current;
+      if (Math.abs(delta) > 0.00025) {
+        current += delta * SMOOTH;
+        setHeroProgress(current);
+      } else if (current !== target) {
+        current = target;
+        setHeroProgress(current);
+      }
+      raf = requestAnimationFrame(tick);
     };
-    compute();
+
+    const onScroll = () => computeTarget();
+
+    computeTarget();
+    current = target;
+    setHeroProgress(target);
+    raf = requestAnimationFrame(tick);
+
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     return () => {
@@ -110,6 +133,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Outcomes. Not Headcount."
+        description="Infotron Solutions delivers Managed Services, Staff Augmentation, Business Consulting, and Capital Projects execution for enterprise clients. Delivery-first. Outcome-owned."
+        path="/"
+      />
       {/* HERO SECTION — Pinned scroll: section is tall, inner sticky stays in viewport while overlay takes over */}
       <section
         ref={heroRef}

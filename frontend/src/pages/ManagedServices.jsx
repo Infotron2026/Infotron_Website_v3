@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { ArrowRight, CheckCircle, Server, Settings, BarChart, Shield, Layers, Rocket } from 'lucide-react';
 
@@ -52,6 +53,11 @@ const ManagedServices = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
+      <SEO
+        title="Managed Services"
+        description="Full-stack delivery pods that own outcomes — from architecture to production support. AI-augmented teams in DevOps, Cloud, Data, and Application Engineering for enterprise clients."
+        path="/services/managed-services"
+      />
       {/* Hero */}
       <section className="py-24 lg:py-32 bg-gradient-to-br from-[#0B1F3A] via-[#2563EB] to-[#7C3AED]">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">

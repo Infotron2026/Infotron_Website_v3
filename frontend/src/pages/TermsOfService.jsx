@@ -1,8 +1,14 @@
 import React from 'react';
+import SEO from '../components/SEO';
 
 const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-[#0A192F] pt-24 pb-20">
+      <SEO
+        title="Terms of Service"
+        description="Terms governing the use of Infotron Solutions' website, services, and engagements."
+        path="/terms"
+      />
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">Terms of Service</h1>
         <p className="text-gray-400 mb-12">Last updated: March 5, 2026</p>

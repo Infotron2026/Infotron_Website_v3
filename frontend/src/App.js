@@ -1,5 +1,6 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -22,30 +23,32 @@ import { Toaster } from "@/components/ui/sonner";
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <ScrollToTop />
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/services/managed-services" element={<ManagedServices />} />
-          <Route path="/services/staff-augmentation" element={<StaffAugmentation />} />
-          <Route path="/services/business-consulting" element={<BusinessConsulting />} />
-          <Route path="/capital-projects" element={<CapitalProjects />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
-          <Route path="/resources/case-studies/:slug" element={<CaseStudyDetail />} />
-          <Route path="/blog/:slug" element={<BlogPostDetail />} />
-          <Route path="/resources/blog/:slug" element={<BlogPostDetail />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/careers/:jobId" element={<JobDetail />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-        </Routes>
-        <Footer />
-        <Toaster />
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/services/managed-services" element={<ManagedServices />} />
+            <Route path="/services/staff-augmentation" element={<StaffAugmentation />} />
+            <Route path="/services/business-consulting" element={<BusinessConsulting />} />
+            <Route path="/capital-projects" element={<CapitalProjects />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/case-studies/:slug" element={<CaseStudyDetail />} />
+            <Route path="/resources/case-studies/:slug" element={<CaseStudyDetail />} />
+            <Route path="/blog/:slug" element={<BlogPostDetail />} />
+            <Route path="/resources/blog/:slug" element={<BlogPostDetail />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/careers/:jobId" element={<JobDetail />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+          </Routes>
+          <Footer />
+          <Toaster />
+        </BrowserRouter>
+      </HelmetProvider>
     </div>
   );
 }

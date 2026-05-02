@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, ArrowRight, Calendar, Clock, User } from 'lucide-react';
 import { blogPosts } from '../data/mockData';
@@ -32,6 +33,13 @@ const BlogPostDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20" data-testid="blog-post-detail">
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        image={post.image}
+        type="article"
+      />
       {/* Back nav */}
       <div className="border-b border-white/5 bg-[#0A192F]/80 backdrop-blur">
         <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-5 flex items-center justify-between">
