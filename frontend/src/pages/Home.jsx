@@ -147,68 +147,169 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right — Abstract engineered visual */}
+            {/* Right — INFOTRON Wordmark with Portal "O" */}
             <div className="lg:col-span-5 relative animate-fade-in">
-              <div className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-8 lg:p-10 shadow-2xl shadow-blue-900/40 overflow-hidden">
-                {/* Top thin accent */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+              <div className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-8 lg:p-10 shadow-2xl shadow-blue-900/40 overflow-hidden min-h-[480px] lg:min-h-[560px] flex items-center justify-center">
 
-                {/* Micro grid */}
+                {/* Slow drifting deep-navy → purple gradient */}
                 <div
-                  className="absolute inset-0 opacity-[0.08] pointer-events-none"
+                  className="absolute inset-0 pointer-events-none"
                   style={{
-                    backgroundImage:
-                      'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-                    backgroundSize: '40px 40px'
+                    background:
+                      'linear-gradient(135deg, #0A0F2A 0%, #14215A 35%, #2A1B6E 65%, #4A1E8A 100%)',
+                    backgroundSize: '180% 180%',
+                    animation: 'hero-bg-drift 22s ease-in-out infinite'
                   }}
                 />
 
-                {/* Panel header */}
-                <div className="flex items-center justify-between mb-8 relative">
-                  <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/80">
-                    Delivery System
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[10px] font-mono text-emerald-300/90 tracking-widest">LIVE</span>
-                  </span>
-                </div>
+                {/* Soft ambient glow blobs */}
+                <div
+                  className="absolute -top-24 -right-20 w-80 h-80 rounded-full blur-3xl opacity-40 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(124,58,237,0.55) 0%, transparent 70%)',
+                    animation: 'hero-blob-a 18s ease-in-out infinite'
+                  }}
+                />
+                <div
+                  className="absolute -bottom-28 -left-16 w-96 h-96 rounded-full blur-3xl opacity-35 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)',
+                    animation: 'hero-blob-b 26s ease-in-out infinite'
+                  }}
+                />
 
-                {/* Kinetic stack */}
-                <div className="space-y-3 relative">
-                  {[
-                    { label: 'Strategy & Discovery', value: '01', pct: 100 },
-                    { label: 'Team Assembly', value: '02', pct: 92 },
-                    { label: 'Architecture & Build', value: '03', pct: 78 },
-                    { label: 'Operate & Deliver', value: '04', pct: 64 },
-                    { label: 'Transfer & Scale', value: '05', pct: 46 }
-                  ].map((row, i) => (
-                    <div
-                      key={row.value}
-                      className="relative rounded-lg border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
-                      style={{ animation: `fade-in-up 0.6s ease-out ${0.15 * i}s both` }}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-mono text-blue-400/70 tracking-widest">{row.value}</span>
-                          <span className="text-sm text-white/90 font-medium">{row.label}</span>
-                        </div>
-                        <span className="text-[10px] font-mono text-white/40">{row.pct}%</span>
-                      </div>
-                      <div className="h-1 w-full rounded-full bg-white/5 overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-400"
-                          style={{ width: `${row.pct}%`, animation: `slide-in-left 1.2s ease-out ${0.2 + 0.1 * i}s both` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {/* Faint grid texture */}
+                <div
+                  className="absolute inset-0 opacity-[0.06] pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+                    backgroundSize: '48px 48px',
+                    maskImage: 'radial-gradient(ellipse at center, black 50%, transparent 90%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 50%, transparent 90%)'
+                  }}
+                />
 
-                {/* Bottom meta */}
-                <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
-                  <span className="text-[11px] tracking-[0.22em] uppercase text-white/50">Engineered for Scale</span>
-                  <span className="text-[11px] font-mono text-white/40">Infotron</span>
+                {/* Top hairline accent */}
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent pointer-events-none" />
+
+                {/* Wordmark — INFOTRON with portal O at index 3 */}
+                <div
+                  className="relative z-10 flex items-center justify-center select-none w-full"
+                  style={{ transform: 'translateX(-2%)' }}
+                  data-testid="hero-infotron-wordmark"
+                  aria-label="INFOTRON"
+                >
+                  {['I', 'N', 'F', 'O', 'T', 'R', 'O', 'N'].map((ch, i) => {
+                    const isPortalO = i === 3;
+                    if (isPortalO) {
+                      return (
+                        <span
+                          key={i}
+                          className="relative inline-flex items-center justify-center shrink-0"
+                          style={{
+                            fontSize: 'clamp(2.2rem, 4.4vw, 4rem)',
+                            width: '1em',
+                            height: '1em',
+                            margin: '0 0.015em'
+                          }}
+                          aria-hidden="true"
+                        >
+                          {/* Soft outer aura */}
+                          <span
+                            className="absolute inset-[-22%] rounded-full pointer-events-none"
+                            style={{
+                              background:
+                                'radial-gradient(circle, rgba(147,197,253,0.28) 0%, rgba(167,139,250,0.16) 40%, transparent 72%)',
+                              filter: 'blur(14px)',
+                              animation: 'portal-aura 6s ease-in-out infinite'
+                            }}
+                          />
+
+                          {/* Glass disc body */}
+                          <span
+                            className="absolute inset-0 rounded-full"
+                            style={{
+                              background:
+                                'radial-gradient(circle at 32% 28%, rgba(255,255,255,0.22) 0%, rgba(147,197,253,0.10) 32%, rgba(76,29,149,0.18) 70%, rgba(10,15,42,0.45) 100%)',
+                              boxShadow:
+                                'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -8px 18px rgba(76,29,149,0.35), 0 12px 40px rgba(76,29,149,0.35)',
+                              backdropFilter: 'blur(6px)',
+                              WebkitBackdropFilter: 'blur(6px)'
+                            }}
+                          />
+
+                          {/* Inner glow core */}
+                          <span
+                            className="absolute inset-[18%] rounded-full pointer-events-none"
+                            style={{
+                              background:
+                                'radial-gradient(circle, rgba(191,219,254,0.45) 0%, rgba(167,139,250,0.18) 50%, transparent 80%)',
+                              animation: 'portal-core 5s ease-in-out infinite'
+                            }}
+                          />
+
+                          {/* Specular highlight */}
+                          <span
+                            className="absolute rounded-full pointer-events-none"
+                            style={{
+                              top: '8%',
+                              left: '14%',
+                              width: '36%',
+                              height: '22%',
+                              background:
+                                'radial-gradient(ellipse, rgba(255,255,255,0.55) 0%, transparent 75%)',
+                              filter: 'blur(2px)'
+                            }}
+                          />
+
+                          {/* Thin outer highlight ring */}
+                          <span
+                            className="absolute inset-0 rounded-full pointer-events-none"
+                            style={{
+                              border: '1px solid rgba(255,255,255,0.22)',
+                              boxShadow:
+                                '0 0 0 1px rgba(167,139,250,0.18) inset, 0 0 24px rgba(147,197,253,0.18)'
+                            }}
+                          />
+
+                          {/* The visible "O" glyph — anchors as the 4th letter */}
+                          <span
+                            className="relative font-black leading-none tracking-[-0.02em]"
+                            style={{
+                              fontSize: '0.9em',
+                              background:
+                                'linear-gradient(180deg, #ffffff 0%, #DBEAFE 45%, #C4B5FD 100%)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              backgroundClip: 'text',
+                              filter: 'drop-shadow(0 2px 6px rgba(167,139,250,0.35))'
+                            }}
+                          >
+                            O
+                          </span>
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <span
+                        key={i}
+                        className="font-black leading-none tracking-[-0.02em] shrink-0"
+                        style={{
+                          fontSize: 'clamp(2.2rem, 4.4vw, 4rem)',
+                          background:
+                            'linear-gradient(180deg, #ffffff 0%, #E5E7FB 50%, #B4B9D6 100%)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text',
+                          filter: 'drop-shadow(0 2px 8px rgba(30,58,138,0.35))'
+                        }}
+                      >
+                        {ch}
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
             </div>
