@@ -249,7 +249,7 @@ const Home = () => {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-24 lg:pt-32 pb-8 lg:pb-16 relative z-10 w-full">
           <div className="grid lg:grid-cols-12 gap-6 lg:gap-16 items-center">
             {/* Left — Copy */}
-            <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity]" style={{ opacity: heroContentOpacity }}>
+            <div className="lg:col-span-7 animate-fade-in-up will-change-[opacity] text-center lg:text-left" style={{ opacity: heroContentOpacity }}>
               <h1 className="text-[clamp(2.5rem,5.2vw,4.75rem)] font-black text-white leading-[1.05] mb-6 tracking-[-0.02em]">
                 <span className="bg-gradient-to-r from-blue-400 via-violet-300 to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]" style={{ animation: 'shimmer 6s linear infinite' }}>
                   Outcomes.
@@ -258,15 +258,15 @@ const Home = () => {
                 <span className="text-white">Not Headcount.</span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-gray-200 mb-5 leading-relaxed max-w-2xl font-medium">
+              <p className="text-xl md:text-2xl text-gray-200 mb-5 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
                 Full-stack engineering teams that own delivery.
               </p>
-              <p className="text-base lg:text-lg text-gray-400 mb-10 max-w-2xl">
+              <p className="text-base lg:text-lg text-gray-400 mb-10 max-w-2xl mx-auto lg:mx-0">
                 Built for technology leaders who measure results, not hours.
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-4">
+              <div className="flex flex-col sm:flex-row gap-4 mb-4 items-center sm:items-stretch justify-center lg:justify-start">
                 <Link to="/contact?type=client" data-testid="hero-primary-cta">
                   <Button
                     size="lg"
@@ -347,7 +347,7 @@ const Home = () => {
               {/* End of clipped background panel */}
 
               {/* Wordmark layer — defined panel height, NOT stretched to full row */}
-              <div className="relative min-h-[260px] sm:min-h-[340px] lg:min-h-[460px] p-4 sm:p-8 lg:p-10 flex items-center justify-center">
+              <div className="relative min-h-[320px] sm:min-h-[380px] lg:min-h-[460px] p-4 sm:p-8 lg:p-10 flex items-center justify-center">
                 {/* Wordmark — cinematic INFOTRON with portal "O" as the literal 4th letter */}
                 <div
                   className="relative z-10 flex items-center justify-center select-none w-full"
@@ -369,7 +369,7 @@ const Home = () => {
                           ref={oRef}
                           className="relative inline-flex items-center justify-center shrink-0"
                           style={{
-                            fontSize: 'clamp(4.0rem, 8.6vw, 7.2rem)', // ~12% larger than before
+                            fontSize: 'clamp(5.0rem, 8.6vw, 7.2rem)', // mobile-boosted baseline (~12-15% larger)
                             width: '1.32em',
                             height: '1.32em',
                             margin: '0 0.04em',
@@ -507,7 +507,7 @@ const Home = () => {
                           fontFamily:
                             "'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif",
                           fontWeight: 400,
-                          fontSize: 'clamp(2.7rem, 5.8vw, 4.8rem)',
+                          fontSize: 'clamp(3.4rem, 5.8vw, 4.8rem)',
                           letterSpacing: '0.015em',
                           background:
                             'linear-gradient(180deg, #ffffff 0%, #C7D7FF 45%, #A89BE6 100%)',
