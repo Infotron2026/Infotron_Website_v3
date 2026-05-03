@@ -194,74 +194,6 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Office Locations */}
-      <section className="py-16 bg-slate-800">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <h2 className="text-2xl font-bold text-white mb-10 text-center">Our Global Offices</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* USA — both offices grouped under one heading */}
-            <div className="bg-[#0A192F]/50 border border-[#3B82F6]/20 rounded-lg p-8" data-testid="contact-office-usa">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-blue-500" />
-                </div>
-                <h3 className="font-bold text-white text-lg">USA</h3>
-              </div>
-              <div className="text-gray-300 leading-relaxed">
-                <div>
-                  3225 McLeod Dr. Ste 100<br />
-                  Las Vegas, NV 89121
-                </div>
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  27125 Sierra Hwy, Ste 325<br />
-                  Santa Clarita, CA 91351
-                </div>
-              </div>
-            </div>
-
-            {/* Canada */}
-            <div className="bg-[#0A192F]/50 border border-violet-500/20 rounded-lg p-8">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-violet-400" />
-                </div>
-                <h3 className="font-bold text-white text-lg">CANADA</h3>
-              </div>
-              <p className="text-gray-300 leading-relaxed">
-                357 Bay Street<br />
-                Toronto, ON M5H 4A6
-              </p>
-            </div>
-
-            {/* India */}
-            <div className="bg-[#0A192F]/50 border border-[#3B82F6]/20 rounded-lg p-8">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-blue-500" />
-                </div>
-                <h3 className="font-bold text-white text-lg">INDIA</h3>
-              </div>
-              <p className="text-gray-300 leading-relaxed">
-                C-20, G Block, Bandra Kurla Complex<br />
-                Mumbai, MH 400051
-              </p>
-            </div>
-          </div>
-
-          {/* Contact Info */}
-          <div className="mt-12 flex flex-col md:flex-row justify-center items-center gap-8">
-            <a href="tel:+17753059399" className="flex items-center gap-3 text-blue-500 hover:text-blue-400 transition-colors">
-              <Phone className="w-5 h-5" />
-              <span className="text-lg">+1 (775) 305 9399</span>
-            </a>
-            <a href="mailto:contact@infotronsolutions.com" className="flex items-center gap-3 text-blue-500 hover:text-blue-400 transition-colors">
-              <Mail className="w-5 h-5" />
-              <span className="text-lg">contact@infotronsolutions.com</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Form */}
       <section className="py-20 bg-[#0A192F]">
         <div className="max-w-[800px] mx-auto px-6 lg:px-12">
@@ -549,6 +481,74 @@ const Contact = () => {
                 <Link to="/terms" className="text-blue-500 hover:text-blue-400">Terms of Service</Link>
               </p>
             </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Office Locations — shown below the contact forms so users land on the form first */}
+      <section className="py-16 bg-slate-800">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          <h2 className="text-2xl font-bold text-white mb-10 text-center">Our Global Offices</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* USA — both offices grouped under one heading */}
+            <div className="bg-[#0A192F]/50 border border-[#3B82F6]/20 rounded-lg p-8" data-testid="contact-office-usa">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-blue-500" />
+                </div>
+                <h3 className="font-bold text-white text-lg">USA</h3>
+              </div>
+              <div className="text-gray-300 leading-relaxed">
+                <div>
+                  3225 McLeod Dr. Ste 100<br />
+                  Las Vegas, NV 89121
+                </div>
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  27125 Sierra Hwy, Ste 325<br />
+                  Santa Clarita, CA 91351
+                </div>
+              </div>
+            </div>
+
+            {/* Canada */}
+            <div className="bg-[#0A192F]/50 border border-violet-500/20 rounded-lg p-8">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-violet-400" />
+                </div>
+                <h3 className="font-bold text-white text-lg">CANADA</h3>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                357 Bay Street<br />
+                Toronto, ON M5H 4A6
+              </p>
+            </div>
+
+            {/* India */}
+            <div className="bg-[#0A192F]/50 border border-[#3B82F6]/20 rounded-lg p-8">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-blue-500" />
+                </div>
+                <h3 className="font-bold text-white text-lg">INDIA</h3>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                C-20, G Block, Bandra Kurla Complex<br />
+                Mumbai, MH 400051
+              </p>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="mt-12 flex flex-col md:flex-row justify-center items-center gap-8">
+            <a href="tel:+17753059399" className="flex items-center gap-3 text-blue-500 hover:text-blue-400 transition-colors">
+              <Phone className="w-5 h-5" />
+              <span className="text-lg">+1 (775) 305 9399</span>
+            </a>
+            <a href="mailto:contact@infotronsolutions.com" className="flex items-center gap-3 text-blue-500 hover:text-blue-400 transition-colors">
+              <Mail className="w-5 h-5" />
+              <span className="text-lg">contact@infotronsolutions.com</span>
+            </a>
           </div>
         </div>
       </section>
