@@ -751,6 +751,10 @@ button, input, textarea, select {
 .industries-marquee-viewport {
     overflow: hidden;
     width: 100%;
+    /* Vertical padding creates breathing room for scaled (1.05) cards on hover
+       so the top/bottom aren't clipped by overflow:hidden (which is required
+       for the horizontal loop to stay invisible). */
+    padding: 14px 0;
 }
 
 .industries-marquee-track {
