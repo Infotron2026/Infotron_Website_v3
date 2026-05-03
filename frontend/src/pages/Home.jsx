@@ -4,7 +4,9 @@ import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { 
   Server, Users, Briefcase, Zap, Target, Award, 
-  TrendingUp, Shield, Globe, ArrowRight, CheckCircle 
+  TrendingUp, Shield, Globe, ArrowRight, CheckCircle,
+  ShoppingBag, HeartPulse, Factory, Cloud, Car,
+  Truck, Landmark, Network, Database, UserCog, Cog
 } from 'lucide-react';
 import { clientLogos, services, whyInfotron, caseStudies, testimonials } from '../data/mockData';
 
@@ -14,6 +16,51 @@ const easeOutPortal = (t) => {
   return 1 - Math.pow(1 - c, 5);
 };
 const lerp = (a, b, t) => a + (b - a) * t;
+
+// ─── Industries We Serve — data + card component ─────────────────────────
+const industriesRow1 = [
+  { name: 'E-commerce', outcome: 'Scalable platforms', Icon: ShoppingBag },
+  { name: 'Healthcare', outcome: 'Secure systems', Icon: HeartPulse },
+  { name: 'SaaS', outcome: 'Rapid product delivery', Icon: Cloud },
+  { name: 'Financial Services', outcome: 'Compliant infrastructure', Icon: Shield },
+  { name: 'Infrastructure & Utilities', outcome: 'Resilient systems', Icon: Network },
+  { name: 'Data Centers', outcome: 'High-availability environments', Icon: Database },
+];
+
+const industriesRow2 = [
+  { name: 'Manufacturing', outcome: 'Reliable operations', Icon: Factory },
+  { name: 'Automotive', outcome: 'High-performance systems', Icon: Car },
+  { name: 'Logistics', outcome: 'Optimized workflows', Icon: Truck },
+  { name: 'Public Sector', outcome: 'Secure, scalable delivery', Icon: Landmark },
+  { name: 'HR & EOR', outcome: 'Workforce scalability', Icon: UserCog },
+  { name: 'Industrial Systems', outcome: 'Process optimization', Icon: Cog },
+];
+
+const IndustryCard = ({ item, pulseDelay = 0 }) => {
+  const { name, outcome, Icon } = item;
+  return (
+    <div
+      className="industry-card shrink-0 w-[220px] sm:w-[240px] lg:w-[260px]"
+      data-testid={`industry-card-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+    >
+      <div className="industry-card-inner">
+        {/* Icon with pulse halo */}
+        <div className="industry-icon-wrap">
+          <span
+            className="industry-icon-pulse"
+            style={{ animationDelay: `${pulseDelay}s` }}
+            aria-hidden="true"
+          />
+          <Icon className="industry-icon" strokeWidth={1.4} />
+        </div>
+        {/* Name */}
+        <div className="industry-name">{name}</div>
+        {/* Outcome */}
+        <div className="industry-outcome">{outcome}</div>
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
   const observerRef = useRef(null);
@@ -602,6 +649,88 @@ const Home = () => {
                 <p className="text-gray-400 leading-relaxed">
                   Seamlessly transition teams, systems, and knowledge
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* ─── INDUSTRIES WE SERVE ─── Premium infinite-loop marquee (2 rows, opposite directions) */}
+      <section
+        className="relative py-28 lg:py-32 bg-[#050B1A] overflow-hidden"
+        data-testid="industries-section"
+      >
+        {/* Soft ambient glow layers — never decorative noise, just depth */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-60"
+          style={{
+            background:
+              'radial-gradient(ellipse 70% 55% at 15% 30%, rgba(37,99,235,0.14) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 85% 70%, rgba(124,58,237,0.14) 0%, transparent 60%)',
+          }}
+        />
+
+        <div className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12">
+          {/* Header */}
+          <div className="text-center mb-16 lg:mb-20 scroll-reveal">
+            <h2
+              className="text-4xl lg:text-6xl font-semibold text-white mb-6"
+              style={{
+                fontFamily:
+                  "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.08,
+              }}
+            >
+              Industries We{' '}
+              <span
+                className="bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent italic"
+                style={{ fontWeight: 600 }}
+              >
+                Serve
+              </span>
+            </h2>
+            <p
+              className="text-base lg:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed"
+              style={{
+                fontFamily:
+                  "'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif",
+                letterSpacing: '-0.005em',
+              }}
+            >
+              Built for outcomes.
+              <br className="hidden sm:inline" />{' '}
+              Delivered by experts.
+              <br className="hidden sm:inline" />{' '}
+              Accelerated by AI.
+            </p>
+          </div>
+
+          {/* Marquee viewport — edge fade mask applied here */}
+          <div
+            className="relative"
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+            }}
+          >
+            {/* ROW 1 — left→right, 60s */}
+            <div className="industries-marquee-viewport mb-6 lg:mb-8">
+              <div className="industries-marquee-track industries-marquee-track--row1">
+                {[...industriesRow1, ...industriesRow1].map((item, i) => (
+                  <IndustryCard key={`r1-${i}`} item={item} pulseDelay={(i % 6) * 0.9} />
+                ))}
+              </div>
+            </div>
+
+            {/* ROW 2 — right→left, 50s (slightly faster for organic rhythm) */}
+            <div className="industries-marquee-viewport">
+              <div className="industries-marquee-track industries-marquee-track--row2">
+                {[...industriesRow2, ...industriesRow2].map((item, i) => (
+                  <IndustryCard key={`r2-${i}`} item={item} pulseDelay={(i % 6) * 0.9 + 0.5} />
+                ))}
               </div>
             </div>
           </div>

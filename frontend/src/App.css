@@ -744,3 +744,166 @@ button, input, textarea, select {
 #example-widget-container .wrapper {
     background: transparent !important;
 }
+
+
+/* ─── Industries We Serve — infinite loop marquee ──────────────────────── */
+
+.industries-marquee-viewport {
+    overflow: hidden;
+    width: 100%;
+}
+
+.industries-marquee-track {
+    display: flex;
+    gap: 28px;
+    width: max-content;
+    will-change: transform;
+}
+
+/* Row 1: scroll LEFT → RIGHT (content starts at -50% and moves to 0%)
+   Since we render 2 copies of the list, translate(-50%)→translate(0%)
+   covers exactly one copy — giving a perfectly seamless loop. */
+.industries-marquee-track--row1 {
+    animation: industries-scroll-right 60s linear infinite;
+}
+
+/* Row 2: scroll RIGHT → LEFT (content starts at 0% and moves to -50%),
+   slightly faster tempo for an organic two-rhythm feel. */
+.industries-marquee-track--row2 {
+    animation: industries-scroll-left 50s linear infinite;
+}
+
+@keyframes industries-scroll-right {
+    0%   { transform: translate3d(-50%, 0, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes industries-scroll-left {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Pause both tracks when hovering the viewport — lets users read a specific card */
+.industries-marquee-viewport:hover .industries-marquee-track {
+    animation-play-state: paused;
+}
+
+/* ─── Card ─────────────────────────────────────────────────────────────── */
+
+.industry-card {
+    opacity: 0.78;
+    transition:
+        opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.industry-card:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.industry-card-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 28px 20px;
+    height: 200px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    background:
+        linear-gradient(155deg, rgba(30, 58, 138, 0.22) 0%, rgba(15, 23, 42, 0.55) 50%, rgba(67, 28, 121, 0.2) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 10px 30px -18px rgba(99, 102, 241, 0.4);
+    transition:
+        border-color 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+.industry-card:hover .industry-card-inner {
+    border-color: rgba(147, 197, 253, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 18px 40px -18px rgba(99, 102, 241, 0.6);
+}
+
+/* Icon + pulse halo */
+.industry-icon-wrap {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.industry-icon {
+    position: relative;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    color: #93C5FD;
+    transition: color 0.35s ease, filter 0.35s ease;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.35));
+}
+
+.industry-card:hover .industry-icon {
+    color: #C7D2FE;
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.6));
+}
+
+/* Soft glow behind icon — subtle pulse every ~4.5s, staggered via inline delay */
+.industry-icon-pulse {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.5) 0%, rgba(99, 102, 241, 0) 70%);
+    opacity: 0.2;
+    animation: industry-pulse 4.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes industry-pulse {
+    0%,
+    100% {
+        opacity: 0.15;
+        transform: scale(0.92);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.08);
+    }
+}
+
+/* Name + outcome typography */
+.industry-name {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: #E2E8F0;
+    margin-bottom: 6px;
+    line-height: 1.25;
+}
+
+.industry-outcome {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: -0.003em;
+    color: #94A3B8;
+    line-height: 1.5;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .industries-marquee-track--row1,
+    .industries-marquee-track--row2,
+    .industry-icon-pulse {
+        animation: none !important;
+    }
+}
