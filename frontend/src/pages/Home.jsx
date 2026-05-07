@@ -203,38 +203,40 @@ const Home = () => {
     };
   }, []);
 
-  // ─── Hero scroll narrative — 5-stage strict choreography ───────────────
-  // 0–10%   ENTRY     full dark hero, INFOTRON+border visible (no motion)
-  // 10–20%  GLOBAL WIPE  white overlay ramps 0→1 across the entire viewport
-  // 20–45%  BUILD-UP  3-sided border splits + lifts upward, soft glow trails
-  // 45–75%  SCALE     INFOTRON scales from centre (no position shift)
-  // 75–100% TAKEOVER  mask dissolves → full-screen video
+  // ─── Hero scroll narrative — strict choreography (350vh hero) ──────────
+  // 0–10%   ENTRY     full dark hero, INFOTRON+underline visible
+  // 10–20%  WIPE      white overlay ramps 0→1 across viewport
+  // 20–35%  BUILD-UP  underline lifts upward + fades; text stays fixed
+  // 40–55%  SCALE     INFOTRON scales smoothly, drifts to viewport centre
+  // 55–68%  TAKEOVER  scale → 9, mask dissolves, full-bleed video reveals
+  // 68–100% HOLD      fullscreen video held (user scrolls 1–2x before release)
   const p = heroProgress;
 
-  // White wipe — covers entire viewport including left content
+  // White wipe — stays at 1 from p≥0.20 until takeover, then fades for video
   const wipeT = smoothstep(0.10, 0.20, p);
-  const whiteWipeOpacity = wipeT * (1 - smoothstep(0.92, 1.0, p));
+  const whiteWipeOpacity = wipeT * (1 - smoothstep(0.55, 0.68, p));
 
   // Left content fades during the wipe so the white reads cleanly
   const heroContentOpacity = 1 - smoothstep(0.05, 0.18, p);
 
-  // Underline animation — single segment that lifts upward + fades during build-up
+  // Underline animation — single segment lifts upward + fades during build-up
   const underlineT  = smoothstep(0.20, 0.34, p);
   const underlineY  = -260 * underlineT;
   const underlineOp = 1 - underlineT;
 
-  // INFOTRON scale — strict order (no zoom before scale phase)
+  // INFOTRON scale — capped at 2.3× during scale phase so letters never crop.
+  // Past that, the full-bleed video crossfades in to handle the takeover.
   let infotronScale = 1.0;
-  if (p < 0.45) {
+  if (p < 0.40) {
     infotronScale = 1.0;
-  } else if (p < 0.75) {
-    infotronScale = lerp(1.0, 2.6, smoothstep(0.45, 0.75, p));
+  } else if (p < 0.62) {
+    infotronScale = lerp(1.0, 2.3, smoothstep(0.40, 0.62, p));
   } else {
-    infotronScale = lerp(2.6, 9.0, smoothstep(0.75, 1.0, p));
+    infotronScale = 2.3;                                // HOLD — fullscreen video takes over
   }
 
-  // Final un-masked full-bleed video crossfades in across the last 8%
-  const fullscreenVideoOpacity = smoothstep(0.92, 1.0, p);
+  // Final un-masked full-bleed video — fades in across takeover, holds at 1
+  const fullscreenVideoOpacity = smoothstep(0.55, 0.68, p);
 
   useEffect(() => {
     // Trigger animations slightly BEFORE the element enters the viewport
@@ -280,7 +282,7 @@ const Home = () => {
       <section
         ref={heroRef}
         className="relative"
-        style={{ height: '250vh' }}
+        style={{ height: '350vh' }}
       >
         <div
           className="sticky top-0 h-screen w-full flex items-start lg:items-center overflow-hidden"
@@ -320,18 +322,18 @@ const Home = () => {
           {(() => {
             const VW = Math.max(1, viewport.w);
             const VH = Math.max(1, viewport.h);
-            // Wordmark — right-weighted, vertically centred, with breathing room
-            const tx = VW * 0.70;
+            // Wordmark — initially right-weighted; drifts to viewport centre
+            // BEFORE scale begins so letters scale from centre and never crop.
+            const driftT = smoothstep(0.20, 0.40, p);
+            const tx = lerp(VW * 0.70, VW * 0.50, driftT);
             const ty = VH * 0.50;
             const fs = VH * 0.18;
-            // Underline — slightly left-aligned, ~65% of text width, just below text.
-            // Anton condensed at fontSize fs renders "INFOTRON" at ~4.0 × fs wide;
-            // letter-spacing 6 adds ~7 × 6 = 42 px more. Position ulY just below
-            // the baseline with a subtle gap.
-            const textWidthApprox = fs * 4.0 + 42;
-            const ulLeft   = tx - textWidthApprox / 2;          // text left edge
-            const ulRight  = ulLeft + textWidthApprox * 0.65;   // ~65% width, left-anchored
-            const ulY      = ty + fs * 0.62;                    // small gap below baseline
+            // Underline — CENTERED below text, ~65% of text width.
+            const textWidthApprox = fs * 4.0 + 42; // Anton + letter-spacing 6
+            const ulWidth  = textWidthApprox * 0.65;
+            const ulLeft   = tx - ulWidth / 2;     // centred under text
+            const ulRight  = tx + ulWidth / 2;
+            const ulY      = ty + fs * 0.62;       // small gap below baseline
             return (
               <svg
                 className="absolute inset-0 w-full h-full"
@@ -365,8 +367,10 @@ const Home = () => {
                   </mask>
                 </defs>
 
-                {/* Single clean underline — gradient pink → purple → blue, no glow */}
+                {/* Single clean underline — centered below text. Draws on once
+                    on page load via stroke-dasharray (CSS animation). */}
                 <line
+                  className="hero-underline"
                   x1={ulLeft}
                   y1={ulY + underlineY}
                   x2={ulRight}
@@ -375,6 +379,7 @@ const Home = () => {
                   strokeWidth="3"
                   strokeLinecap="square"
                   opacity={underlineOp}
+                  style={{ '--ul-length': `${ulWidth}px` }}
                 />
 
                 {/* Video masked by INFOTRON, scaled around text centre */}

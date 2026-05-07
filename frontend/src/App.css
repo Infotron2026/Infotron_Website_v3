@@ -10,6 +10,20 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Hero underline — one-shot draw-on animation on page mount.
+   Uses --ul-length CSS variable (set inline by JS based on viewport size)
+   so the dasharray matches the actual line length. */
+.hero-underline {
+    stroke-dasharray: var(--ul-length, 600);
+    stroke-dashoffset: var(--ul-length, 600);
+    animation: hero-underline-draw 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
+
+@keyframes hero-underline-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+
 /* Scroll Reveal Animation */
 /* ─── Premium scroll-reveal system ─────────────────────────────────────────
    Calm, controlled, cubic-bezier(0.22, 1, 0.36, 1) — used site-wide below

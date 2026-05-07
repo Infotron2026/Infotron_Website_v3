@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
@@ -11,6 +11,7 @@ const Header = () => {
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [mobileManagedOpen, setMobileManagedOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -18,8 +19,21 @@ const Header = () => {
   // Instant scroll to top, even when clicking the same route as current
   const scrollTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
 
+  // Hide header on first scroll, reveal on return-to-top
+  useEffect(() => {
+    const onScroll = () => setHidden(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0A192F]/95 backdrop-blur-md border-b border-[#3B82F6]/20 shadow-lg">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 bg-[#0A192F]/95 backdrop-blur-md border-b border-[#3B82F6]/20 shadow-lg transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        hidden ? '-translate-y-full' : 'translate-y-0'
+      }`}
+      data-testid="site-header"
+    >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between py-2">
           {/* Logo - proportionally scaled to fit header */}
