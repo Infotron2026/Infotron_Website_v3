@@ -218,16 +218,23 @@ const Home = () => {
   // Left content fades during the wipe so the white reads cleanly
   const heroContentOpacity = 1 - smoothstep(0.05, 0.18, p);
 
-  // Border split — 3 lines (top, left, bottom) stagger upward + fade in 20–40%
-  const topLineT     = smoothstep(0.20, 0.32, p);
-  const leftLineT    = smoothstep(0.24, 0.38, p);
-  const bottomLineT  = smoothstep(0.22, 0.34, p);
-  const topLineY     = -320 * topLineT;
-  const leftLineY    = -260 * leftLineT;
-  const bottomLineY  = -210 * bottomLineT;
-  const topLineOp    = 1 - topLineT;
-  const leftLineOp   = 1 - leftLineT;
-  const bottomLineOp = 1 - bottomLineT;
+  // Border line stagger — 4 segments matching the logo's asymmetric frame:
+  //   1. TOP        long horizontal above the wordmark
+  //   2. LEFT       vertical from top, drops to midway (partial height)
+  //   3. BOTTOM-LEFT short horizontal stub from bottom of left line
+  //   4. RIGHT-STUB short vertical drop from top-right (not connected below)
+  const topLineT       = smoothstep(0.20, 0.32, p);
+  const leftLineT      = smoothstep(0.24, 0.38, p);
+  const bottomLeftT    = smoothstep(0.22, 0.34, p);
+  const rightStubT     = smoothstep(0.20, 0.30, p);
+  const topLineY       = -320 * topLineT;
+  const leftLineY      = -260 * leftLineT;
+  const bottomLeftY    = -210 * bottomLeftT;
+  const rightStubY     = -340 * rightStubT;
+  const topLineOp      = 1 - topLineT;
+  const leftLineOp     = 1 - leftLineT;
+  const bottomLeftOp   = 1 - bottomLeftT;
+  const rightStubOp    = 1 - rightStubT;
 
   // INFOTRON scale — strict order (no zoom before scale phase)
   let infotronScale = 1.0;
@@ -320,167 +327,129 @@ const Home = () => {
             }}
           />
 
-          {/* Layers B + C + D — INFOTRON mask + 3-sided border + glow trails.
-              Single SVG keeps positioning/scale math in one place.            */}
-          <svg
-            className="absolute inset-0 w-full h-full"
-            preserveAspectRatio="xMidYMid meet"
-            viewBox="0 0 1000 600"
-            style={{ overflow: 'visible' }}
-          >
-            <defs>
-              {/* Brand pink → purple → blue gradient — matches Infotron logo */}
-              <linearGradient
-                id="brand-grad"
-                x1="0"
-                y1="0"
-                x2="1000"
-                y2="600"
-                gradientUnits="userSpaceOnUse"
+          {/* Layers B + C + D — INFOTRON mask + asymmetric brand frame.
+              ViewBox locked to the live viewport size for 1:1 pixel mapping
+              regardless of screen aspect. All positions are viewport-relative. */}
+          {(() => {
+            const VW = Math.max(1, viewport.w);
+            const VH = Math.max(1, viewport.h);
+            // Wordmark — right-weighted, vertically centred
+            const tx = VW * 0.70;
+            const ty = VH * 0.50;
+            const fs = VH * 0.18;
+            // ─── Asymmetric brand frame coords (matches INFOTRON logo) ────
+            //   tx, ty is the text centre. fs is fontSize.
+            //   Text spans roughly:
+            //     x: tx ± (fs * 2.0)   →  ~0.50 to ~0.90 VW (8 letters wide)
+            //     y: ty ± (fs * 0.5)   →  top 0.41 / baseline 0.59 of VH
+            //
+            //   Frame parts:
+            //   • TOP long horizontal:  fx_l → fx_r at fy_t  (above the wordmark)
+            //   • RIGHT short stub:     drops at x = "last N" centre, lands at the
+            //                           top of the letter (just before the N body)
+            //   • LEFT vertical:        from top, drops down to BASELINE
+            //   • BOTTOM-LEFT stub:     short horizontal AT BASELINE, starts JUST
+            //                           BEFORE the I, ends after first 2–3 letters
+            const fx_l       = VW * 0.495;   // just BEFORE the "I"
+            const fx_r       = VW * 0.915;   // top line right end (slightly past text)
+            const fx_rstub   = VW * 0.875;   // right stub vertical x — over the last N
+            const fx_blr     = VW * 0.645;   // bottom stub right end (after INF)
+            const fy_t       = VH * 0.355;   // top line y (above the wordmark)
+            const fy_b       = VH * 0.595;   // BASELINE — aligns with bottom of letters
+            const fy_rs      = VH * 0.430;   // right stub end — lands on top of N
+            return (
+              <svg
+                className="absolute inset-0 w-full h-full"
+                preserveAspectRatio="none"
+                viewBox={`0 0 ${VW} ${VH}`}
               >
-                <stop offset="0%" stopColor="#EC4899" />
-                <stop offset="50%" stopColor="#A855F7" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
+                <defs>
+                  <linearGradient
+                    id="brand-grad"
+                    x1="0" y1="0" x2={VW} y2={VH}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0%" stopColor="#EC4899" />
+                    <stop offset="50%" stopColor="#A855F7" />
+                    <stop offset="100%" stopColor="#3B82F6" />
+                  </linearGradient>
+                  <filter
+                    id="glow-blur"
+                    x="-30%" y="-30%" width="160%" height="160%"
+                  >
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
+                  </filter>
+                  <mask id="hero-infotron-mask" maskUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width={VW} height={VH} fill="black" />
+                    <text
+                      x={tx} y={ty}
+                      fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, sans-serif"
+                      fontWeight="900"
+                      fontSize={fs}
+                      letterSpacing="-2"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill="white"
+                    >
+                      INFOTRON
+                    </text>
+                  </mask>
+                </defs>
 
-              {/* Soft blur for glow trails */}
-              <filter
-                id="glow-blur"
-                x="-30%"
-                y="-30%"
-                width="160%"
-                height="160%"
-              >
-                <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
-              </filter>
+                {/* Glow trails */}
+                <line x1={fx_l} y1={fy_t + topLineY} x2={fx_r} y2={fy_t + topLineY}
+                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
+                  opacity={topLineOp * 0.35} filter="url(#glow-blur)" />
+                <line x1={fx_rstub} y1={fy_t + rightStubY} x2={fx_rstub} y2={fy_rs + rightStubY}
+                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
+                  opacity={rightStubOp * 0.35} filter="url(#glow-blur)" />
+                <line x1={fx_l} y1={fy_t + leftLineY} x2={fx_l} y2={fy_b + leftLineY}
+                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
+                  opacity={leftLineOp * 0.35} filter="url(#glow-blur)" />
+                <line x1={fx_l} y1={fy_b + bottomLeftY} x2={fx_blr} y2={fy_b + bottomLeftY}
+                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
+                  opacity={bottomLeftOp * 0.35} filter="url(#glow-blur)" />
 
-              {/* INFOTRON mask — letters carve through black so video shows
-                  ONLY inside the letter shapes. Right-weighted (x=720),
-                  vertically centred-with-lower-bias (y=420) to match logo.  */}
-              <mask id="hero-infotron-mask" maskUnits="userSpaceOnUse">
-                <rect x="0" y="0" width="1000" height="600" fill="black" />
-                <text
-                  x="720"
-                  y="420"
-                  fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, sans-serif"
-                  fontWeight="900"
-                  fontSize="145"
-                  letterSpacing="-2"
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fill="white"
+                {/* Crisp brand-gradient lines (asymmetric — matches logo) */}
+                <line x1={fx_l} y1={fy_t + topLineY} x2={fx_r} y2={fy_t + topLineY}
+                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
+                  opacity={topLineOp} />
+                <line x1={fx_rstub} y1={fy_t + rightStubY} x2={fx_rstub} y2={fy_rs + rightStubY}
+                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
+                  opacity={rightStubOp} />
+                <line x1={fx_l} y1={fy_t + leftLineY} x2={fx_l} y2={fy_b + leftLineY}
+                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
+                  opacity={leftLineOp} />
+                <line x1={fx_l} y1={fy_b + bottomLeftY} x2={fx_blr} y2={fy_b + bottomLeftY}
+                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
+                  opacity={bottomLeftOp} />
+
+                {/* Video masked by INFOTRON, scaled around text centre */}
+                <g
+                  transform={`translate(${tx} ${ty}) scale(${infotronScale.toFixed(4)}) translate(${-tx} ${-ty})`}
+                  style={{ willChange: 'transform' }}
                 >
-                  INFOTRON
-                </text>
-              </mask>
-            </defs>
-
-            {/* Layer B — Glow trails: soft blurred halos that move with each
-                border line. Subtle, low opacity, slightly blurred — premium. */}
-            {/* Top glow */}
-            <line
-              x1="380"
-              y1={332 + topLineY}
-              x2="1060"
-              y2={332 + topLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="14"
-              strokeLinecap="round"
-              opacity={topLineOp * 0.35}
-              filter="url(#glow-blur)"
-            />
-            {/* Left glow */}
-            <line
-              x1="380"
-              y1={332 + leftLineY}
-              x2="380"
-              y2={508 + leftLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="14"
-              strokeLinecap="round"
-              opacity={leftLineOp * 0.35}
-              filter="url(#glow-blur)"
-            />
-            {/* Bottom glow */}
-            <line
-              x1="380"
-              y1={508 + bottomLineY}
-              x2="1060"
-              y2={508 + bottomLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="14"
-              strokeLinecap="round"
-              opacity={bottomLineOp * 0.35}
-              filter="url(#glow-blur)"
-            />
-
-            {/* Layer C — 3-sided brand border (top, left, bottom — RIGHT OPEN).
-                Slightly thicker stroke for legible presence on white canvas. */}
-            <line
-              x1="380"
-              y1={332 + topLineY}
-              x2="1060"
-              y2={332 + topLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="4.5"
-              strokeLinecap="round"
-              opacity={topLineOp}
-            />
-            <line
-              x1="380"
-              y1={332 + leftLineY}
-              x2="380"
-              y2={508 + leftLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="4.5"
-              strokeLinecap="round"
-              opacity={leftLineOp}
-            />
-            <line
-              x1="380"
-              y1={508 + bottomLineY}
-              x2="1060"
-              y2={508 + bottomLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="4.5"
-              strokeLinecap="round"
-              opacity={bottomLineOp}
-            />
-
-            {/* Layer D — Video masked by INFOTRON. Scaled around the text
-                centre via SVG-native transform attribute (reliable).         */}
-            <g
-              transform={`translate(720 420) scale(${infotronScale.toFixed(4)}) translate(-720 -420)`}
-              style={{ willChange: 'transform' }}
-            >
-              <foreignObject
-                x="0"
-                y="0"
-                width="1000"
-                height="600"
-                mask="url(#hero-infotron-mask)"
-              >
-                <video
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  data-testid="hero-portal-video"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center',
-                    display: 'block',
-                  }}
-                >
-                  <source src="/videos/hero.mp4" type="video/mp4" />
-                </video>
-              </foreignObject>
-            </g>
-          </svg>
+                  <foreignObject
+                    x="0" y="0" width={VW} height={VH}
+                    mask="url(#hero-infotron-mask)"
+                  >
+                    <video
+                      xmlns="http://www.w3.org/1999/xhtml"
+                      autoPlay muted loop playsInline preload="auto"
+                      data-testid="hero-portal-video"
+                      style={{
+                        width: '100%', height: '100%',
+                        objectFit: 'cover', objectPosition: 'center',
+                        display: 'block',
+                      }}
+                    >
+                      <source src="/videos/hero.mp4" type="video/mp4" />
+                    </video>
+                  </foreignObject>
+                </g>
+              </svg>
+            );
+          })()}
 
           {/* Final stage — un-masked full-bleed video for the clean reveal */}
           <video
