@@ -151,15 +151,6 @@ const Header = () => {
             </div>
 
             <Link
-              to="/capital-projects"
-              className={`text-sm font-normal transition-colors duration-300 ${
-                isActive('/capital-projects') ? 'text-[#3B82F6]' : 'text-gray-300 hover:text-[#3B82F6]'
-              }`}
-            >
-              Capital Projects
-            </Link>
-
-            <Link
               to="/about"
               className={`text-sm font-normal transition-colors ${
                 isActive('/about') ? 'text-[#3B82F6]' : 'text-gray-300 hover:text-[#3B82F6]'
@@ -343,9 +334,6 @@ const Header = () => {
                 )}
               </div>
 
-              <Link to="/capital-projects" className="text-sm font-medium text-gray-300" onClick={() => setMobileMenuOpen(false)}>
-                Capital Projects
-              </Link>
               <Link to="/about" className="text-sm font-medium text-gray-300" onClick={() => setMobileMenuOpen(false)}>
                 About
               </Link>
