@@ -213,27 +213,31 @@ const Home = () => {
   // 6: 0.90–1.00 — full-screen video, text mask dissolved
   const p = heroProgress;
 
-  // Left column copy fades around stage 5 to defer to the cinematic video
-  const heroContentOpacity = 1 - 0.65 * smoothstep(0.78, 0.96, p);
+  // Left column copy fades quickly as the white overlay covers the viewport
+  const heroContentOpacity = 1 - smoothstep(0.0, 0.18, p);
 
-  // Stage 1: abstract atmospheric bg (visible early, fades through stage 2)
-  const abstractBgOpacity = 1 - smoothstep(0.05, 0.32, p);
+  // Stage 1: abstract atmospheric bg fades fast as overlay arrives
+  const abstractBgOpacity = 1 - smoothstep(0.0, 0.18, p);
 
-  // Stage 2: video layer opacity (fades in as letters become visible)
-  const videoLayerOpacity = smoothstep(0.18, 0.42, p);
+  // Video starts revealing immediately once user begins to scroll
+  const videoLayerOpacity = smoothstep(0.0, 0.20, p);
 
-  // Stage 2-3: text knockout strength — controls how strongly the INFOTRON
-  // shape carves through the dark overlay (0 = no knockout; 1 = full knockout)
-  const textKnockoutAlpha = smoothstep(0.20, 0.42, p);
+  // INFOTRON shape always carves through the white overlay at full strength
+  const textKnockoutAlpha = 1;
 
-  // Stage 3-4: text font size scaling (drives both the mask shape and visual scale)
-  const textScaleT = smoothstep(0.30, 0.95, p);
+  // Slow zoom — text scales gradually across the entire scroll span
+  const textScaleT = smoothstep(0.0, 1.0, p);
 
-  // Stage 5-6: dark overlay fades out completely → full-screen video
-  const overlayDarkOpacity = 1 - smoothstep(0.80, 0.98, p);
+  // White opaque overlay: 0 at top → 1 by p≈0.20, stays opaque through to end.
+  // No fade-out; the cinematic ends with white viewport + INFOTRON window.
+  const overlayDarkOpacity = smoothstep(0.0, 0.20, p);
 
-  // Stage 5-6: clip-path expansion — visual area grows from right column to viewport
-  const breakoutT = smoothstep(0.78, 0.92, p);
+  // Standalone "naked" INFOTRON visible at top-of-page (white text on dark bg).
+  // Cross-fades into the knockout-overlay version as the user scrolls.
+  const standaloneTextOpacity = 1 - smoothstep(0.0, 0.20, p);
+
+  // Text stays anchored to the right column — no full-screen breakout
+  const breakoutT = 0;
 
   // ─── Backward-compat values kept for unchanged JSX in left column / observers ───
   const overlayOpacity = 1; // mask stage is always rendered; opacity is per-layer
@@ -303,34 +307,36 @@ const Home = () => {
               expands to the full viewport during the breakout (stage 5–6).
             ──────────────────────────────────────────────────────────────────── */}
         {(() => {
-          // Compute clip-path inset values in pixels (from bbox to 0 across breakoutT)
-          const cpTop    = Math.max(0, rightColBbox.top)    * (1 - breakoutT);
-          const cpRight  = Math.max(0, viewport.w - rightColBbox.right)  * (1 - breakoutT);
-          const cpBottom = Math.max(0, viewport.h - rightColBbox.bottom) * (1 - breakoutT);
-          const cpLeft   = Math.max(0, rightColBbox.left)   * (1 - breakoutT);
-          const cpRadius = 18 * (1 - breakoutT);
-          const clipPath = `inset(${cpTop}px ${cpRight}px ${cpBottom}px ${cpLeft}px round ${cpRadius}px)`;
+          // INFOTRON anchored to the right column — no breakout/recentre.
+          const rcCenterX = rightColBbox.width > 0
+            ? (rightColBbox.left + rightColBbox.right) / 2
+            : viewport.w * 0.72;
+          const rcCenterY = rightColBbox.height > 0
+            ? (rightColBbox.top + rightColBbox.bottom) / 2
+            : viewport.h * 0.5;
+          const textCenterX = rcCenterX;
+          const textCenterY = rcCenterY;
 
-          // Text center: starts at right-column center, animates to viewport center during breakout
-          const rcCenterX = rightColBbox.width > 0 ? (rightColBbox.left + rightColBbox.right) / 2 : viewport.w * 0.7;
-          const rcCenterY = rightColBbox.height > 0 ? (rightColBbox.top + rightColBbox.bottom) / 2 : viewport.h * 0.5;
-          const textCenterX = lerp(rcCenterX, viewport.w / 2, breakoutT);
-          const textCenterY = lerp(rcCenterY, viewport.h / 2, breakoutT);
-
-          // Text font size (px): starts ~9% of right-col width when reveal begins,
-          // grows to ~95% of viewport width at full scale
-          const startSize = Math.max(64, rightColBbox.width * 0.18);
-          const endSize   = viewport.w * 0.95;
+          // Initial size: visible on first paint, sits cleanly inside the right
+          // half. End size: enlarged but still anchored to the right side
+          // without overflowing off-screen. Scale ramps slowly across the
+          // entire scroll for a cinematic, controlled zoom.
+          const startSize = Math.max(
+            96,
+            Math.min(rightColBbox.width * 0.36, viewport.w * 0.16)
+          );
+          const endSize = Math.min(viewport.w * 0.20, viewport.h * 0.45);
           const textFontSizePx = lerp(startSize, endSize, textScaleT);
 
           return (
             <div
               className="absolute inset-0 pointer-events-none"
-              style={{ clipPath, WebkitClipPath: clipPath, zIndex: 30 }}
+              style={{ zIndex: 30 }}
               data-testid="hero-portal-overlay"
               aria-hidden="true"
             >
-              {/* Video layer — fills entire stage (clipped by clip-path above) */}
+              {/* Video layer — full viewport. Hidden by dark overlay until the
+                  INFOTRON shape carves through it; revealed entirely at breakout. */}
               <video
                 autoPlay
                 muted
@@ -349,21 +355,25 @@ const Home = () => {
                 <source src="/videos/hero.mp4" type="video/mp4" />
               </video>
 
-              {/* SVG text-mask overlay: dark rect with INFOTRON shape knocked out */}
+              {/* SVG layer:
+                  • White rect with INFOTRON shape knocked out (so the video
+                    layer behind shows ONLY through the letter shapes).
+                  • A standalone, fully-rendered INFOTRON sits on top so the
+                    word is legible at the top of the page (before the white
+                    overlay materialises). It cross-fades out as the overlay
+                    fades in.                                                  */}
               <svg
                 className="absolute inset-0 w-full h-full"
                 width={viewport.w}
                 height={viewport.h}
                 viewBox={`0 0 ${viewport.w} ${viewport.h}`}
                 preserveAspectRatio="none"
-                style={{ opacity: overlayDarkOpacity }}
               >
                 <defs>
                   <mask id="hero-text-knockout" maskUnits="userSpaceOnUse">
                     {/* Everything shows by default... */}
                     <rect width={viewport.w} height={viewport.h} fill="white" />
-                    {/* ...except the INFOTRON shape, which is knocked out
-                        (alpha ramps from 0→1 across stage 2-3) */}
+                    {/* ...except the INFOTRON shape, which is knocked out */}
                     <text
                       x={textCenterX}
                       y={textCenterY}
@@ -379,39 +389,47 @@ const Home = () => {
                     </text>
                   </mask>
                 </defs>
+
+                {/* White opaque overlay carved by INFOTRON */}
                 <rect
                   width={viewport.w}
                   height={viewport.h}
-                  fill="#050B1A"
+                  fill="#FFFFFF"
                   mask="url(#hero-text-knockout)"
+                  opacity={overlayDarkOpacity}
                 />
+
+                {/* Standalone INFOTRON — visible at initial load, cross-fades
+                    into the knockout overlay as the user scrolls. Same exact
+                    position/size as the mask text so the swap is seamless. */}
+                <text
+                  x={textCenterX}
+                  y={textCenterY}
+                  fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif"
+                  fontSize={textFontSizePx}
+                  fontWeight="400"
+                  letterSpacing="2"
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill="#FFFFFF"
+                  opacity={standaloneTextOpacity}
+                >
+                  INFOTRON
+                </text>
               </svg>
 
-              {/* Stage 1 abstract atmospheric bg — visible early, fades by stage 2.
-                  Sits *above* the dark overlay so it can have its own pattern. */}
+              {/* Subtle right-side atmospheric wash — anchored off-canvas so it
+                  decorates the right area without washing over the left copy.
+                  Fades out by stage 2 as the INFOTRON mask takes focus. */}
               <div
-                className="absolute inset-0"
-                style={{ opacity: abstractBgOpacity * overlayDarkOpacity, pointerEvents: 'none' }}
+                className="absolute inset-y-0 right-0 w-1/2"
+                style={{ opacity: abstractBgOpacity, pointerEvents: 'none' }}
               >
-                {/* Soft purple/blue radial wash */}
                 <div
                   className="absolute inset-0"
                   style={{
                     background:
-                      'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(91,33,182,0.55) 0%, rgba(30,58,138,0.32) 40%, transparent 80%)',
-                  }}
-                />
-                {/* Subtle dot grid texture (vignette-masked) */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage:
-                      'radial-gradient(rgba(167,139,250,0.22) 1px, transparent 1px)',
-                    backgroundSize: '36px 36px',
-                    WebkitMaskImage:
-                      'radial-gradient(ellipse at center, black 30%, transparent 78%)',
-                    maskImage:
-                      'radial-gradient(ellipse at center, black 30%, transparent 78%)',
+                      'radial-gradient(ellipse 80% 70% at 60% 50%, rgba(91,33,182,0.35) 0%, rgba(30,58,138,0.18) 45%, transparent 80%)',
                   }}
                 />
               </div>
