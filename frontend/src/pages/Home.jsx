@@ -16,6 +16,12 @@ const easeOutPortal = (t) => {
   return 1 - Math.pow(1 - c, 5);
 };
 const lerp = (a, b, t) => a + (b - a) * t;
+// Smoothstep — eased 0→1 across [a, b]
+const smoothstep = (a, b, t) => {
+  if (b === a) return t < a ? 0 : 1;
+  const x = Math.max(0, Math.min(1, (t - a) / (b - a)));
+  return x * x * (3 - 2 * x);
+};
 
 // ─── Industries We Serve — data + card component ─────────────────────────
 const industriesRow1 = [
@@ -67,9 +73,15 @@ const Home = () => {
   const heroRef = useRef(null);
   const oRef = useRef(null);
   const videoCircleRef = useRef(null);
+  const rightColRef = useRef(null);
   const [heroProgress, setHeroProgress] = useState(0);
   const [oAnchor, setOAnchor] = useState({ x: 0, y: 0, r: 60 });
   const [viewport, setViewport] = useState({ w: 1, h: 1 });
+  // Right column bbox in viewport coords — drives the clip-path that initially
+  // contains the video/mask within the right column, then expands to full viewport.
+  const [rightColBbox, setRightColBbox] = useState({
+    top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0
+  });
 
   // Measure the *visible* video circle (not the outer O span) so the scroll-mask
   // peephole starts at the exact same position and radius as the inline portal —
@@ -80,13 +92,27 @@ const Home = () => {
     const measure = () => {
       setViewport({ w: window.innerWidth, h: window.innerHeight });
       const target = videoCircleRef.current || oRef.current;
-      if (!target) return;
-      const r = target.getBoundingClientRect();
-      setOAnchor({
-        x: r.left + r.width / 2,
-        y: r.top + r.height / 2,
-        r: Math.min(r.width, r.height) / 2,
-      });
+      if (target) {
+        const r = target.getBoundingClientRect();
+        setOAnchor({
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
+          r: Math.min(r.width, r.height) / 2,
+        });
+      }
+      // Right-column bbox — used by the scroll-driven mask stage to size its
+      // clip-path to the right column initially, then expand to full viewport.
+      if (rightColRef.current) {
+        const rc = rightColRef.current.getBoundingClientRect();
+        setRightColBbox({
+          top: rc.top,
+          left: rc.left,
+          right: rc.right,
+          bottom: rc.bottom,
+          width: rc.width,
+          height: rc.height,
+        });
+      }
     };
 
     measure();
@@ -101,10 +127,18 @@ const Home = () => {
 
     // Track the actual circle DOM with ResizeObserver — captures any reflow.
     let ro;
+    let roRC;
     if (videoCircleRef.current && typeof ResizeObserver !== 'undefined') {
       ro = new ResizeObserver(() => measure());
       ro.observe(videoCircleRef.current);
     }
+    if (rightColRef.current && typeof ResizeObserver !== 'undefined') {
+      roRC = new ResizeObserver(() => measure());
+      roRC.observe(rightColRef.current);
+    }
+    // Continuous measurement during scroll — right-col top/bottom move with scroll
+    const onScrollMeasure = () => measure();
+    window.addEventListener('scroll', onScrollMeasure, { passive: true });
 
     // Late safety remeasures to catch async layout settle on slow networks.
     const t1 = setTimeout(measure, 200);
@@ -113,10 +147,12 @@ const Home = () => {
 
     return () => {
       window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', onScrollMeasure);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
       if (ro) ro.disconnect();
+      if (roRC) roRC.disconnect();
     };
   }, []);
 
@@ -168,21 +204,45 @@ const Home = () => {
   }, []);
 
   // ----- Animation curves -----
-  // Hero content fade (BOTH left + right side fade in unison)
-  const heroContentOpacity = 1 - easeOutPortal(Math.max(0, Math.min(1, heroProgress / 0.18)));
+  // ─── 6-Stage scroll-driven hero ──────────────────────────────────────────
+  // 1: 0.00–0.18 — abstract bg only, no INFOTRON, no video
+  // 2: 0.18–0.40 — INFOTRON fades in, video begins to show through letters
+  // 3: 0.40–0.60 — full mask reveal, medium-size letters
+  // 4: 0.60–0.80 — text scales up, video stays masked inside letters
+  // 5: 0.78–0.92 — break-out: clip-path expands from right column to viewport
+  // 6: 0.90–1.00 — full-screen video, text mask dissolved
+  const p = heroProgress;
 
-  // Overlay activation: fades in quickly so the mask peephole appears just as the inline O fades out
-  const overlayOpacity = easeOutPortal(Math.max(0, Math.min(1, heroProgress / 0.15)));
+  // Left column copy fades around stage 5 to defer to the cinematic video
+  const heroContentOpacity = 1 - 0.65 * smoothstep(0.78, 0.96, p);
 
-  // Mask geometry — peephole expansion
-  const expandT = easeOutPortal(Math.max(0, Math.min(1, (heroProgress - 0.05) / 0.85)));
+  // Stage 1: abstract atmospheric bg (visible early, fades through stage 2)
+  const abstractBgOpacity = 1 - smoothstep(0.05, 0.32, p);
+
+  // Stage 2: video layer opacity (fades in as letters become visible)
+  const videoLayerOpacity = smoothstep(0.18, 0.42, p);
+
+  // Stage 2-3: text knockout strength — controls how strongly the INFOTRON
+  // shape carves through the dark overlay (0 = no knockout; 1 = full knockout)
+  const textKnockoutAlpha = smoothstep(0.20, 0.42, p);
+
+  // Stage 3-4: text font size scaling (drives both the mask shape and visual scale)
+  const textScaleT = smoothstep(0.30, 0.95, p);
+
+  // Stage 5-6: dark overlay fades out completely → full-screen video
+  const overlayDarkOpacity = 1 - smoothstep(0.80, 0.98, p);
+
+  // Stage 5-6: clip-path expansion — visual area grows from right column to viewport
+  const breakoutT = smoothstep(0.78, 0.92, p);
+
+  // ─── Backward-compat values kept for unchanged JSX in left column / observers ───
+  const overlayOpacity = 1; // mask stage is always rendered; opacity is per-layer
+  const expandT = breakoutT;
   const viewportDiag = Math.sqrt(viewport.w * viewport.w + viewport.h * viewport.h);
-  const maskRadius = lerp(oAnchor.r, viewportDiag * 0.7, expandT); // grows past viewport bounds
+  const maskRadius = lerp(oAnchor.r, viewportDiag * 0.7, expandT);
   const maskCenterX = lerp(oAnchor.x, viewport.w / 2, expandT);
   const maskCenterY = lerp(oAnchor.y, viewport.h / 2, expandT);
-
-  // For backwards compatibility in JSX (was used; now disabled — everything fades together)
-  const textOpacity = heroContentOpacity;
+  const textOpacity = 1;
 
 
   useEffect(() => {
@@ -236,44 +296,128 @@ const Home = () => {
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
 
-        {/* FULLSCREEN PORTAL OVERLAY — absolute inside sticky inner, so it scrolls away with the hero after the pin releases */}
-        <div
-          className="absolute inset-0 pointer-events-none will-change-[opacity]"
-          style={{
-            opacity: overlayOpacity,
-            zIndex: 70,
-            visibility: heroProgress > 0.001 ? 'visible' : 'hidden',
-          }}
-          data-testid="hero-portal-overlay"
-          aria-hidden="true"
-        >
-          {/* Video layer — fills the sticky viewport, plays underneath the dark mask */}
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            data-testid="hero-portal-video"
-            className="absolute inset-0 w-full h-full"
-            style={{
-              objectFit: 'cover',
-              objectPosition: 'center',
-              transform: 'scale(1.05)',
-            }}
-          >
-            <source src="/videos/hero.mp4" type="video/mp4" />
-          </video>
+        {/* ─── FULLSCREEN MASK STAGE ─────────────────────────────────────────
+            6-stage scroll-driven cinematic.
+            • Always rendered (avoids flash); per-layer opacity controls visibility.
+            • clip-path contains the visual to the right column initially, then
+              expands to the full viewport during the breakout (stage 5–6).
+            ──────────────────────────────────────────────────────────────────── */}
+        {(() => {
+          // Compute clip-path inset values in pixels (from bbox to 0 across breakoutT)
+          const cpTop    = Math.max(0, rightColBbox.top)    * (1 - breakoutT);
+          const cpRight  = Math.max(0, viewport.w - rightColBbox.right)  * (1 - breakoutT);
+          const cpBottom = Math.max(0, viewport.h - rightColBbox.bottom) * (1 - breakoutT);
+          const cpLeft   = Math.max(0, rightColBbox.left)   * (1 - breakoutT);
+          const cpRadius = 18 * (1 - breakoutT);
+          const clipPath = `inset(${cpTop}px ${cpRight}px ${cpBottom}px ${cpLeft}px round ${cpRadius}px)`;
 
-          {/* Dark mask with circular peephole — peephole grows from O's position to fill screen */}
-          <div
-            className="absolute inset-0 bg-[#04050E] will-change-[mask-image]"
-            style={{
-              WebkitMaskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
-              maskImage: `radial-gradient(circle ${maskRadius}px at ${maskCenterX}px ${maskCenterY}px, transparent ${Math.max(0, maskRadius - 1)}px, #000 ${maskRadius}px)`,
-            }}
-          />
-        </div>
+          // Text center: starts at right-column center, animates to viewport center during breakout
+          const rcCenterX = rightColBbox.width > 0 ? (rightColBbox.left + rightColBbox.right) / 2 : viewport.w * 0.7;
+          const rcCenterY = rightColBbox.height > 0 ? (rightColBbox.top + rightColBbox.bottom) / 2 : viewport.h * 0.5;
+          const textCenterX = lerp(rcCenterX, viewport.w / 2, breakoutT);
+          const textCenterY = lerp(rcCenterY, viewport.h / 2, breakoutT);
+
+          // Text font size (px): starts ~9% of right-col width when reveal begins,
+          // grows to ~95% of viewport width at full scale
+          const startSize = Math.max(64, rightColBbox.width * 0.18);
+          const endSize   = viewport.w * 0.95;
+          const textFontSizePx = lerp(startSize, endSize, textScaleT);
+
+          return (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ clipPath, WebkitClipPath: clipPath, zIndex: 30 }}
+              data-testid="hero-portal-overlay"
+              aria-hidden="true"
+            >
+              {/* Video layer — fills entire stage (clipped by clip-path above) */}
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                data-testid="hero-portal-video"
+                className="absolute inset-0 w-full h-full"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  transform: 'scale(1.04)',
+                  opacity: videoLayerOpacity,
+                }}
+              >
+                <source src="/videos/hero.mp4" type="video/mp4" />
+              </video>
+
+              {/* SVG text-mask overlay: dark rect with INFOTRON shape knocked out */}
+              <svg
+                className="absolute inset-0 w-full h-full"
+                width={viewport.w}
+                height={viewport.h}
+                viewBox={`0 0 ${viewport.w} ${viewport.h}`}
+                preserveAspectRatio="none"
+                style={{ opacity: overlayDarkOpacity }}
+              >
+                <defs>
+                  <mask id="hero-text-knockout" maskUnits="userSpaceOnUse">
+                    {/* Everything shows by default... */}
+                    <rect width={viewport.w} height={viewport.h} fill="white" />
+                    {/* ...except the INFOTRON shape, which is knocked out
+                        (alpha ramps from 0→1 across stage 2-3) */}
+                    <text
+                      x={textCenterX}
+                      y={textCenterY}
+                      fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif"
+                      fontSize={textFontSizePx}
+                      fontWeight="400"
+                      letterSpacing="2"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill={`rgba(0,0,0,${textKnockoutAlpha})`}
+                    >
+                      INFOTRON
+                    </text>
+                  </mask>
+                </defs>
+                <rect
+                  width={viewport.w}
+                  height={viewport.h}
+                  fill="#050B1A"
+                  mask="url(#hero-text-knockout)"
+                />
+              </svg>
+
+              {/* Stage 1 abstract atmospheric bg — visible early, fades by stage 2.
+                  Sits *above* the dark overlay so it can have its own pattern. */}
+              <div
+                className="absolute inset-0"
+                style={{ opacity: abstractBgOpacity * overlayDarkOpacity, pointerEvents: 'none' }}
+              >
+                {/* Soft purple/blue radial wash */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(91,33,182,0.55) 0%, rgba(30,58,138,0.32) 40%, transparent 80%)',
+                  }}
+                />
+                {/* Subtle dot grid texture (vignette-masked) */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage:
+                      'radial-gradient(rgba(167,139,250,0.22) 1px, transparent 1px)',
+                    backgroundSize: '36px 36px',
+                    WebkitMaskImage:
+                      'radial-gradient(ellipse at center, black 30%, transparent 78%)',
+                    maskImage:
+                      'radial-gradient(ellipse at center, black 30%, transparent 78%)',
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })()}
         {/* Animated mesh glow layer */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
@@ -338,258 +482,16 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right — INFOTRON Wordmark with Portal "O" — sits as a defined card with breathing room */}
-            <div className="lg:col-span-5 relative animate-fade-in will-change-[opacity] my-6 lg:my-8" style={{ opacity: heroContentOpacity }}>
-              {/* Background panel — fully transparent: no border/bg/shadow. Galaxy decorative layers blend into the hero background seamlessly. */}
-              <div className="absolute inset-0 overflow-visible pointer-events-none">
-
-                {/* Deep galaxy base — extra-soft radial that fades early so it never reads as a rectangle */}
-                <div
-                  className="absolute -inset-20 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(ellipse 60% 55% at 50% 50%, rgba(42,14,77,0.78) 0%, rgba(27,11,58,0.55) 30%, rgba(14,12,46,0.30) 55%, rgba(6,10,34,0.10) 75%, transparent 90%)',
-                    animation: 'hero-bg-drift 22s ease-in-out infinite'
-                  }}
-                />
-
-                {/* Purple radial behind wordmark — concentrated on the letters, no hard edges */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(91,33,182,0.55) 0%, rgba(67,28,121,0.30) 35%, rgba(35,15,75,0.12) 65%, transparent 88%)'
-                  }}
-                />
-
-                {/* Galaxy nebula clouds — deeper purples and indigos */}
-                <div
-                  className="absolute -top-24 -right-20 w-[22rem] h-[22rem] rounded-full blur-3xl opacity-55 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(76,29,149,0.65) 0%, rgba(49,16,107,0.30) 45%, transparent 75%)',
-                    animation: 'hero-blob-a 18s ease-in-out infinite'
-                  }}
-                />
-                <div
-                  className="absolute -bottom-28 -left-16 w-[26rem] h-[26rem] rounded-full blur-3xl opacity-45 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(30,58,138,0.65) 0%, rgba(15,23,80,0.30) 45%, transparent 75%)',
-                    animation: 'hero-blob-b 26s ease-in-out infinite'
-                  }}
-                />
-                <div
-                  className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-30 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(91,33,182,0.55) 0%, transparent 70%)'
-                  }}
-                />
-
-                {/* Starfield + grid texture removed — they were creating a rectangular patch.
-                    The soft purple/blue blob nebulae above (with blur-3xl) blend continuously into the hero. */}
-
-                {/* Inner vignette removed — blend seamlessly with hero background */}
-
-                {/* Hairline accents removed — no isolated patch outlines */}
-              </div>
-              {/* End of clipped background panel */}
-
-              {/* Wordmark layer — defined panel height, NOT stretched to full row */}
-              <div className="relative min-h-[320px] sm:min-h-[380px] lg:min-h-[460px] p-4 sm:p-8 lg:p-10 flex items-center justify-center">
-                {/* Wordmark — cinematic INFOTRON with portal "O" as the literal 4th letter */}
-                <div
-                  className="relative z-10 flex items-center justify-center select-none w-full"
-                  style={{
-                    fontFamily:
-                      "'Anton', 'Bebas Neue', 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif"
-                  }}
-                  data-testid="hero-infotron-wordmark"
-                  aria-label="INFOTRON"
-                >
-                  {['I', 'N', 'F', 'O', 'T', 'R', 'O', 'N'].map((ch, i) => {
-                    const isPortalO = i === 3;
-
-                    // Cinematic Portal O — still the 4th letter, just rendered as a portal
-                    if (isPortalO) {
-                      return (
-                        <span
-                          key={i}
-                          ref={oRef}
-                          className="relative inline-flex items-center justify-center shrink-0"
-                          style={{
-                            fontSize: 'clamp(5.0rem, 8.6vw, 7.2rem)', // mobile-boosted baseline (~12-15% larger)
-                            width: '1.32em',
-                            height: '1.32em',
-                            margin: '0 0.04em',
-                            verticalAlign: 'middle'
-                          }}
-                          aria-hidden="true"
-                        >
-                          {/* Wide outer halo — soft purple/blue bloom */}
-                          <span
-                            className="absolute rounded-full pointer-events-none"
-                            style={{
-                              inset: '-32%',
-                              background:
-                                'radial-gradient(circle, rgba(139,92,246,0.45) 0%, rgba(59,130,246,0.28) 35%, rgba(139,92,246,0.10) 60%, transparent 78%)',
-                              filter: 'blur(28px)',
-                              animation: 'portal-aura 7s ease-in-out infinite'
-                            }}
-                          />
-
-                          {/* Chrome metallic ring (the rim of the portal) */}
-                          <span
-                            className="absolute inset-0 rounded-full"
-                            style={{
-                              background:
-                                'conic-gradient(from 220deg, #C7D2FE 0%, #ffffff 12%, #A78BFA 28%, #4C1D95 45%, #1E3A8A 58%, #93C5FD 72%, #ffffff 86%, #C7D2FE 100%)',
-                              padding: '6%',
-                              animation: 'portal-ring-rotate 16s linear infinite'
-                            }}
-                          >
-                            {/* Inner cutout to leave only the ring visible */}
-                            <span
-                              className="block w-full h-full rounded-full"
-                              style={{ background: '#0A0F2A' }}
-                            />
-                          </span>
-
-                          {/* Inner ring inset shading */}
-                          <span
-                            className="absolute rounded-full pointer-events-none"
-                            style={{
-                              inset: '6.5%',
-                              boxShadow:
-                                'inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -2px 0 rgba(0,0,0,0.55), 0 0 28px rgba(139,92,246,0.45)'
-                            }}
-                          />
-
-                          {/* Deep tunnel core — radial perspective */}
-                          <span
-                            ref={videoCircleRef}
-                            className="absolute rounded-full overflow-hidden"
-                            style={{
-                              inset: '11%',
-                              background:
-                                'radial-gradient(circle at 50% 55%, #93C5FD 0%, #6366F1 8%, #1E3A8A 22%, #1E1B4B 50%, #050518 100%)'
-                            }}
-                          >
-                            {/* Custom hero video — clipped to circular shape of the "O" letter, plays on load */}
-                            <video
-                              autoPlay
-                              muted
-                              loop
-                              playsInline
-                              preload="auto"
-                              data-testid="hero-inline-portal-video"
-                              className="absolute top-1/2 left-1/2 w-full h-full pointer-events-none"
-                              style={{
-                                transform: 'translate(-50%, -50%) scale(1.15)',
-                                objectFit: 'cover',
-                                objectPosition: 'center',
-                                opacity: 0.85,
-                                filter: 'none'
-                              }}
-                            >
-                              <source src="/videos/hero.mp4" type="video/mp4" />
-                            </video>
-
-                            {/* Rotating data-streak conic lines */}
-                            <span
-                              className="absolute inset-0"
-                              style={{
-                                background:
-                                  'conic-gradient(from 0deg, transparent 0deg, rgba(147,197,253,0.55) 8deg, transparent 16deg, transparent 40deg, rgba(196,181,253,0.45) 50deg, transparent 60deg, transparent 100deg, rgba(147,197,253,0.40) 110deg, transparent 120deg, transparent 170deg, rgba(196,181,253,0.50) 180deg, transparent 190deg, transparent 230deg, rgba(147,197,253,0.45) 240deg, transparent 250deg, transparent 300deg, rgba(196,181,253,0.40) 312deg, transparent 322deg, transparent 360deg)',
-                                mixBlendMode: 'screen',
-                                opacity: 0.9,
-                                animation: 'portal-streaks 10s linear infinite'
-                              }}
-                            />
-
-                            {/* Concentric perspective rings (depth tunnel) */}
-                            <span className="absolute inset-0 pointer-events-none">
-                              <span className="absolute rounded-full" style={{ inset: '8%',  border: '1px solid rgba(147,197,253,0.18)' }} />
-                              <span className="absolute rounded-full" style={{ inset: '20%', border: '1px solid rgba(147,197,253,0.22)' }} />
-                              <span className="absolute rounded-full" style={{ inset: '32%', border: '1px solid rgba(196,181,253,0.28)' }} />
-                              <span className="absolute rounded-full" style={{ inset: '42%', border: '1px solid rgba(196,181,253,0.35)' }} />
-                            </span>
-                          </span>
-
-                          {/* Top specular highlight on the chrome rim */}
-                          <span
-                            className="absolute rounded-full pointer-events-none"
-                            style={{
-                              top: '4%',
-                              left: '20%',
-                              width: '46%',
-                              height: '14%',
-                              background:
-                                'radial-gradient(ellipse, rgba(255,255,255,0.85) 0%, transparent 70%)',
-                              filter: 'blur(1.5px)'
-                            }}
-                          />
-
-                          {/* Bottom specular reflection */}
-                          <span
-                            className="absolute rounded-full pointer-events-none"
-                            style={{
-                              bottom: '5%',
-                              right: '18%',
-                              width: '36%',
-                              height: '10%',
-                              background:
-                                'radial-gradient(ellipse, rgba(196,181,253,0.55) 0%, transparent 75%)',
-                              filter: 'blur(2px)'
-                            }}
-                          />
-                        </span>
-                      );
-                    }
-
-                    // Other letters — Anton display face with premium chrome/blue gradient & subtle sheen
-                    return (
-                      <span
-                        key={i}
-                        className="relative leading-none shrink-0 will-change-[opacity,transform]"
-                        style={{
-                          fontFamily:
-                            "'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif",
-                          fontWeight: 400,
-                          fontSize: 'clamp(3.4rem, 5.8vw, 4.8rem)',
-                          letterSpacing: '0.015em',
-                          background:
-                            'linear-gradient(180deg, #ffffff 0%, #C7D7FF 45%, #A89BE6 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                          filter:
-                            'drop-shadow(0 1px 0 rgba(255,255,255,0.30)) drop-shadow(0 0 18px rgba(167,139,250,0.35)) drop-shadow(0 6px 22px rgba(76,29,149,0.55))',
-                          opacity: textOpacity
-                        }}
-                      >
-                        {/* Sheen overlay */}
-                        <span
-                          aria-hidden="true"
-                          className="absolute inset-0 pointer-events-none"
-                          style={{
-                            background:
-                              'linear-gradient(110deg, transparent 38%, rgba(255,255,255,0.55) 50%, transparent 62%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
-                            backgroundSize: '220% 100%',
-                            animation: `wordmark-sheen 9s ease-in-out ${i * 0.25}s infinite`,
-                            mixBlendMode: 'screen'
-                          }}
-                        >
-                          {ch}
-                        </span>
-                        {ch}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            {/* Right — Placeholder that defines layout space + bbox for the
+                fullscreen mask stage. The cinematic visual itself is rendered
+                in the absolute-positioned mask-stage above (which uses this
+                bbox as the initial clip-path). */}
+            <div
+              ref={rightColRef}
+              className="lg:col-span-5 relative my-6 lg:my-8 min-h-[320px] sm:min-h-[380px] lg:min-h-[460px] rounded-2xl"
+              data-testid="hero-right-column"
+              style={{ opacity: 1 - 0.5 * smoothstep(0.85, 0.98, heroProgress) }}
+            />
           </div>
         </div>
         </div>
