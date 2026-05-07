@@ -218,23 +218,10 @@ const Home = () => {
   // Left content fades during the wipe so the white reads cleanly
   const heroContentOpacity = 1 - smoothstep(0.05, 0.18, p);
 
-  // Border line stagger — 4 segments matching the logo's asymmetric frame:
-  //   1. TOP        long horizontal above the wordmark
-  //   2. LEFT       vertical from top, drops to midway (partial height)
-  //   3. BOTTOM-LEFT short horizontal stub from bottom of left line
-  //   4. RIGHT-STUB short vertical drop from top-right (not connected below)
-  const topLineT       = smoothstep(0.20, 0.32, p);
-  const leftLineT      = smoothstep(0.24, 0.38, p);
-  const bottomLeftT    = smoothstep(0.22, 0.34, p);
-  const rightStubT     = smoothstep(0.20, 0.30, p);
-  const topLineY       = -320 * topLineT;
-  const leftLineY      = -260 * leftLineT;
-  const bottomLeftY    = -210 * bottomLeftT;
-  const rightStubY     = -340 * rightStubT;
-  const topLineOp      = 1 - topLineT;
-  const leftLineOp     = 1 - leftLineT;
-  const bottomLeftOp   = 1 - bottomLeftT;
-  const rightStubOp    = 1 - rightStubT;
+  // Underline animation — single segment that lifts upward + fades during build-up
+  const underlineT  = smoothstep(0.20, 0.34, p);
+  const underlineY  = -260 * underlineT;
+  const underlineOp = 1 - underlineT;
 
   // INFOTRON scale — strict order (no zoom before scale phase)
   let infotronScale = 1.0;
@@ -333,30 +320,18 @@ const Home = () => {
           {(() => {
             const VW = Math.max(1, viewport.w);
             const VH = Math.max(1, viewport.h);
-            // Wordmark — right-weighted, vertically centred
+            // Wordmark — right-weighted, vertically centred, with breathing room
             const tx = VW * 0.70;
             const ty = VH * 0.50;
             const fs = VH * 0.18;
-            // ─── Asymmetric brand frame coords (matches INFOTRON logo) ────
-            //   tx, ty is the text centre. fs is fontSize.
-            //   Text spans roughly:
-            //     x: tx ± (fs * 2.0)   →  ~0.50 to ~0.90 VW (8 letters wide)
-            //     y: ty ± (fs * 0.5)   →  top 0.41 / baseline 0.59 of VH
-            //
-            //   Frame parts:
-            //   • TOP long horizontal:  fx_l → fx_r at fy_t  (above the wordmark)
-            //   • RIGHT short stub:     drops at x = "last N" centre, lands at the
-            //                           top of the letter (just before the N body)
-            //   • LEFT vertical:        from top, drops down to BASELINE
-            //   • BOTTOM-LEFT stub:     short horizontal AT BASELINE, starts JUST
-            //                           BEFORE the I, ends after first 2–3 letters
-            const fx_l       = VW * 0.495;   // just BEFORE the "I"
-            const fx_r       = VW * 0.915;   // top line right end (slightly past text)
-            const fx_rstub   = VW * 0.875;   // right stub vertical x — over the last N
-            const fx_blr     = VW * 0.645;   // bottom stub right end (after INF)
-            const fy_t       = VH * 0.355;   // top line y (above the wordmark)
-            const fy_b       = VH * 0.595;   // BASELINE — aligns with bottom of letters
-            const fy_rs      = VH * 0.430;   // right stub end — lands on top of N
+            // Underline — slightly left-aligned, ~65% of text width, just below text.
+            // Anton condensed at fontSize fs renders "INFOTRON" at ~4.0 × fs wide;
+            // letter-spacing 6 adds ~7 × 6 = 42 px more. Position ulY just below
+            // the baseline with a subtle gap.
+            const textWidthApprox = fs * 4.0 + 42;
+            const ulLeft   = tx - textWidthApprox / 2;          // text left edge
+            const ulRight  = ulLeft + textWidthApprox * 0.65;   // ~65% width, left-anchored
+            const ulY      = ty + fs * 0.62;                    // small gap below baseline
             return (
               <svg
                 className="absolute inset-0 w-full h-full"
@@ -373,12 +348,6 @@ const Home = () => {
                     <stop offset="50%" stopColor="#A855F7" />
                     <stop offset="100%" stopColor="#3B82F6" />
                   </linearGradient>
-                  <filter
-                    id="glow-blur"
-                    x="-30%" y="-30%" width="160%" height="160%"
-                  >
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
-                  </filter>
                   <mask id="hero-infotron-mask" maskUnits="userSpaceOnUse">
                     <rect x="0" y="0" width={VW} height={VH} fill="black" />
                     <text
@@ -386,7 +355,7 @@ const Home = () => {
                       fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, sans-serif"
                       fontWeight="900"
                       fontSize={fs}
-                      letterSpacing="-2"
+                      letterSpacing="6"
                       textAnchor="middle"
                       dominantBaseline="central"
                       fill="white"
@@ -396,33 +365,17 @@ const Home = () => {
                   </mask>
                 </defs>
 
-                {/* Glow trails */}
-                <line x1={fx_l} y1={fy_t + topLineY} x2={fx_r} y2={fy_t + topLineY}
-                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
-                  opacity={topLineOp * 0.35} filter="url(#glow-blur)" />
-                <line x1={fx_rstub} y1={fy_t + rightStubY} x2={fx_rstub} y2={fy_rs + rightStubY}
-                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
-                  opacity={rightStubOp * 0.35} filter="url(#glow-blur)" />
-                <line x1={fx_l} y1={fy_t + leftLineY} x2={fx_l} y2={fy_b + leftLineY}
-                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
-                  opacity={leftLineOp * 0.35} filter="url(#glow-blur)" />
-                <line x1={fx_l} y1={fy_b + bottomLeftY} x2={fx_blr} y2={fy_b + bottomLeftY}
-                  stroke="url(#brand-grad)" strokeWidth="14" strokeLinecap="round"
-                  opacity={bottomLeftOp * 0.35} filter="url(#glow-blur)" />
-
-                {/* Crisp brand-gradient lines (asymmetric — matches logo) */}
-                <line x1={fx_l} y1={fy_t + topLineY} x2={fx_r} y2={fy_t + topLineY}
-                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
-                  opacity={topLineOp} />
-                <line x1={fx_rstub} y1={fy_t + rightStubY} x2={fx_rstub} y2={fy_rs + rightStubY}
-                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
-                  opacity={rightStubOp} />
-                <line x1={fx_l} y1={fy_t + leftLineY} x2={fx_l} y2={fy_b + leftLineY}
-                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
-                  opacity={leftLineOp} />
-                <line x1={fx_l} y1={fy_b + bottomLeftY} x2={fx_blr} y2={fy_b + bottomLeftY}
-                  stroke="url(#brand-grad)" strokeWidth="5" strokeLinecap="square"
-                  opacity={bottomLeftOp} />
+                {/* Single clean underline — gradient pink → purple → blue, no glow */}
+                <line
+                  x1={ulLeft}
+                  y1={ulY + underlineY}
+                  x2={ulRight}
+                  y2={ulY + underlineY}
+                  stroke="url(#brand-grad)"
+                  strokeWidth="3"
+                  strokeLinecap="square"
+                  opacity={underlineOp}
+                />
 
                 {/* Video masked by INFOTRON, scaled around text centre */}
                 <g
