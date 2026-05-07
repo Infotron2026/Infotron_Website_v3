@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd frontend && yarn install --frozen-lockfile && CI=false yarn build",
+  "outputDirectory": "frontend/build",
+  "installCommand": "echo 'no root install required — handled inside buildCommand'",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
