@@ -288,7 +288,7 @@ const Home = () => {
         className="relative lg:h-[350vh]"
       >
         <div
-          className="relative lg:sticky lg:top-0 lg:h-screen w-full flex items-start lg:items-center overflow-hidden py-20 lg:py-0"
+          className="relative lg:sticky lg:top-0 lg:h-screen w-full flex items-center overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
 
@@ -487,12 +487,12 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right — Layout-only spacer reserving grid space for the
-                cinematic canvas (which is rendered as an absolutely-positioned
-                layer above this section). */}
+            {/* Right — Layout-only spacer for the desktop cinematic canvas
+                (which is rendered as an absolutely-positioned layer above
+                this section). Hidden on mobile so the hero is compact.   */}
             <div
               ref={rightColRef}
-              className="lg:col-span-5 relative my-6 lg:my-8 min-h-[320px] sm:min-h-[380px] lg:min-h-[460px]"
+              className="hidden lg:block lg:col-span-5 relative my-8 min-h-[460px]"
               data-testid="hero-right-column"
             />
           </div>
