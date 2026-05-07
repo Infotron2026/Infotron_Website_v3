@@ -911,3 +911,51 @@ button, input, textarea, select {
         animation: none !important;
     }
 }
+
+
+/* ─── Light gradient sections ─────────────────────────────────────────────
+   Adds soft purple/blue contrast between dark sections while keeping all
+   text fully readable. Add `section-light` className to any <section> and
+   inner dark-themed cards/text auto-rebrand to a light surface palette.
+   ──────────────────────────────────────────────────────────────────────── */
+
+.section-light {
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f5f3ff 100%);
+    color: #0f172a;
+}
+
+/* Headings & paragraphs default to dark on light bg */
+.section-light h2,
+.section-light h3,
+.section-light h4 {
+    color: #0f172a;
+}
+
+/* Tailwind utility overrides — applied only inside light sections */
+.section-light .text-white {
+    color: #0f172a !important;
+}
+.section-light .text-gray-300 {
+    color: #334155 !important;
+}
+.section-light .text-gray-400 {
+    color: #475569 !important;
+}
+.section-light .text-gray-500 {
+    color: #64748b !important;
+}
+
+/* Dark card surfaces (using arbitrary Tailwind values) → swap to white */
+.section-light [class*="bg-[#0A192F]"],
+.section-light [class*="bg-[#111827]"] {
+    background-color: #ffffff !important;
+    border-color: rgba(59, 130, 246, 0.18) !important;
+    box-shadow: 0 4px 14px -6px rgba(15, 23, 42, 0.08);
+}
+
+/* Hover shadow lift — slightly more pronounced on white cards */
+.section-light [class*="bg-[#0A192F]"]:hover,
+.section-light [class*="bg-[#111827]"]:hover {
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 18px 40px -18px rgba(59, 130, 246, 0.32) !important;
+}

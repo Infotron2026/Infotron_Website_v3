@@ -129,7 +129,7 @@ const OracleAMS = () => {
       </section>
 
       {/* WHAT WE DO */}
-      <section className="py-24 bg-[#0A192F]">
+      <section className="section-light py-24">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="text-center mb-16 scroll-reveal">
             <h2 className="text-4xl font-bold mb-4">
@@ -180,7 +180,7 @@ const OracleAMS = () => {
       </section>
 
       {/* WHAT MAKES US DIFFERENT */}
-      <section className="py-24 bg-[#0A192F]">
+      <section className="section-light py-24">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="scroll-reveal">
@@ -213,7 +213,7 @@ const OracleAMS = () => {
       </section>
 
       {/* BUSINESS OUTCOMES */}
-      <section className="py-24 bg-[#111827]/50">
+      <section className="section-light py-24">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="text-center mb-16 scroll-reveal">
             <h2 className="text-4xl font-bold mb-4">
