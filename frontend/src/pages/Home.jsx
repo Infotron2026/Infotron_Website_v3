@@ -203,51 +203,55 @@ const Home = () => {
     };
   }, []);
 
-  // ----- Animation curves -----
-  // ─── 6-Stage scroll-driven hero ──────────────────────────────────────────
-  // 1: 0.00–0.18 — abstract bg only, no INFOTRON, no video
-  // 2: 0.18–0.40 — INFOTRON fades in, video begins to show through letters
-  // 3: 0.40–0.60 — full mask reveal, medium-size letters
-  // 4: 0.60–0.80 — text scales up, video stays masked inside letters
-  // 5: 0.78–0.92 — break-out: clip-path expands from right column to viewport
-  // 6: 0.90–1.00 — full-screen video, text mask dissolved
+  // ─── Hero scroll narrative — 5 strict stages ─────────────────────────────
+  // 0–20%   INTRO       static + subtle motion
+  // 20–45%  BUILD-UP    upward design layer (mandatory, before any zoom)
+  // 45–65%  LOCK-IN     upward exits, INFOTRON sole focus, very subtle scale
+  // 65–85%  SCALE       controlled scale up (transform-origin: center)
+  // 85–100% TAKEOVER    mask dissolves → full-screen video
   const p = heroProgress;
 
-  // Left column copy fades quickly as the white overlay covers the viewport
-  const heroContentOpacity = 1 - smoothstep(0.0, 0.18, p);
+  // Stage progress values (all 0→1 within their range)
+  const introT     = smoothstep(0.00, 0.20, p);
+  const buildupT   = smoothstep(0.20, 0.45, p);
+  const lockInT    = smoothstep(0.45, 0.65, p);
+  const subtleT    = smoothstep(0.45, 0.65, p); // very-subtle pre-scale
+  const scaleT     = smoothstep(0.65, 0.85, p);
+  const takeoverT  = smoothstep(0.85, 1.00, p);
 
-  // Stage 1: abstract atmospheric bg fades fast as overlay arrives
-  const abstractBgOpacity = 1 - smoothstep(0.0, 0.18, p);
+  // Build-up upward translation (px). Slight creep through intro, strong push
+  // during 20–45%, finishes its exit during lock-in. Combined into one Y.
+  const buildupY = -40 * introT + -1400 * buildupT + -500 * lockInT;
 
-  // Video starts revealing immediately once user begins to scroll
-  const videoLayerOpacity = smoothstep(0.0, 0.20, p);
+  // Build-up opacity: faint at intro, strong during build-up, fades to 0 by lock-in end
+  const buildupOpacity = Math.max(
+    0,
+    Math.min(
+      1,
+      0.22 + 0.78 * smoothstep(0.18, 0.32, p) - 1.0 * smoothstep(0.50, 0.65, p)
+    )
+  );
 
-  // INFOTRON shape always carves through the white overlay at full strength
-  const textKnockoutAlpha = 1;
+  // INFOTRON scale — strict order (no zoom before lock-in)
+  let infotronScale = 1.0;
+  if (p < 0.45) {
+    infotronScale = 1.0;
+  } else if (p < 0.65) {
+    infotronScale = lerp(1.0, 1.04, subtleT);             // very subtle pre-scale
+  } else if (p < 0.85) {
+    infotronScale = lerp(1.04, 2.6, scaleT);              // controlled scale
+  } else {
+    infotronScale = lerp(2.6, 7.5, takeoverT);            // exceeds viewport bounds
+  }
 
-  // Slow zoom — text scales gradually across the entire scroll span
-  const textScaleT = smoothstep(0.0, 1.0, p);
+  // Final-stage full-screen video opacity (un-masked) — fades in across last 8%
+  const fullscreenVideoOpacity = smoothstep(0.92, 1.0, p);
 
-  // White opaque overlay: 0 at top → 1 by p≈0.20, stays opaque through to end.
-  // No fade-out; the cinematic ends with white viewport + INFOTRON window.
-  const overlayDarkOpacity = smoothstep(0.0, 0.20, p);
+  // White canvas opacity — stays solid until takeover, fades out for video reveal
+  const canvasBgOpacity = 1 - smoothstep(0.92, 1.0, p);
 
-  // Standalone "naked" INFOTRON visible at top-of-page (white text on dark bg).
-  // Cross-fades into the knockout-overlay version as the user scrolls.
-  const standaloneTextOpacity = 1 - smoothstep(0.0, 0.20, p);
-
-  // Text stays anchored to the right column — no full-screen breakout
-  const breakoutT = 0;
-
-  // ─── Backward-compat values kept for unchanged JSX in left column / observers ───
-  const overlayOpacity = 1; // mask stage is always rendered; opacity is per-layer
-  const expandT = breakoutT;
-  const viewportDiag = Math.sqrt(viewport.w * viewport.w + viewport.h * viewport.h);
-  const maskRadius = lerp(oAnchor.r, viewportDiag * 0.7, expandT);
-  const maskCenterX = lerp(oAnchor.x, viewport.w / 2, expandT);
-  const maskCenterY = lerp(oAnchor.y, viewport.h / 2, expandT);
-  const textOpacity = 1;
-
+  // Left column copy fades only in the final takeover (kept readable longer)
+  const heroContentOpacity = 1 - 0.95 * smoothstep(0.85, 0.98, p);
 
   useEffect(() => {
     // Trigger animations slightly BEFORE the element enters the viewport
@@ -300,142 +304,198 @@ const Home = () => {
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
 
-        {/* ─── FULLSCREEN MASK STAGE ─────────────────────────────────────────
-            6-stage scroll-driven cinematic.
-            • Always rendered (avoids flash); per-layer opacity controls visibility.
-            • clip-path contains the visual to the right column initially, then
-              expands to the full viewport during the breakout (stage 5–6).
-            ──────────────────────────────────────────────────────────────────── */}
-        {(() => {
-          // INFOTRON anchored to the right column — no breakout/recentre.
-          const rcCenterX = rightColBbox.width > 0
-            ? (rightColBbox.left + rightColBbox.right) / 2
-            : viewport.w * 0.72;
-          const rcCenterY = rightColBbox.height > 0
-            ? (rightColBbox.top + rightColBbox.bottom) / 2
-            : viewport.h * 0.5;
-          const textCenterX = rcCenterX;
-          const textCenterY = rcCenterY;
+        {/* ─── RIGHT-SIDE CINEMATIC CANVAS ──────────────────────────────────
+            Edge-to-edge canvas (no visible container).
+            Layer A: White canvas (subtle gradient + radial depth)
+            Layer B: Build-up grid + UI fragments — translates upward
+            Layer C: Video (foreignObject) masked by Layer D
+            Layer D: INFOTRON SVG mask (no visible fill — mask only)
+            Final stage: full-bleed un-masked video crossfades in.
+            ──────────────────────────────────────────────────────────────── */}
+        <div
+          className="absolute top-0 right-0 h-full pointer-events-none"
+          style={{
+            // Canvas is right ~52% during stages 0–4 (clear of the left copy).
+            // During the final takeover it expands to 100% so the video can
+            // reveal full-screen with no left margin.
+            width: `${lerp(60, 100, takeoverT)}%`,
+            zIndex: 25,
+          }}
+          aria-hidden="true"
+          data-testid="hero-canvas"
+        >
+          {/* Layer A — White canvas (vertical gradient + radial depth on word).
+              A soft horizontal fade on the LEFT edge ensures the canvas blends
+              into the dark hero rather than presenting a hard vertical seam. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              opacity: canvasBgOpacity,
+              background:
+                'radial-gradient(ellipse 55% 60% at 55% 50%, rgba(255,255,255,0.85) 0%, rgba(250,251,253,0.0) 75%), linear-gradient(180deg, #FAFBFD 0%, #F4F6FB 50%, #EDF1F8 100%)',
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 6%, black 14%, black 100%)',
+              maskImage:
+                'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 6%, black 14%, black 100%)',
+              willChange: 'opacity',
+            }}
+          />
 
-          // Initial size: visible on first paint, sits cleanly inside the right
-          // half. End size: enlarged but still anchored to the right side
-          // without overflowing off-screen. Scale ramps slowly across the
-          // entire scroll for a cinematic, controlled zoom.
-          const startSize = Math.max(
-            96,
-            Math.min(rightColBbox.width * 0.36, viewport.w * 0.16)
-          );
-          const endSize = Math.min(viewport.w * 0.20, viewport.h * 0.45);
-          const textFontSizePx = lerp(startSize, endSize, textScaleT);
-
-          return (
+          {/* Layer B — Build-up: thin grid + UI fragments translating UPWARD */}
+          <div
+            className="absolute inset-0 overflow-hidden"
+            style={{
+              opacity: buildupOpacity,
+              willChange: 'opacity',
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 8%, black 18%, black 100%)',
+              maskImage:
+                'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 8%, black 18%, black 100%)',
+            }}
+          >
             <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ zIndex: 30 }}
-              data-testid="hero-portal-overlay"
-              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '320vh',
+                transform: `translate3d(0, ${buildupY}px, 0)`,
+                willChange: 'transform',
+                backgroundImage:
+                  'linear-gradient(to right, rgba(15,23,42,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(15,23,42,0.05) 1px, transparent 1px)',
+                backgroundSize: '64px 64px, 64px 64px',
+              }}
             >
-              {/* Video layer — full viewport. Hidden by dark overlay until the
-                  INFOTRON shape carves through it; revealed entirely at breakout. */}
+              {/* UI fragments — sparse, condensed, premium feel */}
+              {[
+                { top: '8%',  left: '12%', text: '01 / deploy.seq' },
+                { top: '14%', left: '58%', text: 'uptime  99.99%' },
+                { top: '22%', left: '24%', text: 'node_a → node_b' },
+                { top: '30%', left: '70%', text: '∆ latency  4.2ms' },
+                { top: '38%', left: '18%', text: 'queue.flush()' },
+                { top: '46%', left: '54%', text: 'region: us-east-2' },
+                { top: '54%', left: '32%', text: 'commit  9af23c1' },
+                { top: '62%', left: '64%', text: 'k8s/replicas: 12' },
+                { top: '70%', left: '14%', text: 'p99 = 38ms' },
+                { top: '78%', left: '50%', text: 'TLS 1.3 handshake' },
+                { top: '86%', left: '28%', text: 'ingest_rate  ↑' },
+                { top: '94%', left: '60%', text: 'cache hit 0.94' },
+              ].map((f, i) => (
+                <span
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    top: f.top,
+                    left: f.left,
+                    color: 'rgba(15, 23, 42, 0.32)',
+                    fontFamily: "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace",
+                    fontSize: '11px',
+                    letterSpacing: '0.04em',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {f.text}
+                </span>
+              ))}
+              {/* Vertical accent bars to imply data flow */}
+              {[18, 38, 58, 78].map((leftPct, i) => (
+                <div
+                  key={`bar-${i}`}
+                  style={{
+                    position: 'absolute',
+                    top: `${(i % 2) * 40 + 6}%`,
+                    left: `${leftPct}%`,
+                    width: '1px',
+                    height: '120px',
+                    background:
+                      'linear-gradient(to bottom, transparent, rgba(59,130,246,0.35), transparent)',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Layers C + D — Video (foreignObject) masked by INFOTRON SVG.
+              SVG <text> inside <mask> uses the page-loaded Anton font.
+              Scaling is applied to the entire SVG via CSS transform so the
+              mask + video scale together as one unit (transform-origin:center). */}
+          <svg
+            className="absolute inset-0 w-full h-full"
+            preserveAspectRatio="none"
+            viewBox="0 0 1000 600"
+            style={{
+              transform: `scale(${infotronScale})`,
+              transformOrigin: 'center center',
+              willChange: 'transform',
+            }}
+          >
+            <defs>
+              <mask id="hero-infotron-mask" maskUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="1000" height="600" fill="black" />
+                <text
+                  x="500"
+                  y="300"
+                  fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, sans-serif"
+                  fontWeight="900"
+                  fontSize="220"
+                  letterSpacing="-2"
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill="white"
+                >
+                  INFOTRON
+                </text>
+              </mask>
+            </defs>
+            <foreignObject
+              x="0"
+              y="0"
+              width="1000"
+              height="600"
+              mask="url(#hero-infotron-mask)"
+            >
               <video
+                xmlns="http://www.w3.org/1999/xhtml"
                 autoPlay
                 muted
                 loop
                 playsInline
                 preload="auto"
                 data-testid="hero-portal-video"
-                className="absolute inset-0 w-full h-full"
                 style={{
+                  width: '100%',
+                  height: '100%',
                   objectFit: 'cover',
                   objectPosition: 'center',
-                  transform: 'scale(1.04)',
-                  opacity: videoLayerOpacity,
+                  display: 'block',
                 }}
               >
                 <source src="/videos/hero.mp4" type="video/mp4" />
               </video>
+            </foreignObject>
+          </svg>
 
-              {/* SVG layer:
-                  • White rect with INFOTRON shape knocked out (so the video
-                    layer behind shows ONLY through the letter shapes).
-                  • A standalone, fully-rendered INFOTRON sits on top so the
-                    word is legible at the top of the page (before the white
-                    overlay materialises). It cross-fades out as the overlay
-                    fades in.                                                  */}
-              <svg
-                className="absolute inset-0 w-full h-full"
-                width={viewport.w}
-                height={viewport.h}
-                viewBox={`0 0 ${viewport.w} ${viewport.h}`}
-                preserveAspectRatio="none"
-              >
-                <defs>
-                  <mask id="hero-text-knockout" maskUnits="userSpaceOnUse">
-                    {/* Everything shows by default... */}
-                    <rect width={viewport.w} height={viewport.h} fill="white" />
-                    {/* ...except the INFOTRON shape, which is knocked out */}
-                    <text
-                      x={textCenterX}
-                      y={textCenterY}
-                      fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif"
-                      fontSize={textFontSizePx}
-                      fontWeight="400"
-                      letterSpacing="2"
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      fill={`rgba(0,0,0,${textKnockoutAlpha})`}
-                    >
-                      INFOTRON
-                    </text>
-                  </mask>
-                </defs>
-
-                {/* White opaque overlay carved by INFOTRON */}
-                <rect
-                  width={viewport.w}
-                  height={viewport.h}
-                  fill="#FFFFFF"
-                  mask="url(#hero-text-knockout)"
-                  opacity={overlayDarkOpacity}
-                />
-
-                {/* Standalone INFOTRON — visible at initial load, cross-fades
-                    into the knockout overlay as the user scrolls. Same exact
-                    position/size as the mask text so the swap is seamless. */}
-                <text
-                  x={textCenterX}
-                  y={textCenterY}
-                  fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, -apple-system, sans-serif"
-                  fontSize={textFontSizePx}
-                  fontWeight="400"
-                  letterSpacing="2"
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fill="#FFFFFF"
-                  opacity={standaloneTextOpacity}
-                >
-                  INFOTRON
-                </text>
-              </svg>
-
-              {/* Subtle right-side atmospheric wash — anchored off-canvas so it
-                  decorates the right area without washing over the left copy.
-                  Fades out by stage 2 as the INFOTRON mask takes focus. */}
-              <div
-                className="absolute inset-y-0 right-0 w-1/2"
-                style={{ opacity: abstractBgOpacity, pointerEvents: 'none' }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'radial-gradient(ellipse 80% 70% at 60% 50%, rgba(91,33,182,0.35) 0%, rgba(30,58,138,0.18) 45%, transparent 80%)',
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })()}
+          {/* Final stage — un-masked full-bleed video crossfades in for the
+              clean cinematic full-screen reveal. */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            data-testid="hero-fullscreen-video"
+            className="absolute inset-0 w-full h-full"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+              opacity: fullscreenVideoOpacity,
+              willChange: 'opacity',
+            }}
+          >
+            <source src="/videos/hero.mp4" type="video/mp4" />
+          </video>
+        </div>
         {/* Animated mesh glow layer */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
@@ -500,15 +560,13 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right — Placeholder that defines layout space + bbox for the
-                fullscreen mask stage. The cinematic visual itself is rendered
-                in the absolute-positioned mask-stage above (which uses this
-                bbox as the initial clip-path). */}
+            {/* Right — Layout-only spacer reserving grid space for the
+                cinematic canvas (which is rendered as an absolutely-positioned
+                layer above this section). */}
             <div
               ref={rightColRef}
-              className="lg:col-span-5 relative my-6 lg:my-8 min-h-[320px] sm:min-h-[380px] lg:min-h-[460px] rounded-2xl"
+              className="lg:col-span-5 relative my-6 lg:my-8 min-h-[320px] sm:min-h-[380px] lg:min-h-[460px]"
               data-testid="hero-right-column"
-              style={{ opacity: 1 - 0.5 * smoothstep(0.85, 0.98, heroProgress) }}
             />
           </div>
         </div>
