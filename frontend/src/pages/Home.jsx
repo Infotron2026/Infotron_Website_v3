@@ -164,7 +164,7 @@ const Home = () => {
     let raf = 0;
     let target = 0;
     let current = 0;
-    const SMOOTH = 0.12; // 0 = instant, 1 = never. ~0.12 ≈ 120ms critically-damped feel
+    const SMOOTH = 0.20; // ~80ms critically-damped feel — snappier convergence
 
     const computeTarget = () => {
       const el = heroRef.current;
@@ -203,69 +203,44 @@ const Home = () => {
     };
   }, []);
 
-  // ─── Hero scroll narrative — strict 6-stage choreography ────────────────
-  // 0–15%   ENTRY      logo border + INFOTRON visible, calm, no motion
-  // 15–30%  BORDER SPLIT   4 border lines stagger upward + fade
-  // 0–35%   BUILD-UP   design grid translates upward (concurrent w/ border)
-  // 30–45%  TRANSITION  border gone, sole focus on INFOTRON, very subtle pre-scale
-  // 45–75%  SCALE      INFOTRON scales from CENTER only
-  // 75–100% TAKEOVER   mask dissolves → full-screen video
+  // ─── Hero scroll narrative — 5-stage strict choreography ───────────────
+  // 0–10%   ENTRY     full dark hero, INFOTRON+border visible (no motion)
+  // 10–20%  GLOBAL WIPE  white overlay ramps 0→1 across the entire viewport
+  // 20–45%  BUILD-UP  3-sided border splits + lifts upward, soft glow trails
+  // 45–75%  SCALE     INFOTRON scales from centre (no position shift)
+  // 75–100% TAKEOVER  mask dissolves → full-screen video
   const p = heroProgress;
 
-  // Stage progress values
-  const introT     = smoothstep(0.00, 0.15, p);
-  const buildupT   = smoothstep(0.00, 0.35, p);
-  const lockInT    = smoothstep(0.30, 0.45, p);
-  const subtleT    = smoothstep(0.30, 0.45, p);
-  const scaleT     = smoothstep(0.45, 0.75, p);
-  const takeoverT  = smoothstep(0.75, 1.00, p);
+  // White wipe — covers entire viewport including left content
+  const wipeT = smoothstep(0.10, 0.20, p);
+  const whiteWipeOpacity = wipeT * (1 - smoothstep(0.92, 1.0, p));
 
-  // Build-up upward translation (px) — design layer scrolls past upward
-  const buildupY = -120 * introT + -1600 * buildupT + -400 * lockInT;
+  // Left content fades during the wipe so the white reads cleanly
+  const heroContentOpacity = 1 - smoothstep(0.05, 0.18, p);
 
-  // Build-up opacity: faint at intro, strongest mid build-up, fades by lock-in
-  const buildupOpacity = Math.max(
-    0,
-    Math.min(
-      1,
-      0.18 + 0.82 * smoothstep(0.10, 0.25, p) - 1.0 * smoothstep(0.32, 0.45, p)
-    )
-  );
-
-  // Border split — 4 lines stagger upward + fade across 15–30%
-  const topLineT     = smoothstep(0.15, 0.28, p);
-  const rightLineT   = smoothstep(0.18, 0.30, p);
-  const bottomLineT  = smoothstep(0.16, 0.27, p);
-  const leftLineT    = smoothstep(0.20, 0.32, p);
-  const topLineY     = -280 * topLineT;
-  const rightLineY   = -200 * rightLineT;
-  const bottomLineY  = -160 * bottomLineT;
-  const leftLineY    = -240 * leftLineT;
+  // Border split — 3 lines (top, left, bottom) stagger upward + fade in 20–40%
+  const topLineT     = smoothstep(0.20, 0.32, p);
+  const leftLineT    = smoothstep(0.24, 0.38, p);
+  const bottomLineT  = smoothstep(0.22, 0.34, p);
+  const topLineY     = -320 * topLineT;
+  const leftLineY    = -260 * leftLineT;
+  const bottomLineY  = -210 * bottomLineT;
   const topLineOp    = 1 - topLineT;
-  const rightLineOp  = 1 - rightLineT;
-  const bottomLineOp = 1 - bottomLineT;
   const leftLineOp   = 1 - leftLineT;
+  const bottomLineOp = 1 - bottomLineT;
 
-  // INFOTRON scale — strict order (no zoom before lock-in)
+  // INFOTRON scale — strict order (no zoom before scale phase)
   let infotronScale = 1.0;
   if (p < 0.45) {
     infotronScale = 1.0;
-  } else if (p < 0.50) {
-    infotronScale = lerp(1.0, 1.04, smoothstep(0.45, 0.50, p));   // very subtle
   } else if (p < 0.75) {
-    infotronScale = lerp(1.04, 2.4, smoothstep(0.50, 0.75, p));   // controlled
+    infotronScale = lerp(1.0, 2.6, smoothstep(0.45, 0.75, p));
   } else {
-    infotronScale = lerp(2.4, 8.5, takeoverT);                    // exceeds bounds
+    infotronScale = lerp(2.6, 9.0, smoothstep(0.75, 1.0, p));
   }
 
-  // Final-stage full-screen video opacity
+  // Final un-masked full-bleed video crossfades in across the last 8%
   const fullscreenVideoOpacity = smoothstep(0.92, 1.0, p);
-
-  // White canvas opacity — stays solid until takeover
-  const canvasBgOpacity = 1 - smoothstep(0.92, 1.0, p);
-
-  // Left column copy fades only in the final takeover (kept readable longer)
-  const heroContentOpacity = 1 - 0.95 * smoothstep(0.85, 0.98, p);
 
   useEffect(() => {
     // Trigger animations slightly BEFORE the element enters the viewport
@@ -318,107 +293,35 @@ const Home = () => {
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
 
-        {/* ─── RIGHT-SIDE CINEMATIC CANVAS ──────────────────────────────────
-            Hard boundary at viewport 50% (no gradient bleed into left side).
-            Layer A: White canvas (subtle vertical gradient + radial depth)
-            Layer B: Build-up grid + UI fragments — translates upward
-            Layer C: Video (foreignObject) masked by INFOTRON shape only
-            Layer D: Brand gradient border (4 lines that stagger upward + fade)
-            Final stage: full-bleed un-masked video crossfades in.
+        {/* ─── HERO CINEMATIC LAYER ────────────────────────────────────────
+            Spans the FULL viewport (single dark hero on entry, then a
+            global white wipe). Layer order:
+              Layer A: White wipe overlay (full-viewport, opacity 0→1 at 10–20%)
+              Layer B: Glow trails (soft blurred halos behind border lines)
+              Layer C: 3-sided brand border (top, left, bottom — right open)
+              Layer D: Video (foreignObject) masked by INFOTRON shape only
+              Final:   Un-masked full-bleed video crossfades in for takeover
             ──────────────────────────────────────────────────────────────── */}
         <div
-          className="absolute top-0 right-0 h-full pointer-events-none overflow-hidden"
-          style={{
-            // Right half until takeover (hard 50% boundary), then expands to 100%.
-            width: `${lerp(50, 100, takeoverT)}%`,
-            zIndex: 25,
-          }}
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: 25 }}
           aria-hidden="true"
           data-testid="hero-canvas"
         >
-          {/* Layer A — Premium white canvas (vertical gradient + radial depth).
-              No mask/fade on the left edge — the boundary stays sharp. */}
+          {/* Layer A — Global white wipe (covers entire viewport, including left
+              copy, exactly as spec requires). Premium white with subtle depth. */}
           <div
             className="absolute inset-0"
             style={{
-              opacity: canvasBgOpacity,
+              opacity: whiteWipeOpacity,
               background:
-                'radial-gradient(ellipse 60% 55% at 55% 50%, rgba(255,255,255,0.85) 0%, rgba(250,251,253,0.0) 75%), linear-gradient(180deg, #FAFBFD 0%, #F4F6FB 50%, #EDF1F8 100%)',
+                'radial-gradient(ellipse 60% 55% at 70% 50%, rgba(255,255,255,0.85) 0%, rgba(250,251,253,0.0) 75%), linear-gradient(180deg, #FAFBFD 0%, #F4F6FB 50%, #EDF1F8 100%)',
               willChange: 'opacity',
             }}
           />
 
-          {/* Layer B — Build-up: thin grid + UI fragments translating UPWARD */}
-          <div
-            className="absolute inset-0 overflow-hidden"
-            style={{ opacity: buildupOpacity, willChange: 'opacity' }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '320vh',
-                transform: `translate3d(0, ${buildupY}px, 0)`,
-                willChange: 'transform',
-                backgroundImage:
-                  'linear-gradient(to right, rgba(15,23,42,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(15,23,42,0.05) 1px, transparent 1px)',
-                backgroundSize: '64px 64px, 64px 64px',
-              }}
-            >
-              {[
-                { top: '6%',  left: '14%', text: '01 / deploy.seq' },
-                { top: '12%', left: '60%', text: 'uptime  99.99%' },
-                { top: '20%', left: '26%', text: 'node_a → node_b' },
-                { top: '28%', left: '70%', text: '∆ latency  4.2ms' },
-                { top: '36%', left: '18%', text: 'queue.flush()' },
-                { top: '44%', left: '54%', text: 'region: us-east-2' },
-                { top: '52%', left: '32%', text: 'commit  9af23c1' },
-                { top: '60%', left: '64%', text: 'k8s/replicas: 12' },
-                { top: '68%', left: '14%', text: 'p99 = 38ms' },
-                { top: '76%', left: '50%', text: 'TLS 1.3 handshake' },
-                { top: '84%', left: '28%', text: 'ingest_rate  ↑' },
-                { top: '92%', left: '60%', text: 'cache hit 0.94' },
-              ].map((f, i) => (
-                <span
-                  key={i}
-                  style={{
-                    position: 'absolute',
-                    top: f.top,
-                    left: f.left,
-                    color: 'rgba(15, 23, 42, 0.32)',
-                    fontFamily:
-                      "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace",
-                    fontSize: '11px',
-                    letterSpacing: '0.04em',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {f.text}
-                </span>
-              ))}
-              {[18, 38, 58, 78].map((leftPct, i) => (
-                <div
-                  key={`bar-${i}`}
-                  style={{
-                    position: 'absolute',
-                    top: `${(i % 2) * 40 + 6}%`,
-                    left: `${leftPct}%`,
-                    width: '1px',
-                    height: '120px',
-                    background:
-                      'linear-gradient(to bottom, transparent, rgba(59,130,246,0.35), transparent)',
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Layers C + D — INFOTRON mask (video inside letters) + brand border.
-              Shared SVG so positioning math stays consistent. The video <g>
-              receives the scale transform; the border lines animate via attrs
-              (independent of scale) and are fully gone before scale begins.   */}
+          {/* Layers B + C + D — INFOTRON mask + 3-sided border + glow trails.
+              Single SVG keeps positioning/scale math in one place.            */}
           <svg
             className="absolute inset-0 w-full h-full"
             preserveAspectRatio="xMidYMid meet"
@@ -440,17 +343,28 @@ const Home = () => {
                 <stop offset="100%" stopColor="#3B82F6" />
               </linearGradient>
 
+              {/* Soft blur for glow trails */}
+              <filter
+                id="glow-blur"
+                x="-30%"
+                y="-30%"
+                width="160%"
+                height="160%"
+              >
+                <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
+              </filter>
+
               {/* INFOTRON mask — letters carve through black so video shows
-                  ONLY inside the letter shapes. Centered slightly right of
-                  canvas-centre for a right-weighted composition.            */}
+                  ONLY inside the letter shapes. Right-weighted (x=720),
+                  vertically centred-with-lower-bias (y=420) to match logo.  */}
               <mask id="hero-infotron-mask" maskUnits="userSpaceOnUse">
                 <rect x="0" y="0" width="1000" height="600" fill="black" />
                 <text
-                  x="540"
+                  x="720"
                   y="420"
                   fontFamily="'Anton', 'Bebas Neue', 'Inter', system-ui, sans-serif"
                   fontWeight="900"
-                  fontSize="175"
+                  fontSize="145"
                   letterSpacing="-2"
                   textAnchor="middle"
                   dominantBaseline="central"
@@ -461,11 +375,82 @@ const Home = () => {
               </mask>
             </defs>
 
-            {/* Scaling group — origin at the text centre (540, 420) so scale
-                is symmetric. Using SVG-native transform attribute (more
-                reliable than CSS transformBox across browsers).               */}
+            {/* Layer B — Glow trails: soft blurred halos that move with each
+                border line. Subtle, low opacity, slightly blurred — premium. */}
+            {/* Top glow */}
+            <line
+              x1="380"
+              y1={332 + topLineY}
+              x2="1060"
+              y2={332 + topLineY}
+              stroke="url(#brand-grad)"
+              strokeWidth="14"
+              strokeLinecap="round"
+              opacity={topLineOp * 0.35}
+              filter="url(#glow-blur)"
+            />
+            {/* Left glow */}
+            <line
+              x1="380"
+              y1={332 + leftLineY}
+              x2="380"
+              y2={508 + leftLineY}
+              stroke="url(#brand-grad)"
+              strokeWidth="14"
+              strokeLinecap="round"
+              opacity={leftLineOp * 0.35}
+              filter="url(#glow-blur)"
+            />
+            {/* Bottom glow */}
+            <line
+              x1="380"
+              y1={508 + bottomLineY}
+              x2="1060"
+              y2={508 + bottomLineY}
+              stroke="url(#brand-grad)"
+              strokeWidth="14"
+              strokeLinecap="round"
+              opacity={bottomLineOp * 0.35}
+              filter="url(#glow-blur)"
+            />
+
+            {/* Layer C — 3-sided brand border (top, left, bottom — RIGHT OPEN).
+                Slightly thicker stroke for legible presence on white canvas. */}
+            <line
+              x1="380"
+              y1={332 + topLineY}
+              x2="1060"
+              y2={332 + topLineY}
+              stroke="url(#brand-grad)"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+              opacity={topLineOp}
+            />
+            <line
+              x1="380"
+              y1={332 + leftLineY}
+              x2="380"
+              y2={508 + leftLineY}
+              stroke="url(#brand-grad)"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+              opacity={leftLineOp}
+            />
+            <line
+              x1="380"
+              y1={508 + bottomLineY}
+              x2="1060"
+              y2={508 + bottomLineY}
+              stroke="url(#brand-grad)"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+              opacity={bottomLineOp}
+            />
+
+            {/* Layer D — Video masked by INFOTRON. Scaled around the text
+                centre via SVG-native transform attribute (reliable).         */}
             <g
-              transform={`translate(540 420) scale(${infotronScale.toFixed(4)}) translate(-540 -420)`}
+              transform={`translate(720 420) scale(${infotronScale.toFixed(4)}) translate(-720 -420)`}
               style={{ willChange: 'transform' }}
             >
               <foreignObject
@@ -495,53 +480,6 @@ const Home = () => {
                 </video>
               </foreignObject>
             </g>
-
-            {/* Brand border — 4 lines staggering UPWARD then fading.
-                Box: x 130–950, y 200–540 (text sits in lower portion).      */}
-            {/* Top */}
-            <line
-              x1="130"
-              y1={200 + topLineY}
-              x2="950"
-              y2={200 + topLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              opacity={topLineOp}
-            />
-            {/* Right */}
-            <line
-              x1="950"
-              y1={200 + rightLineY}
-              x2="950"
-              y2={540 + rightLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              opacity={rightLineOp}
-            />
-            {/* Bottom */}
-            <line
-              x1="130"
-              y1={540 + bottomLineY}
-              x2="950"
-              y2={540 + bottomLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              opacity={bottomLineOp}
-            />
-            {/* Left */}
-            <line
-              x1="130"
-              y1={200 + leftLineY}
-              x2="130"
-              y2={540 + leftLineY}
-              stroke="url(#brand-grad)"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              opacity={leftLineOp}
-            />
           </svg>
 
           {/* Final stage — un-masked full-bleed video for the clean reveal */}
