@@ -84,98 +84,89 @@ export const caseStudies = [
   {
     id: 1,
     slug: "scaled-trading-infrastructure",
-    client: "Global FinTech Platform",
+    client: "Financial Services engagement",
     industry: "Financial Services",
     title: "Scaled Infrastructure to Support Business Growth",
-    impact: "Sub-50ms latency across 500M+ daily transactions",
-    challenge: "A rapidly growing trading platform needed to scale infrastructure to handle 10x transaction volume while maintaining sub-50ms latency requirements.",
-    approach: "Deployed a managed DevOps team and re-architected core trading systems using microservices, Kubernetes, and real-time data pipelines.",
-    overview: "The client operates a multi-asset trading platform serving institutional clients across North America and EMEA. A combination of new regulatory flows, expanded asset classes, and onboarding of two large prime brokers created transaction volume projections the existing infrastructure could not absorb. Any latency regression above 50ms directly impacted execution quality and revenue.",
+    impact: "Standardized environments, structured monitoring, and stronger governance across the estate.",
+    challenge: "A financial services organization needed to standardize and stabilize infrastructure as system load and operational complexity grew.",
+    approach: "Assessed current state, introduced standardization, and implemented monitoring and governance controls.",
+    overview: "A financial services organization experiencing increasing system load and operational complexity as the business scaled. Inconsistent configurations across environments, limited visibility into system performance, and a growing need for reliability and security drove the case for a structured infrastructure program.",
     challenges: [
-      "Monolithic order routing service tightly coupled to a shared RDBMS, creating contention under peak load",
-      "Market data ingestion pipeline built on legacy message bus with no horizontal scaling path",
-      "Deployments required 45-minute maintenance windows, blocking rapid iteration",
-      "Observability gaps made it impossible to isolate latency spikes across 40+ downstream services",
-      "Compliance constraints required every architectural change to preserve full audit and replay capability"
+      "Infrastructure not standardized across environments",
+      "Limited visibility into system performance",
+      "Growing need for reliability and security"
     ],
-    solution: "We designed a phased modernization of the trading stack around event-driven microservices, a Kafka-based market data fabric, and Kubernetes on AWS. Order routing was decomposed into latency-critical and stateful services, with gRPC for inter-service calls and Redis for hot-path caching. A custom observability layer combining OpenTelemetry, Prometheus, and Grafana gave engineers per-symbol latency visibility. Blue-green deployments with shadow traffic replay eliminated maintenance windows and preserved the audit trail required by compliance.",
-    execution: "A 12-person pod operated in 2-week sprints co-located with the client's trading platform team. Delivery was structured in four tracks: data fabric, order routing, observability, and platform hardening. Quarterly architecture reviews with the client's CTO and Head of Risk kept scope aligned. End-to-end rollout completed in 6 months with zero client-visible incidents.",
+    solution: "The engagement opened with an assessment of current-state infrastructure, environments, and controls. From the assessment, we agreed on a phased plan to introduce standardization, improve observability, and tighten governance. The plan was sequenced to minimize disruption to in-flight business activity, with each phase tied to a defined operational outcome.",
+    execution: "Delivery was structured across four workstreams. Infrastructure configurations were standardized to remove drift between environments. Identity and access controls were improved through MFA enforcement, role-based access, and lifecycle reviews. Monitoring and alerting systems were introduced to give engineers structured visibility into platform health. Network and system security were strengthened through segmentation reviews and configuration hardening. Each workstream had its own delivery checkpoints and reporting cadence.",
     results: [
-      "Infrastructure scaled to handle 500M+ daily transactions",
-      "Reduced p99 latency from 120ms to 35ms",
-      "Achieved 99.99% uptime during peak trading hours",
-      "Cut infrastructure spend by $2.3M annually through right-sizing and spot usage",
-      "Eliminated maintenance-window deploys — release cadence moved from monthly to daily"
+      "Improved system stability under increased load",
+      "Better visibility into infrastructure performance",
+      "Reduced operational inconsistencies",
+      "More reliable and scalable environment"
     ],
-    techStack: ["Kubernetes (EKS)", "Kafka", "gRPC", "Go", "Java", "Redis", "PostgreSQL", "Terraform", "OpenTelemetry", "Prometheus", "Grafana", "AWS"],
+    techStack: ["Kubernetes", "Terraform", "AWS", "Prometheus", "Grafana", "OpenTelemetry", "Identity & Access Management", "Configuration Management"],
     image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=700&fit=crop&auto=format",
-    duration: "6 months",
-    teamSize: "12 engineers",
-    deliveryModel: "Managed Services Pod"
+    duration: "Phased delivery",
+    teamSize: "Cross-functional pod",
+    deliveryModel: "Managed Services"
   },
   {
     id: 2,
     slug: "legacy-platform-modernization",
-    client: "Enterprise SaaS Company",
+    client: "Enterprise software engagement",
     industry: "Enterprise Software",
     title: "Modernized Legacy Business Applications and Workflows",
-    impact: "Migrated 2.5M users with zero downtime, 65% faster load times",
-    challenge: "A B2B SaaS company with a large installed base needed to modernize a 15-year-old monolithic application without service disruption.",
-    approach: "Assembled a full-stack team and executed phased migration to cloud-native architecture with zero downtime strategy.",
-    overview: "The platform supported mission-critical workflows for enterprise customers across finance, HR, and procurement. Its legacy PHP monolith had grown unmaintainable: new feature releases averaged one per quarter, onboarding a new engineer took six weeks, and AWS spend was growing 35% year over year without matching revenue growth. Leadership needed a modernization path that preserved existing contracts and SLAs while unlocking weekly release velocity.",
+    impact: "Modernized application components, streamlined workflows, and improved data flow across systems.",
+    challenge: "An organization operating on legacy systems needed to modernize application components and workflows without disrupting ongoing business activity.",
+    approach: "Evaluated existing systems, identified modernization opportunities, and aligned improvements with business priorities.",
+    overview: "An organization operating on legacy systems with limited flexibility and increasing maintenance overhead. Outdated application components were impacting performance, manual workflows were reducing efficiency, and the existing platform was constraining the team's ability to support evolving business needs.",
     challenges: [
-      "15 years of business logic with limited documentation and heavy use of stored procedures",
-      "Tightly coupled front-end and back-end rendering, blocking any independent UI refresh",
-      "Database schema serving reporting, OLTP, and batch jobs from the same tables",
-      "Contractual uptime SLA of 99.95% with hard penalties for customer-visible outages",
-      "Parallel feature roadmap that could not be paused during migration"
+      "Outdated systems impacting performance",
+      "Manual workflows reducing efficiency",
+      "Difficulty scaling with business needs"
     ],
-    solution: "We executed a strangler-fig migration: a new React front-end behind an API gateway, with Node.js/NestJS services carved out of the monolith by bounded context. Read traffic was shifted to new services first behind feature flags, followed by writes, using dual-write and CDC (Debezium) to keep the legacy DB and new PostgreSQL stores consistent. Core reporting moved to a separate read replica to eliminate OLTP contention. A customer-visible changelog plus progressive rollout by tenant gave enterprise clients confidence throughout cutover.",
-    execution: "An 18-engineer team operated across three streams (front-end, services, data) with a dedicated SRE sub-team owning rollout safety. The team ran in 1-week iterations with a weekly stakeholder demo. Feature-flagged rollout was executed tenant-by-tenant over the final four weeks, with automated rollback on any SLA regression.",
+    solution: "We started with an evaluation of existing systems and workflows to understand where modernization would deliver the most operational value. The assessment identified components ready for upgrade, integration points that needed attention, and workflows that could be streamlined. Improvements were aligned to current business priorities so each phase produced visible benefit before moving forward.",
+    execution: "Application components and integrations were updated in sequence to maintain stability across the broader system landscape. Manual workflows were reviewed and reduced where automation was practical. System performance and reliability were addressed through targeted tuning and structural improvements. Data flow across systems was improved by tightening integration patterns and standardizing exchange formats. Each change was validated against existing business processes before being released.",
     results: [
-      "Migrated 2.5M users to the new platform with zero downtime",
-      "Reduced p95 page load times by 65%",
-      "Cut operational cloud costs by 40%",
-      "Moved release cadence from quarterly to weekly",
-      "Reduced new-engineer onboarding from 6 weeks to 8 days"
+      "Improved application performance",
+      "Reduced operational complexity",
+      "More efficient workflows",
+      "Better alignment with current business needs"
     ],
-    techStack: ["React", "TypeScript", "Node.js", "NestJS", "PostgreSQL", "Debezium", "Kafka", "AWS ECS", "CloudFront", "LaunchDarkly", "Datadog"],
+    techStack: ["Application Modernization", "API Integration", "Workflow Automation", "Cloud Platforms", "CI/CD", "Data Integration", "Monitoring & Observability"],
     image: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=1200&h=700&fit=crop&auto=format",
-    duration: "3 months",
-    teamSize: "18 engineers",
+    duration: "Phased modernization",
+    teamSize: "Cross-functional pod",
     deliveryModel: "Managed Services + Consulting"
   },
   {
     id: 3,
     slug: "algorithmic-trading-platform",
-    client: "Institutional Asset Manager",
+    client: "Investment management engagement",
     industry: "Investment Management",
     title: "Enhanced Trading Platform Stability and Operations",
-    impact: "$2B+ daily trade volume with 99.999% reliability",
-    challenge: "A multi-billion-dollar asset manager required a proprietary algorithmic trading platform with complex quantitative models and real-time risk management.",
-    approach: "Delivered end-to-end platform development with quantitative engineers, data engineers, and trading system specialists.",
-    overview: "The firm's existing execution stack combined three vendor products stitched together with scripts. Strategy researchers could not backtest and deploy on the same infrastructure, slippage between research and production signals was material, and risk calculations ran on end-of-day batches. Leadership committed to a ground-up rebuild to consolidate research, execution, and risk onto a single platform.",
+    impact: "Structured monitoring, performance tuning, and consistent operational workflows across the trading environment.",
+    challenge: "A trading environment requiring high availability needed structured monitoring, improved reliability, and a more proactive operational model.",
+    approach: "Introduced structured monitoring and support processes, improved system reliability through performance tuning, and enhanced operational workflows.",
+    overview: "A trading environment requiring high availability and consistent performance. Operational signals showed performance inconsistencies during peak activity, limited monitoring made it hard to identify issues early, and the support model leaned reactive rather than structured.",
     challenges: [
-      "Research-to-production gap causing signal decay between backtest and live trading",
-      "Intraday risk exposure across 10,000+ positions computed only at market close",
-      "Need for deterministic, replayable execution for model audit and attribution",
-      "Multi-venue connectivity with strict exchange conformance and failover requirements",
-      "Full regulatory audit trail for every order decision, model input, and risk check"
+      "Performance inconsistencies during peak activity",
+      "Limited monitoring and issue visibility",
+      "Reactive support model"
     ],
-    solution: "We delivered a unified Python/Rust platform: a research environment with vectorized backtesting on historical tick data, a deterministic execution engine in Rust for sub-millisecond order handling, and a streaming risk service computing exposure in real time across all strategies. A central event store (Kafka + S3) captured every market tick, order, fill, and risk calculation, enabling full replay and model attribution. Deployment used dedicated, latency-tuned bare-metal alongside co-located exchange connectivity.",
-    execution: "A 15-person delivery team combined two quant engineers embedded with the client's research desk, a core execution squad, a data platform squad, and a risk/compliance squad. The team shipped an MVP in 10 weeks, ran 8 weeks of parallel paper trading, and cut over one strategy at a time over the final 12 weeks. Model governance and audit reviews were built into the release pipeline.",
+    solution: "The engagement focused on introducing structured monitoring and support processes, improving system reliability through targeted performance tuning, and enhancing the operational workflows that surrounded the platform. Each improvement was sized to be implemented without disrupting trading hours, with changes validated in non-production environments before rollout.",
+    execution: "Monitoring and alerting systems were implemented to give the operations team consistent visibility across the platform. Key system components were optimized to address the performance inconsistencies observed at peak. Structured support workflows were established to move the team away from reactive firefighting toward defined runbooks and ownership. Coordination across systems was improved through agreed handoffs and clearer escalation paths.",
     results: [
-      "Platform handling $2B+ in daily trade volume",
-      "Real-time risk calculations across 10,000+ positions",
-      "99.999% system reliability in first 12 months",
-      "Reduced trade execution time by 85%",
-      "Closed research-to-production gap — strategies now deploy in hours, not weeks"
+      "Improved platform stability",
+      "Faster issue identification and resolution",
+      "More consistent system performance",
+      "Better operational control and visibility"
     ],
-    techStack: ["Rust", "Python", "FIX Protocol", "Kafka", "ClickHouse", "Redis", "PostgreSQL", "Kubernetes", "Pandas", "NumPy", "Grafana"],
+    techStack: ["Performance Monitoring", "Alerting & Observability", "Runbook Automation", "Capacity Planning", "Incident Management", "ITSM Workflows"],
     image: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=1200&h=700&fit=crop&auto=format",
-    duration: "8 months",
-    teamSize: "15 specialists",
-    deliveryModel: "Dedicated Delivery Team"
+    duration: "Phased delivery",
+    teamSize: "Cross-functional pod",
+    deliveryModel: "Managed Services"
   }
 ];
 
