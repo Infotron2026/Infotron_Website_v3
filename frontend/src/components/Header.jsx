@@ -19,10 +19,21 @@ const Header = () => {
   // Instant scroll to top, even when clicking the same route as current
   const scrollTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
 
-  // Hide header on first scroll, reveal on return-to-top
+  // Auto-hide nav: hidden when scrolling DOWN past the threshold,
+  // returns immediately whenever the user scrolls UP — even mid-page.
   useEffect(() => {
-    const onScroll = () => setHidden(window.scrollY > 40);
-    onScroll();
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y <= 40) {
+        setHidden(false);
+      } else if (y > lastY) {
+        setHidden(true);   // scrolling down
+      } else if (y < lastY) {
+        setHidden(false);  // scrolling up
+      }
+      lastY = y;
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
