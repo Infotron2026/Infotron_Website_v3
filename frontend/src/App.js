@@ -6,6 +6,9 @@ import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import Home from "@/pages/Home";
 import ManagedServices from "@/pages/ManagedServices";
+import InfrastructureITOperations from "@/pages/InfrastructureITOperations";
+import OracleAMS from "@/pages/OracleAMS";
+import MicrosoftWorkplaceSupport from "@/pages/MicrosoftWorkplaceSupport";
 import StaffAugmentation from "@/pages/StaffAugmentation";
 import BusinessConsulting from "@/pages/BusinessConsulting";
 import CapitalProjects from "@/pages/CapitalProjects";
@@ -30,6 +33,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services/managed-services" element={<ManagedServices />} />
+            <Route path="/services/managed-services/infrastructure-it-operations" element={<InfrastructureITOperations />} />
+            <Route path="/services/managed-services/oracle-ams" element={<OracleAMS />} />
+            <Route path="/services/managed-services/microsoft-workplace-support" element={<MicrosoftWorkplaceSupport />} />
             <Route path="/services/staff-augmentation" element={<StaffAugmentation />} />
             <Route path="/services/business-consulting" element={<BusinessConsulting />} />
             <Route path="/capital-projects" element={<CapitalProjects />} />

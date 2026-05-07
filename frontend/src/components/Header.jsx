@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
 import { caseStudies, blogPosts } from '../data/mockData';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [managedFlyoutOpen, setManagedFlyoutOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileManagedOpen, setMobileManagedOpen] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -41,46 +44,110 @@ const Header = () => {
               Home
             </Link>
 
-            {/* Services Dropdown - Fixed hover behavior */}
+            {/* Services Dropdown — Managed Services has a side-flyout for sub-pages */}
             <div
-              className="relative group"
+              className="relative"
               onMouseEnter={() => setServicesOpen(true)}
-              onMouseLeave={() => setServicesOpen(false)}
+              onMouseLeave={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
             >
-              <button className="flex items-center gap-1 text-sm font-normal text-gray-300 hover:text-[#3B82F6] transition-colors py-4">
+              <button
+                className="flex items-center gap-1 text-sm font-normal text-gray-300 hover:text-[#3B82F6] transition-colors py-4"
+                data-testid="nav-services"
+              >
                 Services
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* Dropdown with invisible bridge to prevent gap */}
-              <div className={`absolute top-full left-0 pt-0 ${servicesOpen ? 'block' : 'hidden'}`}>
-                <div className="w-72 bg-slate-800 rounded-lg shadow-xl border border-[#3B82F6]/20 py-2 mt-0">
-                  <Link
-                    to="/services/managed-services"
-                    className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
-                    onClick={() => setServicesOpen(false)}
-                  >
-                    <div className="font-semibold text-white text-sm">Managed Services</div>
-                    <div className="text-xs text-gray-400 mt-1">Full-stack teams that own delivery</div>
-                  </Link>
-                  <Link
-                    to="/services/staff-augmentation"
-                    className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
-                    onClick={() => setServicesOpen(false)}
-                  >
-                    <div className="font-semibold text-white text-sm">Staff Augmentation</div>
-                    <div className="text-xs text-gray-400 mt-1">Senior engineers in 2 weeks</div>
-                  </Link>
-                  <Link
-                    to="/services/business-consulting"
-                    className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
-                    onClick={() => setServicesOpen(false)}
-                  >
-                    <div className="font-semibold text-white text-sm">Business Consulting</div>
-                    <div className="text-xs text-gray-400 mt-1">Former CTOs and VPs of Engineering</div>
-                  </Link>
+              {servicesOpen && (
+                <div className="absolute top-full left-0 pt-2 z-50">
+                  <div className="flex">
+                    {/* Main panel */}
+                    <div className="w-72 bg-[#0F172A] border border-[#3B82F6]/20 rounded-lg shadow-2xl py-2" data-testid="services-dropdown">
+                      {/* Managed Services with side flyout */}
+                      <div
+                        className="relative"
+                        onMouseEnter={() => setManagedFlyoutOpen(true)}
+                      >
+                        <Link
+                          to="/services/managed-services"
+                          className={`flex items-center justify-between px-6 py-3 transition-all ${managedFlyoutOpen ? 'bg-[#3B82F6]/10' : 'hover:bg-[#3B82F6]/10'}`}
+                          onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        >
+                          <div>
+                            <div className="font-semibold text-white text-sm">Managed Services</div>
+                            <div className="text-xs text-gray-400 mt-1">Run and operate at scale</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-blue-400/80" />
+                        </Link>
+                      </div>
+
+                      <Link
+                        to="/capital-projects"
+                        className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
+                        onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        onMouseEnter={() => setManagedFlyoutOpen(false)}
+                      >
+                        <div className="font-semibold text-white text-sm">Capital Projects</div>
+                        <div className="text-xs text-gray-400 mt-1">Build and execute large programs</div>
+                      </Link>
+                      <Link
+                        to="/services/staff-augmentation"
+                        className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
+                        onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        onMouseEnter={() => setManagedFlyoutOpen(false)}
+                      >
+                        <div className="font-semibold text-white text-sm">Staff Augmentation</div>
+                        <div className="text-xs text-gray-400 mt-1">Senior engineers in two weeks</div>
+                      </Link>
+                      <Link
+                        to="/services/business-consulting"
+                        className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
+                        onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        onMouseEnter={() => setManagedFlyoutOpen(false)}
+                      >
+                        <div className="font-semibold text-white text-sm">Business Consulting</div>
+                        <div className="text-xs text-gray-400 mt-1">Former CTOs and VPs of Engineering</div>
+                      </Link>
+                    </div>
+
+                    {/* Side flyout for Managed Services sub-pages */}
+                    {managedFlyoutOpen && (
+                      <div
+                        className="ml-2 w-80 bg-[#0F172A] border border-[#3B82F6]/20 rounded-lg shadow-2xl py-2 animate-fade-in"
+                        data-testid="managed-services-flyout"
+                      >
+                        <div className="px-6 py-2 text-[10px] font-semibold tracking-[0.2em] uppercase text-blue-300/80 border-b border-white/5">
+                          Managed Services
+                        </div>
+                        <Link
+                          to="/services/managed-services/oracle-ams"
+                          className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
+                          onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        >
+                          <div className="font-semibold text-white text-sm">Oracle Applications (AMS)</div>
+                          <div className="text-xs text-gray-400 mt-1">ERP, HCM, SCM run and optimize</div>
+                        </Link>
+                        <Link
+                          to="/services/managed-services/infrastructure-it-operations"
+                          className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
+                          onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        >
+                          <div className="font-semibold text-white text-sm">Infrastructure & IT Operations</div>
+                          <div className="text-xs text-gray-400 mt-1">Standardize, secure, audit-ready</div>
+                        </Link>
+                        <Link
+                          to="/services/managed-services/microsoft-workplace-support"
+                          className="block px-6 py-3 hover:bg-[#3B82F6]/10 transition-all"
+                          onClick={() => { setServicesOpen(false); setManagedFlyoutOpen(false); }}
+                        >
+                          <div className="font-semibold text-white text-sm">Microsoft Workplace & End-User Support</div>
+                          <div className="text-xs text-gray-400 mt-1">AI-powered helpdesk and Microsoft 365</div>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <Link
@@ -226,16 +293,56 @@ const Header = () => {
               <Link to="/" className="text-sm font-medium text-gray-300" onClick={() => { setMobileMenuOpen(false); scrollTop(); }}>
                 Home
               </Link>
-              <div className="text-sm font-medium text-gray-500 px-2">Services:</div>
-              <Link to="/services/managed-services" className="text-sm pl-4 text-gray-300" onClick={() => setMobileMenuOpen(false)}>
-                Managed Services
-              </Link>
-              <Link to="/services/staff-augmentation" className="text-sm pl-4 text-gray-300" onClick={() => setMobileMenuOpen(false)}>
-                Staff Augmentation
-              </Link>
-              <Link to="/services/business-consulting" className="text-sm pl-4 text-gray-300" onClick={() => setMobileMenuOpen(false)}>
-                Business Consulting
-              </Link>
+
+              {/* Mobile Services group */}
+              <div>
+                <button
+                  className="flex items-center justify-between w-full text-sm font-medium text-gray-300 py-1"
+                  onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                  data-testid="mobile-services-toggle"
+                >
+                  <span>Services</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {mobileServicesOpen && (
+                  <div className="pl-4 mt-3 flex flex-col gap-3 border-l border-white/10">
+                    {/* Managed Services parent + sub-list */}
+                    <div>
+                      <button
+                        className="flex items-center justify-between w-full text-sm text-gray-200"
+                        onClick={() => setMobileManagedOpen(!mobileManagedOpen)}
+                        data-testid="mobile-managed-toggle"
+                      >
+                        <span>Managed Services</span>
+                        <ChevronRight className={`w-3.5 h-3.5 transition-transform ${mobileManagedOpen ? 'rotate-90' : ''}`} />
+                      </button>
+                      {mobileManagedOpen && (
+                        <div className="pl-4 mt-2 flex flex-col gap-2 border-l border-white/10">
+                          <Link to="/services/managed-services/oracle-ams" className="text-xs text-gray-400 py-1" onClick={() => setMobileMenuOpen(false)}>
+                            Oracle Applications (AMS)
+                          </Link>
+                          <Link to="/services/managed-services/infrastructure-it-operations" className="text-xs text-gray-400 py-1" onClick={() => setMobileMenuOpen(false)}>
+                            Infrastructure & IT Operations
+                          </Link>
+                          <Link to="/services/managed-services/microsoft-workplace-support" className="text-xs text-gray-400 py-1" onClick={() => setMobileMenuOpen(false)}>
+                            Microsoft Workplace & End-User Support
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                    <Link to="/capital-projects" className="text-sm text-gray-200" onClick={() => setMobileMenuOpen(false)}>
+                      Capital Projects
+                    </Link>
+                    <Link to="/services/staff-augmentation" className="text-sm text-gray-200" onClick={() => setMobileMenuOpen(false)}>
+                      Staff Augmentation
+                    </Link>
+                    <Link to="/services/business-consulting" className="text-sm text-gray-200" onClick={() => setMobileMenuOpen(false)}>
+                      Business Consulting
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               <Link to="/capital-projects" className="text-sm font-medium text-gray-300" onClick={() => setMobileMenuOpen(false)}>
                 Capital Projects
               </Link>
