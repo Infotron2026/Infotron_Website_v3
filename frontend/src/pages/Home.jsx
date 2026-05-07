@@ -216,8 +216,10 @@ const Home = () => {
   const wipeT = smoothstep(0.10, 0.20, p);
   const whiteWipeOpacity = wipeT * (1 - smoothstep(0.55, 0.68, p));
 
-  // Left content fades during the wipe so the white reads cleanly
-  const heroContentOpacity = 1 - smoothstep(0.05, 0.18, p);
+  // Left content fades during the wipe on desktop only — on mobile the
+  // canvas is hidden so the copy must remain fully visible at all times.
+  const isMobile = viewport.w > 0 && viewport.w < 1024;
+  const heroContentOpacity = isMobile ? 1 : (1 - smoothstep(0.05, 0.18, p));
 
   // Underline animation — single segment lifts upward + fades during build-up
   const underlineT  = smoothstep(0.20, 0.34, p);
@@ -278,28 +280,21 @@ const Home = () => {
         description="Infotron Solutions delivers Managed Services, Staff Augmentation, Business Consulting, and Capital Projects execution for enterprise clients. Delivery-first. Outcome-owned."
         path="/"
       />
-      {/* HERO SECTION — Pinned scroll: section is tall, inner sticky stays in viewport while overlay takes over */}
+      {/* HERO SECTION — Pinned scroll on lg+ ONLY. Mobile shows simple hero
+          (no canvas, no video, no scroll choreography) and flows directly
+          into the next section.                                            */}
       <section
         ref={heroRef}
-        className="relative"
-        style={{ height: '350vh' }}
+        className="relative lg:h-[350vh]"
       >
         <div
-          className="sticky top-0 h-screen w-full flex items-start lg:items-center overflow-hidden"
+          className="relative lg:sticky lg:top-0 lg:h-screen w-full flex items-start lg:items-center overflow-hidden py-20 lg:py-0"
           style={{ background: 'linear-gradient(135deg, #050B1A 0%, #0A192F 35%, #1E3A8A 70%, #4C1D95 100%)' }}
         >
 
-        {/* ─── HERO CINEMATIC LAYER ────────────────────────────────────────
-            Spans the FULL viewport (single dark hero on entry, then a
-            global white wipe). Layer order:
-              Layer A: White wipe overlay (full-viewport, opacity 0→1 at 10–20%)
-              Layer B: Glow trails (soft blurred halos behind border lines)
-              Layer C: 3-sided brand border (top, left, bottom — right open)
-              Layer D: Video (foreignObject) masked by INFOTRON shape only
-              Final:   Un-masked full-bleed video crossfades in for takeover
-            ──────────────────────────────────────────────────────────────── */}
+        {/* ─── HERO CINEMATIC LAYER (DESKTOP ONLY) ──────────────────────── */}
         <div
-          className="absolute inset-0 pointer-events-none overflow-hidden"
+          className="hidden lg:block absolute inset-0 pointer-events-none overflow-hidden"
           style={{ zIndex: 25 }}
           aria-hidden="true"
           data-testid="hero-canvas"
