@@ -78,14 +78,7 @@ const InfrastructureITOperations = () => {
 
       {/* HERO */}
       <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)' }}>
-        {/* Subtle radial gradient behind text for depth — content-first, no images or textures */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 70% at 30% 50%, rgba(10, 25, 47, 0.55) 0%, transparent 70%)',
-          }}
-        />
+        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1573164574572-cb89e39749b4?w=1920&h=1080&fit=crop&auto=format")', backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 scroll-reveal">
