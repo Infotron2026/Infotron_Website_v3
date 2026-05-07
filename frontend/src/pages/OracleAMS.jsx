@@ -213,7 +213,7 @@ const OracleAMS = () => {
       </section>
 
       {/* BUSINESS OUTCOMES */}
-      <section className="section-light py-24">
+      <section className="section-outcomes py-24">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="text-center mb-16 scroll-reveal">
             <h2 className="text-4xl font-bold mb-4">
