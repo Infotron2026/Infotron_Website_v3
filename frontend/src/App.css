@@ -1169,6 +1169,41 @@ button, input, textarea, select {
     transform: scale(1.06);
 }
 
+/* Active chip — the one currently mirrored in the center-panel readout.
+   Soft cyan halo + pulsing border to connect the chip with the panel. */
+.tech-eco-chip.is-active {
+    border-color: rgba(125, 211, 252, 0.55);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 0 0 1px rgba(125, 211, 252, 0.35),
+        0 0 22px -2px rgba(103, 232, 249, 0.55),
+        0 18px 40px -16px rgba(34, 211, 238, 0.7);
+    animation:
+        tech-eco-float 7s ease-in-out infinite,
+        tech-eco-active-pulse 2.6s ease-in-out infinite;
+}
+
+.tech-eco-chip.is-active img {
+    filter: drop-shadow(0 0 12px rgba(125, 211, 252, 0.7));
+}
+
+@keyframes tech-eco-active-pulse {
+    0%, 100% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.12),
+            0 0 0 1px rgba(125, 211, 252, 0.30),
+            0 0 16px -2px rgba(103, 232, 249, 0.40),
+            0 18px 40px -16px rgba(34, 211, 238, 0.55);
+    }
+    50% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 0 0 1px rgba(125, 211, 252, 0.55),
+            0 0 28px 2px rgba(103, 232, 249, 0.65),
+            0 22px 50px -14px rgba(34, 211, 238, 0.85);
+    }
+}
+
 @keyframes tech-eco-float {
     0%, 100% { transform: translateY(0px); }
     50%      { transform: translateY(-3px); }
@@ -1459,6 +1494,7 @@ button, input, textarea, select {
     .tech-eco-track--left-36,
     .tech-eco-track--right-44,
     .tech-eco-chip,
+    .tech-eco-chip.is-active,
     .tech-eco-panel,
     .tech-eco-comet,
     .tech-eco-readout-dot--cyan,

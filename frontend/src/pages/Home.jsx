@@ -94,9 +94,9 @@ const TECH_BOTTOM_ROW = [
 ];
 
 // Single logo chip — large square glass tile, logo only (no text).
-const TechLogoChip = ({ name, file }) => (
+const TechLogoChip = ({ name, file, isActive }) => (
   <div
-    className="tech-eco-chip shrink-0"
+    className={`tech-eco-chip shrink-0${isActive ? ' is-active' : ''}`}
     data-testid={`tech-eco-chip-${file}`}
     title={name}
     aria-label={name}
@@ -166,13 +166,17 @@ const TechEcosystem = () => {
       <div
         className="tech-eco-row tech-eco-row--top"
         style={{
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
-          maskImage:       'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%)',
+          maskImage:       'linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%)',
         }}
       >
         <div ref={topTrackRef} className="tech-eco-track tech-eco-track--left-36">
           {[...TECH_TOP_ROW, ...TECH_TOP_ROW].map((t, i) => (
-            <TechLogoChip key={`top-${i}`} {...t} />
+            <TechLogoChip
+              key={`top-${i}`}
+              {...t}
+              isActive={(i % TECH_TOP_ROW.length) === activeTop}
+            />
           ))}
         </div>
       </div>
@@ -270,13 +274,17 @@ const TechEcosystem = () => {
       <div
         className="tech-eco-row tech-eco-row--bottom"
         style={{
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
-          maskImage:       'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%)',
+          maskImage:       'linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%)',
         }}
       >
         <div ref={botTrackRef} className="tech-eco-track tech-eco-track--right-44">
           {[...TECH_BOTTOM_ROW, ...TECH_BOTTOM_ROW].map((t, i) => (
-            <TechLogoChip key={`bot-${i}`} {...t} />
+            <TechLogoChip
+              key={`bot-${i}`}
+              {...t}
+              isActive={(i % TECH_BOTTOM_ROW.length) === activeBot}
+            />
           ))}
         </div>
       </div>
