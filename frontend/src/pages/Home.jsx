@@ -348,21 +348,25 @@ const Home = () => {
     };
   }, []);
 
-  // Dedicated observer for engagement cards — fires only when the card is
-  // clearly in view (threshold 0.25) so the user actually sees the fold-open
-  // animation play, not just the settled state.
+  // Dedicated observer for engagement cards — re-triggers the fold-open
+  // animation every time a card enters the viewport. To avoid the card
+  // visibly resetting while still partly on screen, we only strip the
+  // `.is-revealed` class when the card has fully left the viewport
+  // (intersectionRatio === 0).
   useEffect(() => {
     const cards = document.querySelectorAll('.engagement-card-reveal');
     if (!cards.length) return;
 
-    const obs = new IntersectionObserver((entries, observer) => {
+    const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
           entry.target.classList.add('is-revealed');
-          observer.unobserve(entry.target);
+        } else if (!entry.isIntersecting) {
+          // Fully out of viewport — safe to reset for next reveal
+          entry.target.classList.remove('is-revealed');
         }
       });
-    }, { threshold: 0.25 });
+    }, { threshold: [0, 0.25] });
 
     cards.forEach(card => obs.observe(card));
     return () => obs.disconnect();
