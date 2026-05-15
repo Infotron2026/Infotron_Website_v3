@@ -73,68 +73,96 @@ const engagementModels = [
 ];
 
 // ─── Technology Ecosystem — Portkey-style premium showcase ────────────────
-// Real brand logos served from Simple Icons CDN at brand color.
+// Real brand logos stored locally in /public/tech-logos/ for reliability
+// (Simple Icons CDN drops some major brands due to trademark policy).
 const TECH_TOP_ROW = [
-  { name: 'OpenAI',           slug: 'openai',             color: 'FFFFFF' },
-  { name: 'Anthropic',        slug: 'anthropic',          color: 'D4A27F' },
-  { name: 'AWS',              slug: 'amazonwebservices',  color: 'FF9900' },
-  { name: 'Microsoft Azure',  slug: 'microsoftazure',     color: '4FC3F7' },
-  { name: 'Snowflake',        slug: 'snowflake',          color: '29B5E8' },
-  { name: 'Databricks',       slug: 'databricks',         color: 'FF3621' },
+  { name: 'OpenAI',          file: 'openai',     tag: 'AI Platform',  desc: 'Frontier LLM delivery'           },
+  { name: 'Anthropic',       file: 'anthropic',  tag: 'AI Platform',  desc: 'Constitutional AI & Claude'      },
+  { name: 'AWS',             file: 'aws',        tag: 'Cloud',        desc: 'Cloud-native delivery at scale'  },
+  { name: 'Microsoft Azure', file: 'azure',      tag: 'Cloud',        desc: 'Enterprise cloud + AI services'  },
+  { name: 'Snowflake',       file: 'snowflake',  tag: 'Data Cloud',   desc: 'AI-ready data warehouse'         },
+  { name: 'Databricks',      file: 'databricks', tag: 'Lakehouse',    desc: 'Unified data + ML platform'      },
 ];
 
 const TECH_BOTTOM_ROW = [
-  { name: 'Docker',           slug: 'docker',             color: '2496ED' },
-  { name: 'Kubernetes',       slug: 'kubernetes',         color: '5C8DEF' },
-  { name: 'Salesforce',       slug: 'salesforce',         color: '00A1E0' },
-  { name: 'ServiceNow',       slug: 'servicenow',         color: '6BD968' },
-  { name: 'SAP',              slug: 'sap',                color: '4CA8E6' },
-  { name: 'Oracle Cloud',     slug: 'oracle',             color: 'F80000' },
+  { name: 'Docker',          file: 'docker',     tag: 'Containers',   desc: 'Container fundamentals'          },
+  { name: 'Kubernetes',      file: 'kubernetes', tag: 'Orchestration',desc: 'Production-grade orchestration'  },
+  { name: 'Salesforce',      file: 'salesforce', tag: 'CRM',          desc: 'Sales & service cloud delivery'  },
+  { name: 'ServiceNow',      file: 'servicenow', tag: 'ITSM',         desc: 'Enterprise workflow automation'  },
+  { name: 'SAP',             file: 'sap',        tag: 'ERP',          desc: 'Enterprise resource planning'    },
+  { name: 'Oracle Cloud',    file: 'oracle',     tag: 'Cloud + DB',   desc: 'Enterprise database & cloud'     },
 ];
 
-// Categories highlighted inside the floating center panel — one cycles
-// "active" every 2.5s. Keeps the panel feeling alive without distracting.
-const TECH_CATEGORIES = [
-  { id: 'ai',         label: 'AI & ML Platforms',        hint: 'OpenAI · Anthropic · Databricks',  accent: '#A78BFA' },
-  { id: 'cloud',      label: 'Cloud Infrastructure',     hint: 'AWS · Azure · Oracle Cloud',       accent: '#38BDF8' },
-  { id: 'enterprise', label: 'Enterprise SaaS',          hint: 'Salesforce · ServiceNow · SAP',    accent: '#22D3EE' },
-  { id: 'devops',     label: 'DevOps & Containers',      hint: 'Docker · Kubernetes · Snowflake',  accent: '#818CF8' },
-];
-
-// Single logo chip — glass pill with full-color brand mark.
-const TechLogoChip = ({ name, slug, color }) => (
+// Single logo chip — large square glass tile, logo only (no text).
+const TechLogoChip = ({ name, file }) => (
   <div
     className="tech-eco-chip shrink-0"
-    data-testid={`tech-eco-chip-${slug}`}
+    data-testid={`tech-eco-chip-${file}`}
     title={name}
+    aria-label={name}
   >
     <img
-      src={`https://cdn.simpleicons.org/${slug}/${color}`}
+      src={`/tech-logos/${file}.svg`}
       alt={`${name} logo`}
-      loading="lazy"
       draggable="false"
-      onError={(e) => { e.currentTarget.style.opacity = '0'; }}
+      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
     />
-    <span className="tech-eco-chip-name">{name}</span>
   </div>
 );
 
 const TechEcosystem = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
+  // Indices of the logos currently nearest the horizontal center of the viewport
+  // for each row — updated in sync with the marquee transform.
+  const [activeTop, setActiveTop] = useState(0);
+  const [activeBot, setActiveBot] = useState(0);
+  const topTrackRef = useRef(null);
+  const botTrackRef = useRef(null);
 
   useEffect(() => {
-    const t = setInterval(() => {
-      setActiveIdx((i) => (i + 1) % TECH_CATEGORIES.length);
-    }, 2500);
-    return () => clearInterval(t);
+    let raf;
+    let lastTick = 0;
+    let lastTop = -1, lastBot = -1;
+
+    const findCenteredIndex = (track, totalUnique) => {
+      if (!track) return 0;
+      const chips = track.children;
+      const cx = window.innerWidth / 2;
+      let bestIdx = 0;
+      let bestD = Infinity;
+      for (let i = 0; i < chips.length; i++) {
+        const r = chips[i].getBoundingClientRect();
+        // Skip chips clearly off-screen — saves measurement cost
+        if (r.right < -50 || r.left > window.innerWidth + 50) continue;
+        const m = r.left + r.width / 2;
+        const d = Math.abs(m - cx);
+        if (d < bestD) { bestD = d; bestIdx = i % totalUnique; }
+      }
+      return bestIdx;
+    };
+
+    const tick = (now) => {
+      // Throttle to ~12 FPS — plenty for a name swap and saves the main thread
+      if (now - lastTick > 80) {
+        const t = findCenteredIndex(topTrackRef.current, TECH_TOP_ROW.length);
+        const b = findCenteredIndex(botTrackRef.current, TECH_BOTTOM_ROW.length);
+        if (t !== lastTop) { setActiveTop(t); lastTop = t; }
+        if (b !== lastBot) { setActiveBot(b); lastBot = b; }
+        lastTick = now;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
+
+  const topActive = TECH_TOP_ROW[activeTop];
+  const botActive = TECH_BOTTOM_ROW[activeBot];
 
   return (
     <div className="tech-ecosystem mt-16 lg:mt-20" data-testid="tech-ecosystem">
-      {/* Ambient depth glow */}
       <div className="tech-eco-bg-glow" aria-hidden="true" />
 
-      {/* ── Top marquee row — RIGHT → LEFT at 60s ─────────────────────── */}
+      {/* ── Top marquee (logos only) ────────────────────────────────── */}
       <div
         className="tech-eco-row tech-eco-row--top"
         style={{
@@ -142,16 +170,15 @@ const TechEcosystem = () => {
           maskImage:       'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
         }}
       >
-        <div className="tech-eco-track tech-eco-track--left-60">
+        <div ref={topTrackRef} className="tech-eco-track tech-eco-track--left-36">
           {[...TECH_TOP_ROW, ...TECH_TOP_ROW].map((t, i) => (
             <TechLogoChip key={`top-${i}`} {...t} />
           ))}
         </div>
       </div>
 
-      {/* ── Center stage: connector SVG + floating glass panel ────────── */}
+      {/* ── Center stage: connector SVG + glass panel ──────────────── */}
       <div className="tech-eco-stage">
-        {/* SVG connector lines — only render on lg+ where layout allows */}
         <svg
           className="tech-eco-connectors hidden lg:block"
           viewBox="0 0 1200 360"
@@ -160,32 +187,37 @@ const TechEcosystem = () => {
         >
           <defs>
             <linearGradient id="tech-eco-line-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor="#22D3EE" stopOpacity="0" />
-              <stop offset="40%"  stopColor="#22D3EE" stopOpacity="0.55" />
-              <stop offset="60%"  stopColor="#A78BFA" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#A78BFA" stopOpacity="0" />
+              <stop offset="0%"   stopColor="#67E8F9" stopOpacity="0" />
+              <stop offset="40%"  stopColor="#67E8F9" stopOpacity="1" />
+              <stop offset="60%"  stopColor="#C4B5FD" stopOpacity="1" />
+              <stop offset="100%" stopColor="#C4B5FD" stopOpacity="0" />
             </linearGradient>
-            <filter id="tech-eco-glow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="2.4" result="blur" />
+            <filter id="tech-eco-comet-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="b" />
               <feMerge>
-                <feMergeNode in="blur" />
+                <feMergeNode in="b" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
 
-          {/* Top → center panel: 3 lines fanning down */}
-          <path d="M 250  0  C 320 120, 400 140, 500 180"   className="tech-eco-line" />
-          <path d="M 600  0  C 600  90, 600 130, 600 180"   className="tech-eco-line tech-eco-line--delay-1" />
-          <path d="M 950  0  C 880 120, 800 140, 700 180"   className="tech-eco-line tech-eco-line--delay-2" />
+          {/* Static faint base lines */}
+          <path d="M 250  0  C 320 120, 400 140, 500 180"   className="tech-eco-line-base" pathLength="100" />
+          <path d="M 600  0  C 600  90, 600 130, 600 180"   className="tech-eco-line-base" pathLength="100" />
+          <path d="M 950  0  C 880 120, 800 140, 700 180"   className="tech-eco-line-base" pathLength="100" />
+          <path d="M 500 180 C 400 220, 320 240, 250 360"   className="tech-eco-line-base" pathLength="100" />
+          <path d="M 600 180 C 600 230, 600 270, 600 360"   className="tech-eco-line-base" pathLength="100" />
+          <path d="M 700 180 C 800 220, 880 240, 950 360"   className="tech-eco-line-base" pathLength="100" />
 
-          {/* Center panel → bottom: mirrored */}
-          <path d="M 500 180 C 400 220, 320 240, 250 360"   className="tech-eco-line tech-eco-line--delay-1" />
-          <path d="M 600 180 C 600 230, 600 270, 600 360"   className="tech-eco-line tech-eco-line--delay-2" />
-          <path d="M 700 180 C 800 220, 880 240, 950 360"   className="tech-eco-line" />
+          {/* Traveling comet pulses — same paths, animated */}
+          <path d="M 250  0  C 320 120, 400 140, 500 180"   className="tech-eco-comet"                pathLength="100" />
+          <path d="M 600  0  C 600  90, 600 130, 600 180"   className="tech-eco-comet tec-d1"         pathLength="100" />
+          <path d="M 950  0  C 880 120, 800 140, 700 180"   className="tech-eco-comet tec-d2"         pathLength="100" />
+          <path d="M 500 180 C 400 220, 320 240, 250 360"   className="tech-eco-comet tec-d3"         pathLength="100" />
+          <path d="M 600 180 C 600 230, 600 270, 600 360"   className="tech-eco-comet tec-d4"         pathLength="100" />
+          <path d="M 700 180 C 800 220, 880 240, 950 360"   className="tech-eco-comet tec-d5"         pathLength="100" />
         </svg>
 
-        {/* Floating glassmorphism center panel */}
         <div className="tech-eco-panel" data-testid="tech-eco-panel">
           <div className="tech-eco-panel-shine" aria-hidden="true" />
 
@@ -199,28 +231,42 @@ const TechEcosystem = () => {
             </p>
           </div>
 
-          {/* Cycling category list — one is "active" at a time */}
-          <ul className="tech-eco-cats">
-            {TECH_CATEGORIES.map((cat, i) => {
-              const isActive = i === activeIdx;
-              return (
-                <li
-                  key={cat.id}
-                  className={`tech-eco-cat ${isActive ? 'is-active' : ''}`}
-                  style={isActive ? { '--accent': cat.accent } : undefined}
-                  data-testid={`tech-eco-cat-${cat.id}`}
-                >
-                  <span className="tech-eco-cat-dot" aria-hidden="true" />
-                  <span className="tech-eco-cat-label">{cat.label}</span>
-                  <span className="tech-eco-cat-hint">{cat.hint}</span>
-                </li>
-              );
-            })}
-          </ul>
+          {/* Live readouts — bound to the centered logo in each marquee */}
+          <div className="tech-eco-readouts">
+            <div className="tech-eco-readout">
+              <div className="tech-eco-readout-label">
+                <span className="tech-eco-readout-dot tech-eco-readout-dot--cyan" />
+                Currently staffing
+              </div>
+              <div className="tech-eco-readout-name" key={`top-${activeTop}`} data-testid="tech-eco-active-top">
+                {topActive.name}
+                <span className="tech-eco-readout-tag">{topActive.tag}</span>
+              </div>
+              <div className="tech-eco-readout-desc" key={`top-d-${activeTop}`}>
+                {topActive.desc}
+              </div>
+            </div>
+
+            <div className="tech-eco-readout-divider" aria-hidden="true" />
+
+            <div className="tech-eco-readout">
+              <div className="tech-eco-readout-label">
+                <span className="tech-eco-readout-dot tech-eco-readout-dot--violet" />
+                Currently operating
+              </div>
+              <div className="tech-eco-readout-name" key={`bot-${activeBot}`} data-testid="tech-eco-active-bot">
+                {botActive.name}
+                <span className="tech-eco-readout-tag">{botActive.tag}</span>
+              </div>
+              <div className="tech-eco-readout-desc" key={`bot-d-${activeBot}`}>
+                {botActive.desc}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── Bottom marquee row — LEFT → RIGHT at 75s ──────────────────── */}
+      {/* ── Bottom marquee (logos only) ─────────────────────────────── */}
       <div
         className="tech-eco-row tech-eco-row--bottom"
         style={{
@@ -228,7 +274,7 @@ const TechEcosystem = () => {
           maskImage:       'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
         }}
       >
-        <div className="tech-eco-track tech-eco-track--right-75">
+        <div ref={botTrackRef} className="tech-eco-track tech-eco-track--right-44">
           {[...TECH_BOTTOM_ROW, ...TECH_BOTTOM_ROW].map((t, i) => (
             <TechLogoChip key={`bot-${i}`} {...t} />
           ))}
