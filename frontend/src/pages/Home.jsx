@@ -226,7 +226,6 @@ const TechEcosystem = () => {
           <div className="tech-eco-panel-shine" aria-hidden="true" />
 
           <div className="tech-eco-panel-header">
-            <span className="tech-eco-eyebrow">Technology Ecosystem</span>
             <h3 className="tech-eco-panel-title">
               The stack we <span className="tech-eco-italic">staff &amp; deliver</span> on.
             </h3>
@@ -913,7 +912,20 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Premium Technology Ecosystem — replaces the previous 2 tech rows */}
+          {/* Premium separator heading + Technology Ecosystem */}
+          <div className="tech-eco-separator" data-testid="tech-eco-separator">
+            <div className="tech-eco-separator-divider" aria-hidden="true">
+              <span className="tech-eco-separator-dot" />
+            </div>
+            <h3 className="tech-eco-separator-title">
+              Technology{' '}
+              <span className="tech-eco-separator-grad">Ecosystem</span>
+            </h3>
+            <p className="tech-eco-separator-sub">
+              Platforms powering modern digital transformation.
+            </p>
+          </div>
+
           <TechEcosystem />
         </div>
       </section>
