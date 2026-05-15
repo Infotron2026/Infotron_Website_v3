@@ -1863,3 +1863,269 @@ button, input, textarea, select {
         animation: none !important;
     }
 }
+
+
+/* ─── Managed Services — Premium offering cards ──────────────────────────
+   Glassmorphism tile with an animated cyan→violet gradient border that
+   reveals on hover, soft cyan/violet ambient halo, micro-arrow animation.
+   ──────────────────────────────────────────────────────────────────────── */
+
+.ms-offering-card {
+    position: relative;
+    display: block;
+    border-radius: 22px;
+    isolation: isolate;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ms-offering-card:hover {
+    transform: translateY(-6px);
+}
+
+/* Conic gradient border that rotates on hover */
+.ms-offering-border {
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    padding: 1px;
+    background: conic-gradient(from 90deg at 50% 50%,
+        rgba(125, 211, 252, 0.0)   0deg,
+        rgba(125, 211, 252, 0.55)  90deg,
+        rgba(196, 181, 253, 0.55) 180deg,
+        rgba(125, 211, 252, 0.0)  270deg,
+        rgba(125, 211, 252, 0.0)  360deg);
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0.4;
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.ms-offering-card:hover .ms-offering-border {
+    opacity: 1;
+    animation: ms-border-rotate 6s linear infinite;
+}
+
+@keyframes ms-border-rotate {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Inner glass body */
+.ms-offering-inner {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    padding: 30px 30px 26px;
+    border-radius: 22px;
+    background:
+        linear-gradient(155deg,
+            rgba(15, 23, 42, 0.92) 0%,
+            rgba(17, 24, 39, 0.88) 50%,
+            rgba(15, 23, 42, 0.92) 100%);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(125, 211, 252, 0.10);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 16px 40px -22px rgba(34, 211, 238, 0.25);
+    transition:
+        border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+}
+
+.ms-offering-card:hover .ms-offering-inner {
+    border-color: rgba(125, 211, 252, 0.22);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 28px 60px -22px rgba(34, 211, 238, 0.45),
+        0 8px 30px -10px rgba(167, 139, 250, 0.30);
+}
+
+/* Soft ambient corner glow inside the card — appears on hover */
+.ms-offering-inner::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 70%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(103, 232, 249, 0.25) 0%, transparent 70%);
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ms-offering-card:hover .ms-offering-inner::before {
+    opacity: 1;
+}
+
+/* Tag pill */
+.ms-offering-tag {
+    display: inline-block;
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7DD3FC;
+    padding: 5px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(125, 211, 252, 0.28);
+    background: rgba(34, 211, 238, 0.07);
+}
+
+/* Floating arrow circle (top-right) */
+.ms-offering-arrow {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(125, 211, 252, 0.20);
+    background: rgba(15, 23, 42, 0.8);
+    color: #7DD3FC;
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ms-offering-card:hover .ms-offering-arrow {
+    transform: translate(2px, -2px) rotate(-45deg);
+    border-color: rgba(125, 211, 252, 0.5);
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.25) 0%, rgba(167, 139, 250, 0.25) 100%);
+    color: #F0F9FF;
+    box-shadow: 0 0 18px rgba(103, 232, 249, 0.5);
+}
+
+/* Main icon */
+.ms-offering-icon-wrap {
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background:
+        linear-gradient(135deg,
+            rgba(34, 211, 238, 0.15) 0%,
+            rgba(167, 139, 250, 0.10) 100%);
+    border: 1px solid rgba(125, 211, 252, 0.20);
+    margin-bottom: 22px;
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.45s ease,
+        background 0.45s ease;
+}
+
+.ms-offering-card:hover .ms-offering-icon-wrap {
+    transform: scale(1.06);
+    border-color: rgba(125, 211, 252, 0.4);
+    background:
+        linear-gradient(135deg,
+            rgba(34, 211, 238, 0.25) 0%,
+            rgba(167, 139, 250, 0.20) 100%);
+}
+
+.ms-offering-icon {
+    width: 28px;
+    height: 28px;
+    color: #7DD3FC;
+    filter: drop-shadow(0 0 6px rgba(103, 232, 249, 0.35));
+    transition: color 0.4s ease, filter 0.4s ease;
+}
+
+.ms-offering-card:hover .ms-offering-icon {
+    color: #BAE6FD;
+    filter: drop-shadow(0 0 12px rgba(125, 211, 252, 0.65));
+}
+
+/* Title + tagline */
+.ms-offering-title {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+    color: #F8FAFC;
+    margin: 0 0 6px;
+}
+
+.ms-offering-tagline {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #67E8F9;
+    margin-bottom: 16px;
+}
+
+.ms-offering-desc {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: #94A3B8;
+    margin: 0 0 26px;
+}
+
+/* Footer CTA — animated underline reveals on hover */
+.ms-offering-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #E0F2FE;
+    padding-bottom: 3px;
+}
+
+.ms-offering-cta::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 0;
+    background: linear-gradient(90deg, #67E8F9 0%, #A78BFA 100%);
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ms-offering-card:hover .ms-offering-cta::after {
+    width: 100%;
+}
+
+@media (max-width: 1023px) {
+    .ms-offering-inner {
+        padding: 26px 24px 24px;
+    }
+    .ms-offering-title {
+        font-size: 17.5px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ms-offering-card,
+    .ms-offering-arrow,
+    .ms-offering-icon-wrap,
+    .ms-offering-border {
+        animation: none !important;
+        transition: none !important;
+    }
+    .ms-offering-card:hover {
+        transform: none !important;
+    }
+}

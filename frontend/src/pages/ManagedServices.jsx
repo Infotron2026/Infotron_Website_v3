@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
-import { ArrowRight, CheckCircle, Server, Settings, BarChart, Shield, Layers, Rocket } from 'lucide-react';
+import { ArrowRight, CheckCircle, Server, Settings, BarChart, Shield, Layers, Rocket, Database, Cloud, MonitorSmartphone } from 'lucide-react';
 
 const ManagedServices = () => {
   const observerRef = useRef(null);
@@ -51,6 +51,34 @@ const ManagedServices = () => {
     { text: 'Reduced operational risk with intelligent monitoring systems', icon: Shield }
   ];
 
+  // Managed Services sub-offerings — mirrors the Header side flyout exactly
+  const offerings = [
+    {
+      title: 'Oracle Applications (AMS)',
+      tagline: 'ERP · HCM · SCM',
+      desc: 'Run, optimize and continuously evolve Oracle ERP, HCM and SCM platforms with senior functional + technical pods.',
+      href: '/services/managed-services/oracle-ams',
+      Icon: Database,
+      tag: 'Applications',
+    },
+    {
+      title: 'Infrastructure & IT Operations',
+      tagline: 'Standardize · Secure · Audit-ready',
+      desc: 'Hardened cloud and on-prem operations with observability, compliance baselines and incident response built in.',
+      href: '/services/managed-services/infrastructure-it-operations',
+      Icon: Cloud,
+      tag: 'Infrastructure',
+    },
+    {
+      title: 'Microsoft Workplace & End-User Support',
+      tagline: 'AI-powered helpdesk · Microsoft 365',
+      desc: 'L1–L3 end-user support across Microsoft 365, Intune and modern workplace, accelerated by AI ticket triage.',
+      href: '/services/managed-services/microsoft-workplace-support',
+      Icon: MonitorSmartphone,
+      tag: 'Workplace',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
@@ -58,40 +86,99 @@ const ManagedServices = () => {
         description="Full-stack delivery pods that own outcomes — from architecture to production support. AI-augmented teams in DevOps, Cloud, Data, and Application Engineering for enterprise clients."
         path="/services/managed-services"
       />
-      {/* Hero */}
-      <section className="py-24 lg:py-32 bg-gradient-to-br from-[#0B1F3A] via-[#2563EB] to-[#7C3AED]">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="scroll-reveal">
-              <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-8">
-                <Server className="w-4 h-4" />
-                Managed Services
-              </div>
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-8">
-                End-to-End Technology Operations with Full Accountability
-              </h1>
-              <p className="text-lg lg:text-xl text-gray-300 leading-relaxed mb-10">
-                Infotron's Managed Services deliver complete ownership of your technology initiatives, 
-                from architecture to deployment to ongoing operations. We don't just provide resources; 
-                we deliver results.
-              </p>
-              <Link to="/contact?type=client&service=managed-services">
-                <Button size="lg" className="bg-[#3B82F6] hover:bg-[#1E3A8A] transition-colors duration-300 text-white text-lg px-8 py-6">
-                  Discuss Your Requirements
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+      {/* Hero — headline + premium offerings nav (merged) */}
+      <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-28 bg-gradient-to-br from-[#0B1F3A] via-[#1E3A8A] to-[#4C1D95] overflow-hidden">
+        {/* Ambient depth halos — cyan + violet, sit behind the cards */}
+        <div className="absolute top-[55%] left-1/4 w-[520px] h-[520px] rounded-full blur-3xl opacity-30 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.5) 0%, transparent 70%)' }} />
+        <div className="absolute top-[60%] right-1/4 w-[560px] h-[560px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.55) 0%, transparent 70%)' }} />
+
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
+          {/* Top: headline column — centered, calmer */}
+          <div className="text-center max-w-3xl mx-auto mb-14 lg:mb-16 scroll-reveal">
+            <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-200 px-4 py-2 rounded-full text-sm font-semibold mb-7">
+              <Server className="w-4 h-4" />
+              Managed Services
             </div>
-            <div className="scroll-reveal delay-200">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=800&h=600&fit=crop&auto=format"
-                  alt="Managed Technology Operations"
-                  className="rounded-2xl shadow-2xl border border-[#3B82F6]/20"
-                />
-                <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-gradient-to-br from-blue-600/30 to-violet-600/30 rounded-2xl"></div>
-              </div>
-            </div>
+            <h1 className="text-4xl lg:text-5xl xl:text-[58px] font-bold text-white leading-[1.1] mb-6 tracking-tight">
+              End-to-End Technology Operations with Full Accountability
+            </h1>
+            <p className="text-base lg:text-lg text-gray-300 leading-relaxed mb-9 max-w-2xl mx-auto">
+              Infotron's Managed Services deliver complete ownership of your technology initiatives —
+              from architecture to deployment to ongoing operations. We don't just provide resources;
+              we deliver results.
+            </p>
+            <Link to="/contact?type=client&service=managed-services">
+              <Button size="lg" className="bg-[#3B82F6] hover:bg-[#1E3A8A] transition-colors duration-300 text-white text-base lg:text-lg px-7 py-5">
+                Discuss Your Requirements
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+
+          {/* Premium sub-header sitting just above the offering cards */}
+          <div className="text-center mb-9 lg:mb-11 scroll-reveal delay-100">
+            <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-cyan-300/90 px-3 py-1.5 rounded-full border border-cyan-400/25 bg-cyan-400/5 mb-5">
+              Explore Managed Services
+            </span>
+            <h2
+              className="text-2xl lg:text-[34px] font-semibold text-white"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.15,
+              }}
+            >
+              Three managed offerings.{' '}
+              <span
+                className="italic"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #67E8F9 0%, #A78BFA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  fontWeight: 600,
+                }}
+              >
+                One delivery standard.
+              </span>
+            </h2>
+          </div>
+
+          {/* Premium offerings nav — 3 glassmorphism cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+            {offerings.map((o, i) => {
+              const IconComponent = o.Icon;
+              return (
+                <Link
+                  key={o.href}
+                  to={o.href}
+                  data-testid={`ms-offering-${o.href.split('/').pop()}`}
+                  className={`ms-offering-card group relative scroll-reveal delay-${(i + 2) * 100}`}
+                >
+                  <span className="ms-offering-border" aria-hidden="true" />
+                  <div className="ms-offering-inner">
+                    <div className="flex items-start justify-between mb-7">
+                      <span className="ms-offering-tag">{o.tag}</span>
+                      <span className="ms-offering-arrow">
+                        <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+                      </span>
+                    </div>
+                    <div className="ms-offering-icon-wrap">
+                      <IconComponent className="ms-offering-icon" strokeWidth={1.6} />
+                    </div>
+                    <h3 className="ms-offering-title">{o.title}</h3>
+                    <div className="ms-offering-tagline">{o.tagline}</div>
+                    <p className="ms-offering-desc">{o.desc}</p>
+                    <div className="ms-offering-cta">
+                      <span>Explore offering</span>
+                      <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" strokeWidth={2.5} />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
