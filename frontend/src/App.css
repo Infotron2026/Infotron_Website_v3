@@ -932,10 +932,85 @@ button, input, textarea, select {
     line-height: 1.5;
 }
 
+/* ─── Tech Card — slimmer pill/card hybrid, cooler glass tint ─────────── */
+
+/* Tech-row viewport is tighter vertically — smaller cards = less breathing room needed */
+.industries-marquee-viewport.tech-row {
+    padding: 8px 0;
+}
+
+.tech-card {
+    opacity: 0.82;
+    transition:
+        opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tech-card:hover {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.04);
+}
+
+.tech-card-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 22px 12px 18px;
+    height: 56px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 197, 220, 0.14);
+    background:
+        linear-gradient(120deg,
+            rgba(14, 116, 144, 0.18) 0%,
+            rgba(15, 23, 42, 0.55) 55%,
+            rgba(30, 58, 138, 0.22) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 8px 22px -16px rgba(34, 211, 238, 0.45);
+    transition:
+        border-color 0.35s ease,
+        box-shadow 0.35s ease,
+        background 0.35s ease;
+    white-space: nowrap;
+}
+
+.tech-card:hover .tech-card-inner {
+    border-color: rgba(125, 211, 252, 0.32);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.09),
+        0 14px 32px -16px rgba(34, 211, 238, 0.6);
+}
+
+.tech-icon {
+    width: 22px;
+    height: 22px;
+    color: #7DD3FC;
+    flex-shrink: 0;
+    transition: color 0.35s ease, filter 0.35s ease;
+    filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.35));
+}
+
+.tech-card:hover .tech-icon {
+    color: #BAE6FD;
+    filter: drop-shadow(0 0 10px rgba(125, 211, 252, 0.65));
+}
+
+.tech-name {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    color: #E2E8F0;
+    line-height: 1;
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .industries-marquee-track--row1,
     .industries-marquee-track--row2,
+    .industries-marquee-track--left-55,
+    .industries-marquee-track--right-75,
+    .industries-marquee-track--left-85,
     .industry-icon-pulse {
         animation: none !important;
     }
