@@ -84,9 +84,10 @@ html {
         transform: none !important;
         transition: none !important;
     }
-    .scroll-reveal.engagement-card-reveal {
+    .engagement-card-reveal {
         opacity: 1 !important;
         transform: none !important;
+        transition: none !important;
     }
 }
 
@@ -94,7 +95,15 @@ html {
    Subtle 3D unfold from a slight top-tilt to flat. Restrained motion,
    cinematic easing, no hover flips. The wrapping perspective ensures
    all 4 cards share a unified vanishing point so they appear to fold
-   from the same horizon line. */
+   from the same horizon line.
+
+   Triggered by a dedicated IntersectionObserver (threshold 0.25) that
+   adds `.is-revealed` only when the card is actually in view — so the
+   user sees the animation play, not just the settled state.
+
+   Hover transforms are scoped to `.is-revealed` so they never interfere
+   with the initial reveal. Hover uses translate-only (no scale) to
+   preserve the 3D vanishing point. */
 
 .engagement-grid-perspective {
     perspective: 1400px;
@@ -102,23 +111,28 @@ html {
 }
 
 .engagement-card-reveal {
+    opacity: 0;
+    transform: rotateX(-16deg) translate3d(0, 32px, -50px);
     transform-origin: center top;
     transform-style: preserve-3d;
     transition:
-        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
         box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
         border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, opacity;
 }
 
-/* Initial pre-reveal state — only while .scroll-reveal is still present.
-   Once IntersectionObserver removes .scroll-reveal and adds
-   .animate-fade-in-up, the card settles to flat with !important. */
-.scroll-reveal.engagement-card-reveal {
-    opacity: 0;
-    transform:
-        rotateX(-14deg)
-        translate3d(0, 28px, -40px);
+.engagement-card-reveal.is-revealed {
+    opacity: 1;
+    transform: rotateX(0deg) translate3d(0, 0, 0);
+}
+
+/* Hover micro-lift — only after reveal completes, so no fight with the
+   fold animation. Translate-only (no scale) to keep the 3D vanishing
+   point clean. */
+.engagement-card-reveal.is-revealed:hover {
+    transform: rotateX(0deg) translate3d(0, -6px, 0);
 }
 
 /* Hero premium animations */

@@ -348,6 +348,26 @@ const Home = () => {
     };
   }, []);
 
+  // Dedicated observer for engagement cards — fires only when the card is
+  // clearly in view (threshold 0.25) so the user actually sees the fold-open
+  // animation play, not just the settled state.
+  useEffect(() => {
+    const cards = document.querySelectorAll('.engagement-card-reveal');
+    if (!cards.length) return;
+
+    const obs = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    cards.forEach(card => obs.observe(card));
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <SEO
@@ -763,14 +783,15 @@ const Home = () => {
                 'from-violet-400/30 to-blue-500/10',
                 'from-blue-400/30 to-violet-500/10',
               ];
-              const delayClass = `delay-${(index + 1) * 100}`;
+              const delayMs = index * 140;
 
               return (
                 <Link
                   key={model.id}
                   to={model.href}
                   data-testid={`engagement-card-${model.id}`}
-                  className={`engagement-card feature-card group relative flex flex-col p-8 lg:p-9 rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2E4BA8] to-[#4C3CA8] border border-white/10 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/30 hover:border-white/20 transition-all duration-500 overflow-hidden scroll-reveal engagement-card-reveal ${delayClass}`}
+                  style={{ transitionDelay: `${delayMs}ms` }}
+                  className={`engagement-card feature-card group relative flex flex-col p-8 lg:p-9 rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2E4BA8] to-[#4C3CA8] border border-white/10 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/30 hover:border-white/20 overflow-hidden engagement-card-reveal`}
                 >
                   {/* Top thin accent line */}
                   <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
@@ -788,14 +809,11 @@ const Home = () => {
 
                   {/* Content */}
                   <div className="relative z-10 flex flex-col h-full">
-                    {/* Icon + index — uniform sizing across all 4 cards */}
-                    <div className="mb-6">
-                      <div className="relative w-16 h-16 rounded-xl flex items-center justify-center mb-5 bg-white/15 backdrop-blur-sm border border-white/15 group-hover:scale-105 transition-all duration-500">
+                    {/* Icon — uniform sizing across all 4 cards */}
+                    <div className="mb-7">
+                      <div className="relative w-16 h-16 rounded-xl flex items-center justify-center bg-white/15 backdrop-blur-sm border border-white/15 group-hover:scale-105 transition-all duration-500">
                         <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${accentGlows[index]} opacity-60`} />
                         <IconComponent className="w-8 h-8 text-white relative z-10" strokeWidth={2} />
-                      </div>
-                      <div className="text-[11px] font-mono tracking-[0.22em] text-white/60 uppercase">
-                        0{index + 1} / 04
                       </div>
                     </div>
 
