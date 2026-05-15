@@ -1053,6 +1053,372 @@ button, input, textarea, select {
     line-height: 1;
 }
 
+/* ─── Technology Ecosystem — Portkey-style premium showcase ──────────────
+   Top + bottom marquees of authentic full-color brand logos, with a
+   floating glassmorphism center panel and animated SVG connector lines.
+   Black/deep-navy base, cyan + violet glow accents, neon edge highlights.
+   ──────────────────────────────────────────────────────────────────────── */
+
+.tech-ecosystem {
+    position: relative;
+    isolation: isolate;
+}
+
+/* Soft ambient depth glow behind the whole showcase */
+.tech-eco-bg-glow {
+    position: absolute;
+    inset: -40px -10% 0 -10%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0) 60%),
+        radial-gradient(ellipse 40% 40% at 20% 30%, rgba(34, 211, 238, 0.10) 0%, rgba(34, 211, 238, 0) 70%),
+        radial-gradient(ellipse 40% 40% at 80% 70%, rgba(167, 139, 250, 0.12) 0%, rgba(167, 139, 250, 0) 70%);
+    filter: blur(20px);
+}
+
+/* ── Marquee rows ─────────────────────────────────────────────────────── */
+.tech-eco-row {
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+.tech-eco-row--top    { margin-bottom: 8px; }
+.tech-eco-row--bottom { margin-top: 8px; }
+
+.tech-eco-track {
+    display: flex;
+    gap: 22px;
+    width: max-content;
+    will-change: transform;
+}
+
+.tech-eco-track--left-60 {
+    animation: tech-eco-scroll-left 60s linear infinite;
+}
+.tech-eco-track--right-75 {
+    animation: tech-eco-scroll-right 75s linear infinite;
+}
+
+@keyframes tech-eco-scroll-left {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes tech-eco-scroll-right {
+    0%   { transform: translate3d(-50%, 0, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+.tech-eco-row:hover .tech-eco-track {
+    animation-play-state: paused;
+}
+
+/* ── Logo chip ────────────────────────────────────────────────────────── */
+.tech-eco-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 22px 10px 14px;
+    height: 60px;
+    min-width: 180px;
+    border-radius: 14px;
+    border: 1px solid rgba(148, 197, 220, 0.10);
+    background:
+        linear-gradient(135deg,
+            rgba(15, 23, 42, 0.72) 0%,
+            rgba(30, 41, 59, 0.55) 50%,
+            rgba(15, 23, 42, 0.72) 100%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 8px 22px -16px rgba(59, 130, 246, 0.5);
+    transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.4s ease,
+        box-shadow 0.4s ease;
+    animation: tech-eco-float 7s ease-in-out infinite;
+}
+
+.tech-eco-chip:nth-child(odd)  { animation-delay: -2.1s; }
+.tech-eco-chip:nth-child(even) { animation-delay: -4.3s; }
+
+.tech-eco-chip img {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
+}
+
+.tech-eco-chip-name {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    color: #E2E8F0;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.tech-eco-chip:hover {
+    transform: translateY(-2px);
+    border-color: rgba(125, 211, 252, 0.35);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.09),
+        0 0 0 1px rgba(125, 211, 252, 0.2),
+        0 14px 36px -16px rgba(34, 211, 238, 0.6);
+}
+
+.tech-eco-chip:hover img {
+    filter: drop-shadow(0 0 10px rgba(125, 211, 252, 0.55));
+}
+
+@keyframes tech-eco-float {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-3px); }
+}
+
+/* ── Center stage + floating panel ────────────────────────────────────── */
+.tech-eco-stage {
+    position: relative;
+    padding: 56px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tech-eco-connectors {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.tech-eco-line {
+    fill: none;
+    stroke: url(#tech-eco-line-grad);
+    stroke-width: 1.4;
+    stroke-dasharray: 5 9;
+    stroke-linecap: round;
+    filter: url(#tech-eco-glow);
+    animation: tech-eco-line-pulse 4.5s linear infinite;
+}
+
+.tech-eco-line--delay-1 { animation-delay: -1.5s; }
+.tech-eco-line--delay-2 { animation-delay: -3s; }
+
+@keyframes tech-eco-line-pulse {
+    0%   { stroke-dashoffset: 0;   opacity: 0.55; }
+    50%  {                          opacity: 0.95; }
+    100% { stroke-dashoffset: -140; opacity: 0.55; }
+}
+
+/* Floating glassmorphism panel */
+.tech-eco-panel {
+    position: relative;
+    z-index: 2;
+    width: min(560px, 92%);
+    padding: 32px 32px 28px;
+    border-radius: 22px;
+    border: 1px solid rgba(125, 211, 252, 0.18);
+    background:
+        linear-gradient(155deg,
+            rgba(15, 23, 42, 0.92) 0%,
+            rgba(17, 24, 39, 0.86) 50%,
+            rgba(15, 23, 42, 0.92) 100%);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 30px 80px -30px rgba(34, 211, 238, 0.45),
+        0 8px 30px -10px rgba(167, 139, 250, 0.25);
+    overflow: hidden;
+    animation: tech-eco-panel-float 8s ease-in-out infinite;
+}
+
+@keyframes tech-eco-panel-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+/* Soft moving sheen on the panel */
+.tech-eco-panel-shine {
+    position: absolute;
+    inset: -50% -10% auto -10%;
+    height: 140%;
+    background:
+        radial-gradient(ellipse 40% 30% at 30% 0%, rgba(34, 211, 238, 0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(167, 139, 250, 0.16) 0%, transparent 65%);
+    pointer-events: none;
+    filter: blur(8px);
+}
+
+.tech-eco-panel-header {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+.tech-eco-eyebrow {
+    display: inline-block;
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7DD3FC;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(125, 211, 252, 0.25);
+    background: rgba(34, 211, 238, 0.08);
+    margin-bottom: 16px;
+}
+
+.tech-eco-panel-title {
+    font-family: 'Playfair Display', 'Libre Baskerville', Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.018em;
+    color: #F8FAFC;
+    margin: 0 0 10px;
+}
+
+.tech-eco-italic {
+    background: linear-gradient(90deg, #67E8F9 0%, #A78BFA 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-style: italic;
+}
+
+.tech-eco-panel-sub {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #94A3B8;
+    margin: 0;
+}
+
+/* Cycling category list */
+.tech-eco-cats {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.tech-eco-cat {
+    --accent: #38BDF8;
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.10);
+    background: rgba(15, 23, 42, 0.6);
+    transition:
+        border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tech-eco-cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(148, 163, 184, 0.35);
+    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.06);
+    transition:
+        background 0.4s ease,
+        box-shadow 0.4s ease,
+        transform 0.4s ease;
+}
+
+.tech-eco-cat-label {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #CBD5E1;
+    letter-spacing: -0.005em;
+    transition: color 0.4s ease;
+}
+
+.tech-eco-cat-hint {
+    font-family: 'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #64748B;
+    letter-spacing: -0.003em;
+    transition: color 0.4s ease;
+    text-align: right;
+}
+
+.tech-eco-cat.is-active {
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+    background:
+        linear-gradient(120deg,
+            color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+            rgba(15, 23, 42, 0.7) 60%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent),
+        0 12px 30px -14px color-mix(in srgb, var(--accent) 60%, transparent);
+    transform: translateX(2px);
+}
+
+.tech-eco-cat.is-active .tech-eco-cat-dot {
+    background: var(--accent);
+    box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent),
+        0 0 14px color-mix(in srgb, var(--accent) 80%, transparent);
+    transform: scale(1.15);
+}
+
+.tech-eco-cat.is-active .tech-eco-cat-label { color: #F1F5F9; }
+.tech-eco-cat.is-active .tech-eco-cat-hint  { color: #94A3B8; }
+
+/* ── Mobile / tablet adaptation ───────────────────────────────────────── */
+@media (max-width: 1023px) {
+    .tech-eco-stage {
+        padding: 36px 0;
+    }
+    .tech-eco-panel {
+        width: 100%;
+        padding: 26px 22px 22px;
+    }
+    .tech-eco-panel-title {
+        font-size: 22px;
+    }
+    .tech-eco-chip {
+        min-width: 158px;
+        height: 54px;
+        padding: 8px 18px 8px 12px;
+    }
+    .tech-eco-chip img {
+        width: 24px;
+        height: 24px;
+    }
+    .tech-eco-cat-hint {
+        display: none;
+    }
+}
+
+@media (max-width: 540px) {
+    .tech-eco-cat {
+        grid-template-columns: 14px 1fr;
+    }
+    .tech-eco-chip-name {
+        font-size: 13px;
+    }
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .industries-marquee-track--row1,
@@ -1060,7 +1426,12 @@ button, input, textarea, select {
     .industries-marquee-track--left-55,
     .industries-marquee-track--right-75,
     .industries-marquee-track--left-85,
-    .industry-icon-pulse {
+    .industry-icon-pulse,
+    .tech-eco-track--left-60,
+    .tech-eco-track--right-75,
+    .tech-eco-chip,
+    .tech-eco-panel,
+    .tech-eco-line {
         animation: none !important;
     }
 }

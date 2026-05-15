@@ -7,9 +7,7 @@ import {
   TrendingUp, Shield, Globe, ArrowRight, CheckCircle,
   ShoppingBag, HeartPulse, Factory, Cloud, Car,
   Truck, Landmark, Network, Database, UserCog, Cog,
-  CloudCog, Cloudy, Workflow, Building2, BadgeCheck, CalendarClock,
-  Boxes, Container, Snowflake, GitBranch, DatabaseZap, BrainCircuit,
-  ShieldCheck, BarChart3, Code2, Atom, Hexagon, Layers3
+  Building2
 } from 'lucide-react';
 import { clientLogos, whyInfotron, caseStudies, testimonials } from '../data/mockData';
 
@@ -40,33 +38,6 @@ const industries = [
   { name: 'Public Sector',             outcome: 'Secure, scalable delivery',    Icon: Landmark    },
   { name: 'HR & EOR',                  outcome: 'Workforce scalability',        Icon: UserCog     },
   { name: 'Industrial Systems',        outcome: 'Process optimization',         Icon: Cog         },
-];
-
-// ─── Technologies — 2 marquee rows (different speeds + directions) ────────
-const techRow1 = [
-  { name: 'Oracle Cloud',     Icon: Cloud       },
-  { name: 'Microsoft Azure',  Icon: CloudCog    },
-  { name: 'AWS',              Icon: Cloudy      },
-  { name: 'ServiceNow',       Icon: Workflow    },
-  { name: 'SAP',              Icon: Building2   },
-  { name: 'Salesforce',       Icon: BadgeCheck  },
-  { name: 'Workday',          Icon: CalendarClock },
-  { name: 'VMware',           Icon: Boxes       },
-  { name: 'Kubernetes',       Icon: Container   },
-  { name: 'Snowflake',        Icon: Snowflake   },
-];
-
-const techRow2 = [
-  { name: 'DevOps',              Icon: GitBranch    },
-  { name: 'Data Engineering',    Icon: DatabaseZap  },
-  { name: 'AI & Machine Learning', Icon: BrainCircuit },
-  { name: 'Cybersecurity',       Icon: ShieldCheck  },
-  { name: 'Power BI',            Icon: BarChart3    },
-  { name: 'Python',              Icon: Code2        },
-  { name: 'React',               Icon: Atom         },
-  { name: '.NET',                Icon: Hexagon      },
-  { name: 'Terraform',           Icon: Layers3      },
-  { name: 'Databricks',          Icon: Database     },
 ];
 
 // ─── Engagement Models — mirrors Services dropdown order exactly ──────────
@@ -101,6 +72,173 @@ const engagementModels = [
   },
 ];
 
+// ─── Technology Ecosystem — Portkey-style premium showcase ────────────────
+// Real brand logos served from Simple Icons CDN at brand color.
+const TECH_TOP_ROW = [
+  { name: 'OpenAI',           slug: 'openai',             color: 'FFFFFF' },
+  { name: 'Anthropic',        slug: 'anthropic',          color: 'D4A27F' },
+  { name: 'AWS',              slug: 'amazonwebservices',  color: 'FF9900' },
+  { name: 'Microsoft Azure',  slug: 'microsoftazure',     color: '4FC3F7' },
+  { name: 'Snowflake',        slug: 'snowflake',          color: '29B5E8' },
+  { name: 'Databricks',       slug: 'databricks',         color: 'FF3621' },
+];
+
+const TECH_BOTTOM_ROW = [
+  { name: 'Docker',           slug: 'docker',             color: '2496ED' },
+  { name: 'Kubernetes',       slug: 'kubernetes',         color: '5C8DEF' },
+  { name: 'Salesforce',       slug: 'salesforce',         color: '00A1E0' },
+  { name: 'ServiceNow',       slug: 'servicenow',         color: '6BD968' },
+  { name: 'SAP',              slug: 'sap',                color: '4CA8E6' },
+  { name: 'Oracle Cloud',     slug: 'oracle',             color: 'F80000' },
+];
+
+// Categories highlighted inside the floating center panel — one cycles
+// "active" every 2.5s. Keeps the panel feeling alive without distracting.
+const TECH_CATEGORIES = [
+  { id: 'ai',         label: 'AI & ML Platforms',        hint: 'OpenAI · Anthropic · Databricks',  accent: '#A78BFA' },
+  { id: 'cloud',      label: 'Cloud Infrastructure',     hint: 'AWS · Azure · Oracle Cloud',       accent: '#38BDF8' },
+  { id: 'enterprise', label: 'Enterprise SaaS',          hint: 'Salesforce · ServiceNow · SAP',    accent: '#22D3EE' },
+  { id: 'devops',     label: 'DevOps & Containers',      hint: 'Docker · Kubernetes · Snowflake',  accent: '#818CF8' },
+];
+
+// Single logo chip — glass pill with full-color brand mark.
+const TechLogoChip = ({ name, slug, color }) => (
+  <div
+    className="tech-eco-chip shrink-0"
+    data-testid={`tech-eco-chip-${slug}`}
+    title={name}
+  >
+    <img
+      src={`https://cdn.simpleicons.org/${slug}/${color}`}
+      alt={`${name} logo`}
+      loading="lazy"
+      draggable="false"
+      onError={(e) => { e.currentTarget.style.opacity = '0'; }}
+    />
+    <span className="tech-eco-chip-name">{name}</span>
+  </div>
+);
+
+const TechEcosystem = () => {
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % TECH_CATEGORIES.length);
+    }, 2500);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="tech-ecosystem mt-16 lg:mt-20" data-testid="tech-ecosystem">
+      {/* Ambient depth glow */}
+      <div className="tech-eco-bg-glow" aria-hidden="true" />
+
+      {/* ── Top marquee row — RIGHT → LEFT at 60s ─────────────────────── */}
+      <div
+        className="tech-eco-row tech-eco-row--top"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+          maskImage:       'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+        }}
+      >
+        <div className="tech-eco-track tech-eco-track--left-60">
+          {[...TECH_TOP_ROW, ...TECH_TOP_ROW].map((t, i) => (
+            <TechLogoChip key={`top-${i}`} {...t} />
+          ))}
+        </div>
+      </div>
+
+      {/* ── Center stage: connector SVG + floating glass panel ────────── */}
+      <div className="tech-eco-stage">
+        {/* SVG connector lines — only render on lg+ where layout allows */}
+        <svg
+          className="tech-eco-connectors hidden lg:block"
+          viewBox="0 0 1200 360"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="tech-eco-line-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor="#22D3EE" stopOpacity="0" />
+              <stop offset="40%"  stopColor="#22D3EE" stopOpacity="0.55" />
+              <stop offset="60%"  stopColor="#A78BFA" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#A78BFA" stopOpacity="0" />
+            </linearGradient>
+            <filter id="tech-eco-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2.4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Top → center panel: 3 lines fanning down */}
+          <path d="M 250  0  C 320 120, 400 140, 500 180"   className="tech-eco-line" />
+          <path d="M 600  0  C 600  90, 600 130, 600 180"   className="tech-eco-line tech-eco-line--delay-1" />
+          <path d="M 950  0  C 880 120, 800 140, 700 180"   className="tech-eco-line tech-eco-line--delay-2" />
+
+          {/* Center panel → bottom: mirrored */}
+          <path d="M 500 180 C 400 220, 320 240, 250 360"   className="tech-eco-line tech-eco-line--delay-1" />
+          <path d="M 600 180 C 600 230, 600 270, 600 360"   className="tech-eco-line tech-eco-line--delay-2" />
+          <path d="M 700 180 C 800 220, 880 240, 950 360"   className="tech-eco-line" />
+        </svg>
+
+        {/* Floating glassmorphism center panel */}
+        <div className="tech-eco-panel" data-testid="tech-eco-panel">
+          <div className="tech-eco-panel-shine" aria-hidden="true" />
+
+          <div className="tech-eco-panel-header">
+            <span className="tech-eco-eyebrow">Technology Ecosystem</span>
+            <h3 className="tech-eco-panel-title">
+              The stack we <span className="tech-eco-italic">staff &amp; deliver</span> on.
+            </h3>
+            <p className="tech-eco-panel-sub">
+              Delivering talent solutions across modern cloud, AI, enterprise, and digital platforms.
+            </p>
+          </div>
+
+          {/* Cycling category list — one is "active" at a time */}
+          <ul className="tech-eco-cats">
+            {TECH_CATEGORIES.map((cat, i) => {
+              const isActive = i === activeIdx;
+              return (
+                <li
+                  key={cat.id}
+                  className={`tech-eco-cat ${isActive ? 'is-active' : ''}`}
+                  style={isActive ? { '--accent': cat.accent } : undefined}
+                  data-testid={`tech-eco-cat-${cat.id}`}
+                >
+                  <span className="tech-eco-cat-dot" aria-hidden="true" />
+                  <span className="tech-eco-cat-label">{cat.label}</span>
+                  <span className="tech-eco-cat-hint">{cat.hint}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+
+      {/* ── Bottom marquee row — LEFT → RIGHT at 75s ──────────────────── */}
+      <div
+        className="tech-eco-row tech-eco-row--bottom"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+          maskImage:       'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
+        }}
+      >
+        <div className="tech-eco-track tech-eco-track--right-75">
+          {[...TECH_BOTTOM_ROW, ...TECH_BOTTOM_ROW].map((t, i) => (
+            <TechLogoChip key={`bot-${i}`} {...t} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const IndustryCard = ({ item, pulseDelay = 0 }) => {
   const { name, outcome, Icon } = item;
   return (
@@ -128,20 +266,7 @@ const IndustryCard = ({ item, pulseDelay = 0 }) => {
 };
 
 // ─── Tech card — smaller pill/card hybrid, cooler glass tint ──────────────
-const TechCard = ({ item }) => {
-  const { name, Icon } = item;
-  return (
-    <div
-      className="tech-card shrink-0"
-      data-testid={`tech-card-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-    >
-      <div className="tech-card-inner">
-        <Icon className="tech-icon" strokeWidth={1.5} />
-        <span className="tech-name">{name}</span>
-      </div>
-    </div>
-  );
-};
+// (Legacy component — superseded by TechEcosystem. Kept removed to keep file lean.)
 
 const Home = () => {
   const observerRef = useRef(null);
@@ -732,25 +857,10 @@ const Home = () => {
                 ))}
               </div>
             </div>
-
-            {/* TECH ROW 1 — moves RIGHT, 75s (slower for depth contrast) */}
-            <div className="industries-marquee-viewport tech-row mb-4 lg:mb-5">
-              <div className="industries-marquee-track industries-marquee-track--right-75">
-                {[...techRow1, ...techRow1].map((item, i) => (
-                  <TechCard key={`t1-${i}`} item={item} />
-                ))}
-              </div>
-            </div>
-
-            {/* TECH ROW 2 — moves LEFT, 85s (slowest, different speed for parallax) */}
-            <div className="industries-marquee-viewport tech-row">
-              <div className="industries-marquee-track industries-marquee-track--left-85">
-                {[...techRow2, ...techRow2].map((item, i) => (
-                  <TechCard key={`t2-${i}`} item={item} />
-                ))}
-              </div>
-            </div>
           </div>
+
+          {/* Premium Technology Ecosystem — replaces the previous 2 tech rows */}
+          <TechEcosystem />
         </div>
       </section>
 
