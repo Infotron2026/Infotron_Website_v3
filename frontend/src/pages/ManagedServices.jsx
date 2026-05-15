@@ -86,26 +86,42 @@ const ManagedServices = () => {
         description="Full-stack delivery pods that own outcomes — from architecture to production support. AI-augmented teams in DevOps, Cloud, Data, and Application Engineering for enterprise clients."
         path="/services/managed-services"
       />
-      {/* Hero — headline + premium offerings nav (merged) */}
+      {/* Hero — headline + premium offerings nav (merged)
+         Deep aurora-stage background: keeps the area BEHIND the cards dark
+         and quiet so the rotating cyan→violet hover border pops. Ambient
+         halos are pushed to the corners (negative space) instead of behind
+         the cards themselves. */}
       <section
         className="relative pt-20 pb-24 lg:pt-24 lg:pb-28 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)' }}
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 60% at 50% 35%, #0F1B3D 0%, #08122A 55%, #050917 100%),
+            #050917
+          `,
+        }}
       >
-        {/* Subtle architectural backdrop — same source/treatment as Capital Projects */}
+        {/* Faint dot grid for subtle depth — barely visible */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-[0.08]"
           style={{
-            backgroundImage: 'url("https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&h=1080&fit=crop&auto=format")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.3,
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #67E8F9 1px, transparent 0)',
+            backgroundSize: '42px 42px',
           }}
         />
-        {/* Ambient depth halos — cyan + violet, sit behind the cards */}
-        <div className="absolute top-[55%] left-1/4 w-[520px] h-[520px] rounded-full blur-3xl opacity-30 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.5) 0%, transparent 70%)' }} />
-        <div className="absolute top-[60%] right-1/4 w-[560px] h-[560px] rounded-full blur-3xl opacity-25 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.55) 0%, transparent 70%)' }} />
+        {/* Corner aurora glows — placed in NEGATIVE space (corners), not behind cards */}
+        <div
+          className="absolute -top-32 -left-32 w-[620px] h-[620px] rounded-full blur-3xl opacity-35 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.45) 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute -bottom-40 -right-32 w-[680px] h-[680px] rounded-full blur-3xl opacity-30 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.45) 0%, transparent 70%)' }}
+        />
+        {/* Tiny accent glow above the headline — visual anchor, not over the cards */}
+        <div
+          className="absolute top-10 left-1/2 -translate-x-1/2 w-[480px] h-[280px] rounded-full blur-3xl opacity-30 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.40) 0%, transparent 70%)' }}
+        />
 
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
           {/* Top: headline column — centered, calmer */}
