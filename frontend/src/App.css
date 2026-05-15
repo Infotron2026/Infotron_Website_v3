@@ -791,6 +791,21 @@ button, input, textarea, select {
     animation: industries-scroll-left 50s linear infinite;
 }
 
+/* Single industries row — moves LEFT continuously */
+.industries-marquee-track--left-55 {
+    animation: industries-scroll-left 55s linear infinite;
+}
+
+/* Tech row 1 — moves RIGHT continuously, slower for depth */
+.industries-marquee-track--right-75 {
+    animation: industries-scroll-right 75s linear infinite;
+}
+
+/* Tech row 2 — moves LEFT continuously, slowest (different speed = parallax) */
+.industries-marquee-track--left-85 {
+    animation: industries-scroll-left 85s linear infinite;
+}
+
 @keyframes industries-scroll-right {
     0%   { transform: translate3d(-50%, 0, 0); }
     100% { transform: translate3d(0, 0, 0); }

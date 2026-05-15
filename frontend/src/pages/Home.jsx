@@ -6,7 +6,10 @@ import {
   Server, Users, Briefcase, Zap, Target, Award, 
   TrendingUp, Shield, Globe, ArrowRight, CheckCircle,
   ShoppingBag, HeartPulse, Factory, Cloud, Car,
-  Truck, Landmark, Network, Database, UserCog, Cog
+  Truck, Landmark, Network, Database, UserCog, Cog,
+  CloudCog, Cloudy, Workflow, Building2, BadgeCheck, CalendarClock,
+  Boxes, Container, Snowflake, GitBranch, DatabaseZap, BrainCircuit,
+  ShieldCheck, BarChart3, Code2, Atom, Hexagon, Layers3
 } from 'lucide-react';
 import { clientLogos, services, whyInfotron, caseStudies, testimonials } from '../data/mockData';
 
@@ -23,30 +26,54 @@ const smoothstep = (a, b, t) => {
   return x * x * (3 - 2 * x);
 };
 
-// ─── Industries We Serve — data + card component ─────────────────────────
-const industriesRow1 = [
-  { name: 'E-commerce', outcome: 'Scalable platforms', Icon: ShoppingBag },
-  { name: 'Healthcare', outcome: 'Secure systems', Icon: HeartPulse },
-  { name: 'SaaS', outcome: 'Rapid product delivery', Icon: Cloud },
-  { name: 'Financial Services', outcome: 'Compliant infrastructure', Icon: Shield },
-  { name: 'Infrastructure & Utilities', outcome: 'Resilient systems', Icon: Network },
-  { name: 'Data Centers', outcome: 'High-availability environments', Icon: Database },
+// ─── Industries We Serve — data + card ────────────────────────────────────
+const industries = [
+  { name: 'E-commerce',                outcome: 'Scalable platforms',           Icon: ShoppingBag },
+  { name: 'Healthcare',                outcome: 'Secure systems',               Icon: HeartPulse  },
+  { name: 'SaaS',                      outcome: 'Rapid product delivery',       Icon: Cloud       },
+  { name: 'Financial Services',        outcome: 'Compliant infrastructure',     Icon: Shield      },
+  { name: 'Infrastructure & Utilities',outcome: 'Resilient systems',            Icon: Network     },
+  { name: 'Data Centers',              outcome: 'High-availability environments', Icon: Database  },
+  { name: 'Manufacturing',             outcome: 'Reliable operations',          Icon: Factory     },
+  { name: 'Automotive',                outcome: 'High-performance systems',     Icon: Car         },
+  { name: 'Logistics',                 outcome: 'Optimized workflows',          Icon: Truck       },
+  { name: 'Public Sector',             outcome: 'Secure, scalable delivery',    Icon: Landmark    },
+  { name: 'HR & EOR',                  outcome: 'Workforce scalability',        Icon: UserCog     },
+  { name: 'Industrial Systems',        outcome: 'Process optimization',         Icon: Cog         },
 ];
 
-const industriesRow2 = [
-  { name: 'Manufacturing', outcome: 'Reliable operations', Icon: Factory },
-  { name: 'Automotive', outcome: 'High-performance systems', Icon: Car },
-  { name: 'Logistics', outcome: 'Optimized workflows', Icon: Truck },
-  { name: 'Public Sector', outcome: 'Secure, scalable delivery', Icon: Landmark },
-  { name: 'HR & EOR', outcome: 'Workforce scalability', Icon: UserCog },
-  { name: 'Industrial Systems', outcome: 'Process optimization', Icon: Cog },
+// ─── Technologies — 2 marquee rows (different speeds + directions) ────────
+const techRow1 = [
+  { name: 'Oracle Cloud',     Icon: Cloud       },
+  { name: 'Microsoft Azure',  Icon: CloudCog    },
+  { name: 'AWS',              Icon: Cloudy      },
+  { name: 'ServiceNow',       Icon: Workflow    },
+  { name: 'SAP',              Icon: Building2   },
+  { name: 'Salesforce',       Icon: BadgeCheck  },
+  { name: 'Workday',          Icon: CalendarClock },
+  { name: 'VMware',           Icon: Boxes       },
+  { name: 'Kubernetes',       Icon: Container   },
+  { name: 'Snowflake',        Icon: Snowflake   },
+];
+
+const techRow2 = [
+  { name: 'DevOps',              Icon: GitBranch    },
+  { name: 'Data Engineering',    Icon: DatabaseZap  },
+  { name: 'AI & Machine Learning', Icon: BrainCircuit },
+  { name: 'Cybersecurity',       Icon: ShieldCheck  },
+  { name: 'Power BI',            Icon: BarChart3    },
+  { name: 'Python',              Icon: Code2        },
+  { name: 'React',               Icon: Atom         },
+  { name: '.NET',                Icon: Hexagon      },
+  { name: 'Terraform',           Icon: Layers3      },
+  { name: 'Databricks',          Icon: Database     },
 ];
 
 const IndustryCard = ({ item, pulseDelay = 0 }) => {
   const { name, outcome, Icon } = item;
   return (
     <div
-      className="industry-card shrink-0 w-[220px] sm:w-[240px] lg:w-[260px]"
+      className="industry-card shrink-0 w-[180px] sm:w-[200px] lg:w-[220px]"
       data-testid={`industry-card-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
     >
       <div className="industry-card-inner">
@@ -63,6 +90,22 @@ const IndustryCard = ({ item, pulseDelay = 0 }) => {
         <div className="industry-name">{name}</div>
         {/* Outcome */}
         <div className="industry-outcome">{outcome}</div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Tech card — smaller pill/card hybrid, cooler glass tint ──────────────
+const TechCard = ({ item }) => {
+  const { name, Icon } = item;
+  return (
+    <div
+      className="tech-card shrink-0"
+      data-testid={`tech-card-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+    >
+      <div className="tech-card-inner">
+        <Icon className="tech-icon" strokeWidth={1.5} />
+        <span className="tech-name">{name}</span>
       </div>
     </div>
   );
@@ -621,20 +664,33 @@ const Home = () => {
                 'linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)',
             }}
           >
-            {/* ROW 1 — left→right, 60s */}
-            <div className="industries-marquee-viewport mb-6 lg:mb-8">
-              <div className="industries-marquee-track industries-marquee-track--row1">
-                {[...industriesRow1, ...industriesRow1].map((item, i) => (
-                  <IndustryCard key={`r1-${i}`} item={item} pulseDelay={(i % 6) * 0.9} />
+            {/* INDUSTRIES — single continuous row moving LEFT, 55s */}
+            <div className="industries-marquee-viewport mb-12 lg:mb-14">
+              <div className="industries-marquee-track industries-marquee-track--left-55">
+                {[...industries, ...industries].map((item, i) => (
+                  <IndustryCard
+                    key={`ind-${i}`}
+                    item={item}
+                    pulseDelay={(i % industries.length) * 0.8}
+                  />
                 ))}
               </div>
             </div>
 
-            {/* ROW 2 — right→left, 50s (slightly faster for organic rhythm) */}
-            <div className="industries-marquee-viewport">
-              <div className="industries-marquee-track industries-marquee-track--row2">
-                {[...industriesRow2, ...industriesRow2].map((item, i) => (
-                  <IndustryCard key={`r2-${i}`} item={item} pulseDelay={(i % 6) * 0.9 + 0.5} />
+            {/* TECH ROW 1 — moves RIGHT, 75s (slower for depth contrast) */}
+            <div className="industries-marquee-viewport tech-row mb-4 lg:mb-5">
+              <div className="industries-marquee-track industries-marquee-track--right-75">
+                {[...techRow1, ...techRow1].map((item, i) => (
+                  <TechCard key={`t1-${i}`} item={item} />
+                ))}
+              </div>
+            </div>
+
+            {/* TECH ROW 2 — moves LEFT, 85s (slowest, different speed for parallax) */}
+            <div className="industries-marquee-viewport tech-row">
+              <div className="industries-marquee-track industries-marquee-track--left-85">
+                {[...techRow2, ...techRow2].map((item, i) => (
+                  <TechCard key={`t2-${i}`} item={item} />
                 ))}
               </div>
             </div>
