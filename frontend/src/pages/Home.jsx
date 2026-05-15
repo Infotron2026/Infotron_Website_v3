@@ -11,7 +11,7 @@ import {
   Boxes, Container, Snowflake, GitBranch, DatabaseZap, BrainCircuit,
   ShieldCheck, BarChart3, Code2, Atom, Hexagon, Layers3
 } from 'lucide-react';
-import { clientLogos, services, whyInfotron, caseStudies, testimonials } from '../data/mockData';
+import { clientLogos, whyInfotron, caseStudies, testimonials } from '../data/mockData';
 
 // cubic-bezier(0.22, 1, 0.36, 1) — easeOutQuint approximation
 const easeOutPortal = (t) => {
@@ -67,6 +67,38 @@ const techRow2 = [
   { name: '.NET',                Icon: Hexagon      },
   { name: 'Terraform',           Icon: Layers3      },
   { name: 'Databricks',          Icon: Database     },
+];
+
+// ─── Engagement Models — mirrors Services dropdown order exactly ──────────
+const engagementModels = [
+  {
+    id: 'managed-services',
+    title: 'Managed Services',
+    shortDesc: 'AI-driven delivery teams that ship on time. Intelligent automation built in.',
+    Icon: Server,
+    href: '/services/managed-services',
+  },
+  {
+    id: 'capital-projects',
+    title: 'Capital Projects',
+    shortDesc: 'Large-scale infrastructure and program execution from build to operate.',
+    Icon: Building2,
+    href: '/capital-projects',
+  },
+  {
+    id: 'staff-augmentation',
+    title: 'Staff Augmentation',
+    shortDesc: 'Senior engineers including AI/ML specialists. Deploy in weeks, not months.',
+    Icon: Users,
+    href: '/services/staff-augmentation',
+  },
+  {
+    id: 'business-consulting',
+    title: 'Business Consulting',
+    shortDesc: 'AI strategy and transformation leadership. Execution, not PowerPoint decks.',
+    Icon: Briefcase,
+    href: '/services/business-consulting',
+  },
 ];
 
 const IndustryCard = ({ item, pulseDelay = 0 }) => {
@@ -711,7 +743,7 @@ const Home = () => {
               <span className="text-blue-500 font-black text-sm tracking-[0.2em] uppercase">How We Work</span>
             </div>
             <h2 className="text-5xl lg:text-7xl font-black text-white mb-8 leading-tight">
-              Three Engagement<br/>Models. One Goal.
+              Four Engagement<br/>Models. One Goal.
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
               Your results. Our accountability.
@@ -719,24 +751,26 @@ const Home = () => {
             <div className="w-32 h-2 bg-gradient-to-r from-blue-600 to-violet-500 mx-auto rounded-full" />
           </div>
 
-          {/* Services Grid - Unified Consistent Cards */}
-          <div className="flex justify-center">
-            <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-[1400px]">
-            {services.map((service, index) => {
-              const IconComponent = service.icon === 'Server' ? Server : service.icon === 'Users' ? Users : Briefcase;
-              // Subtle accent variation only on the icon glow - NOT the card body
+          {/* Engagement Models Grid — 4 cards in one row on desktop, mirrors Services dropdown order */}
+          <div className="flex justify-center engagement-grid-perspective">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7 w-full max-w-[1500px]">
+            {engagementModels.map((model, index) => {
+              const IconComponent = model.Icon;
+              // Subtle accent variation only on the icon glow — keeps card body identical
               const accentGlows = [
                 'from-blue-400/30 to-blue-500/10',
+                'from-cyan-400/30 to-blue-500/10',
                 'from-violet-400/30 to-blue-500/10',
-                'from-blue-400/30 to-violet-500/10'
+                'from-blue-400/30 to-violet-500/10',
               ];
+              const delayClass = `delay-${(index + 1) * 100}`;
 
               return (
                 <Link
-                  key={service.id}
-                  to={service.href}
-                  data-testid={`service-card-${service.id}`}
-                  className={`feature-card group relative p-10 lg:p-14 rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2E4BA8] to-[#4C3CA8] border border-white/10 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/30 hover:border-white/20 transition-all duration-500 overflow-hidden scroll-reveal delay-${index * 200 + 200}`}
+                  key={model.id}
+                  to={model.href}
+                  data-testid={`engagement-card-${model.id}`}
+                  className={`engagement-card feature-card group relative flex flex-col p-8 lg:p-9 rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2E4BA8] to-[#4C3CA8] border border-white/10 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/30 hover:border-white/20 transition-all duration-500 overflow-hidden scroll-reveal engagement-card-reveal ${delayClass}`}
                 >
                   {/* Top thin accent line */}
                   <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
@@ -753,32 +787,32 @@ const Home = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-white/0 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
 
                   {/* Content */}
-                  <div className="relative z-10">
-                    {/* Icon with subtle accent variation */}
-                    <div className="mb-8">
-                      <div className={`relative w-24 h-24 rounded-2xl flex items-center justify-center mb-6 bg-white/15 backdrop-blur-sm border border-white/15 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
-                        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${accentGlows[index]} opacity-60`} />
-                        <IconComponent className="w-11 h-11 text-white relative z-10" strokeWidth={2} />
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Icon + index — uniform sizing across all 4 cards */}
+                    <div className="mb-6">
+                      <div className="relative w-16 h-16 rounded-xl flex items-center justify-center mb-5 bg-white/15 backdrop-blur-sm border border-white/15 group-hover:scale-105 transition-all duration-500">
+                        <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${accentGlows[index]} opacity-60`} />
+                        <IconComponent className="w-8 h-8 text-white relative z-10" strokeWidth={2} />
                       </div>
-                      <div className="text-xs font-mono tracking-[0.2em] text-white/60 uppercase">
-                        0{index + 1} / 03
+                      <div className="text-[11px] font-mono tracking-[0.22em] text-white/60 uppercase">
+                        0{index + 1} / 04
                       </div>
                     </div>
 
-                    {/* Title */}
-                    <h3 className="text-3xl lg:text-4xl font-black text-white mb-6 leading-tight">
-                      {service.title}
+                    {/* Title — consistent 2-line cap */}
+                    <h3 className="text-2xl lg:text-[26px] font-black text-white mb-4 leading-[1.15] min-h-[64px]">
+                      {model.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-lg text-white/90 leading-relaxed mb-8 font-medium">
-                      {service.shortDesc}
+                    <p className="text-[15px] lg:text-base text-white/85 leading-relaxed mb-8 font-medium flex-1">
+                      {model.shortDesc}
                     </p>
 
-                    {/* CTA */}
-                    <div className="flex items-center gap-3 text-white font-bold group-hover:gap-5 transition-all duration-300">
-                      <span className="text-lg">Explore Service</span>
-                      <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" strokeWidth={3} />
+                    {/* CTA — pinned to bottom of card */}
+                    <div className="flex items-center gap-2.5 text-white font-bold group-hover:gap-4 transition-all duration-300 mt-auto">
+                      <span className="text-[15px]">Explore</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
                     </div>
                   </div>
                 </Link>

@@ -84,6 +84,41 @@ html {
         transform: none !important;
         transition: none !important;
     }
+    .scroll-reveal.engagement-card-reveal {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ─── Engagement Card — premium fold-open reveal ─────────────────────────
+   Subtle 3D unfold from a slight top-tilt to flat. Restrained motion,
+   cinematic easing, no hover flips. The wrapping perspective ensures
+   all 4 cards share a unified vanishing point so they appear to fold
+   from the same horizon line. */
+
+.engagement-grid-perspective {
+    perspective: 1400px;
+    perspective-origin: 50% -10%;
+}
+
+.engagement-card-reveal {
+    transform-origin: center top;
+    transform-style: preserve-3d;
+    transition:
+        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Initial pre-reveal state — only while .scroll-reveal is still present.
+   Once IntersectionObserver removes .scroll-reveal and adds
+   .animate-fade-in-up, the card settles to flat with !important. */
+.scroll-reveal.engagement-card-reveal {
+    opacity: 0;
+    transform:
+        rotateX(-14deg)
+        translate3d(0, 28px, -40px);
 }
 
 /* Hero premium animations */
