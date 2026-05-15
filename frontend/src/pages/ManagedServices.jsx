@@ -83,7 +83,7 @@ const ManagedServices = () => {
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
         title="Managed Services"
-        description="Full-stack delivery pods that own outcomes — from architecture to production support. AI-augmented teams in DevOps, Cloud, Data, and Application Engineering for enterprise clients."
+        description="Full-stack delivery pods that own outcomes, from architecture to production support. AI-augmented teams in DevOps, Cloud, Data, and Application Engineering for enterprise clients."
         path="/services/managed-services"
       />
       {/* Hero — headline + premium offerings nav (merged)
@@ -134,7 +134,7 @@ const ManagedServices = () => {
               End-to-End Technology Operations with Full Accountability
             </h1>
             <p className="text-base lg:text-lg text-gray-300 leading-relaxed mb-9 max-w-2xl mx-auto">
-              Infotron's Managed Services deliver complete ownership of your technology initiatives —
+              Infotron's Managed Services deliver complete ownership of your technology initiatives,
               from architecture to deployment to ongoing operations. We don't just provide resources;
               we deliver results.
             </p>

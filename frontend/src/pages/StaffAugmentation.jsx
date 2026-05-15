@@ -55,7 +55,7 @@ const StaffAugmentation = () => {
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
         title="Staff Augmentation"
-        description="Senior, vetted engineers embedded with your team in two weeks. Pre-qualified specialists across cloud, data, security, AI, and product engineering — billed per outcome, not per seat."
+        description="Senior, vetted engineers embedded with your team in two weeks. Pre-qualified specialists across cloud, data, security, AI, and product engineering. Billed per outcome, not per seat."
         path="/services/staff-augmentation"
       />
       {/* Hero */}

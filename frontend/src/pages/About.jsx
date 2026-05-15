@@ -38,7 +38,7 @@ const About = () => {
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
         title="About Us"
-        description="Infotron Solutions is a US-headquartered IT services and talent solutions firm built for enterprise technology delivery — Managed Services, Staff Augmentation, and Business Consulting."
+        description="Infotron Solutions is a US-headquartered IT services and talent solutions firm built for enterprise technology delivery: Managed Services, Staff Augmentation, and Business Consulting."
         path="/about"
       />
       {/* Hero */}

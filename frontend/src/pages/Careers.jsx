@@ -30,7 +30,7 @@ const Careers = () => {
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
-        title="Careers — Join World-Class Technology Teams"
+        title="Careers | Join World-Class Technology Teams"
         description="Open roles at Infotron Solutions. Work on high-impact engineering, AI, cloud, and platform programs with Fortune 500 clients across Americas, EMEA, and APAC."
         path="/careers"
       />

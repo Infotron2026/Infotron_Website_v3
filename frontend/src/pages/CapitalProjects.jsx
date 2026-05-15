@@ -141,7 +141,7 @@ const CapitalProjects = () => {
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
-        title="Capital Projects — Talent & Execution Partner"
+        title="Capital Projects | Talent & Execution Partner"
         description="Specialized talent and program execution support for capital projects across energy, infrastructure, manufacturing, telecom, and life sciences. Field-ready engineers, PMO acceleration, and cross-discipline delivery."
         path="/capital-projects"
       />
