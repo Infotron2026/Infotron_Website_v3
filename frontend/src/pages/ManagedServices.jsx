@@ -87,7 +87,20 @@ const ManagedServices = () => {
         path="/services/managed-services"
       />
       {/* Hero — headline + premium offerings nav (merged) */}
-      <section className="relative pt-20 pb-24 lg:pt-24 lg:pb-28 bg-gradient-to-br from-[#0B1F3A] via-[#1E3A8A] to-[#4C1D95] overflow-hidden">
+      <section
+        className="relative pt-20 pb-24 lg:pt-24 lg:pb-28 overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)' }}
+      >
+        {/* Subtle architectural backdrop — same source/treatment as Capital Projects */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: 'url("https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&h=1080&fit=crop&auto=format")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.3,
+          }}
+        />
         {/* Ambient depth halos — cyan + violet, sit behind the cards */}
         <div className="absolute top-[55%] left-1/4 w-[520px] h-[520px] rounded-full blur-3xl opacity-30 pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.5) 0%, transparent 70%)' }} />
