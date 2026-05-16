@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <img 
-              src="https://customer-assets.emergentagent.com/job_ba897003-eeca-4b0e-8e12-dd77cec76f35/artifacts/mcntdahb_INFOTRON%20Gradient%20Logo%20cropped.png" 
+              src="/logo-white.png"
               alt="Infotron Solutions" 
               className="h-16 w-auto object-contain mb-4"
               data-testid="footer-logo"

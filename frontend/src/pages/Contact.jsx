@@ -176,7 +176,7 @@ const Contact = () => {
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
         title="Contact Infotron Solutions"
-        description="Talk to our delivery team about Managed Services, Staff Augmentation, Business Consulting, or Capital Projects engagements. Offices in the USA, Canada, and India."
+        description="Talk to our delivery team about Managed Services, Staff Augmentation, Business Consulting, or Capital Projects engagements. Offices in the USA, United Kingdom, and India."
         path="/contact"
       />
       {/* Hero */}
@@ -485,69 +485,140 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Office Locations — shown below the contact forms so users land on the form first */}
-      <section className="py-16 bg-slate-800">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <h2 className="text-2xl font-bold text-white mb-10 text-center">Our Global Offices</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* USA — both offices grouped under one heading */}
-            <div className="bg-[#0A192F]/50 border border-[#3B82F6]/20 rounded-lg p-8" data-testid="contact-office-usa">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-blue-500" />
+      {/* Global Offices — premium glassmorphism cards (US · UK · India) */}
+      <section
+        className="relative py-20 lg:py-24 overflow-hidden"
+        data-testid="contact-locations"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 55% at 50% 30%, #0F1B3D 0%, #08122A 60%, #050917 100%),
+            #050917
+          `,
+        }}
+      >
+        {/* Faint dot grid for premium texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.06]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #67E8F9 1px, transparent 0)',
+            backgroundSize: '44px 44px',
+          }}
+        />
+        {/* Aurora corner halos in negative space */}
+        <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.40) 0%, transparent 70%)' }} />
+        <div className="absolute -bottom-40 -right-32 w-[640px] h-[640px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.40) 0%, transparent 70%)' }} />
+
+        <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12">
+          {/* Header */}
+          <div className="text-center mb-14 lg:mb-16">
+            <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-cyan-300/90 px-3 py-1.5 rounded-full border border-cyan-400/25 bg-cyan-400/5 mb-5">
+              Global Presence
+            </span>
+            <h2
+              className="text-3xl lg:text-5xl font-semibold text-white mb-3"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.1,
+              }}
+            >
+              Where we{' '}
+              <span
+                className="italic"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #67E8F9 0%, #A78BFA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  fontWeight: 600,
+                }}
+              >
+                deliver.
+              </span>
+            </h2>
+            <p className="text-base lg:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
+              Three regions. One delivery standard. Talk to the team closest to you.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+            {/* ── United States ── */}
+            <div className="loc-card group" data-testid="contact-office-usa">
+              <span className="loc-card-border" aria-hidden="true" />
+              <div className="loc-card-inner">
+                <div className="loc-card-head">
+                  <span className="loc-flag">🇺🇸</span>
+                  <div className="loc-meta">
+                    <div className="loc-region">Americas</div>
+                    <h3 className="loc-country">United States</h3>
+                  </div>
                 </div>
-                <h3 className="font-bold text-white text-lg">USA</h3>
-              </div>
-              <div className="text-gray-300 leading-relaxed">
-                <div>
-                  3225 McLeod Dr. Ste 100<br />
-                  Las Vegas, NV 89121
-                </div>
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  27125 Sierra Hwy, Ste 325<br />
-                  Santa Clarita, CA 91351
-                </div>
+                <ul className="loc-list">
+                  <li>
+                    <div className="loc-city">Las Vegas, Nevada</div>
+                    <div className="loc-addr">3225 McLeod Dr. Ste 100, NV 89121</div>
+                  </li>
+                  <li>
+                    <div className="loc-city">Santa Clarita, California</div>
+                    <div className="loc-addr">27125 Sierra Hwy, Ste 325, CA 91351</div>
+                  </li>
+                </ul>
               </div>
             </div>
 
-            {/* Canada */}
-            <div className="bg-[#0A192F]/50 border border-violet-500/20 rounded-lg p-8">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-violet-400" />
+            {/* ── United Kingdom (NEW) ── */}
+            <div className="loc-card group" data-testid="contact-office-uk">
+              <span className="loc-card-border" aria-hidden="true" />
+              <div className="loc-card-inner">
+                <div className="loc-card-head">
+                  <span className="loc-flag">🇬🇧</span>
+                  <div className="loc-meta">
+                    <div className="loc-region">Europe</div>
+                    <h3 className="loc-country">United Kingdom</h3>
+                  </div>
                 </div>
-                <h3 className="font-bold text-white text-lg">CANADA</h3>
+                <ul className="loc-list">
+                  <li>
+                    <div className="loc-city">London</div>
+                    <div className="loc-addr">71–75 Shelton Street, Covent Garden, WC2H 9JQ</div>
+                  </li>
+                </ul>
               </div>
-              <p className="text-gray-300 leading-relaxed">
-                357 Bay Street<br />
-                Toronto, ON M5H 4A6
-              </p>
             </div>
 
-            {/* India */}
-            <div className="bg-[#0A192F]/50 border border-[#3B82F6]/20 rounded-lg p-8">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-blue-500" />
+            {/* ── India ── */}
+            <div className="loc-card group" data-testid="contact-office-india">
+              <span className="loc-card-border" aria-hidden="true" />
+              <div className="loc-card-inner">
+                <div className="loc-card-head">
+                  <span className="loc-flag">🇮🇳</span>
+                  <div className="loc-meta">
+                    <div className="loc-region">Asia Pacific</div>
+                    <h3 className="loc-country">India</h3>
+                  </div>
                 </div>
-                <h3 className="font-bold text-white text-lg">INDIA</h3>
+                <ul className="loc-list">
+                  <li>
+                    <div className="loc-city">Mumbai</div>
+                    <div className="loc-addr">C-20, G Block, Bandra Kurla Complex, MH 400051</div>
+                  </li>
+                </ul>
               </div>
-              <p className="text-gray-300 leading-relaxed">
-                C-20, G Block, Bandra Kurla Complex<br />
-                Mumbai, MH 400051
-              </p>
             </div>
           </div>
 
-          {/* Contact Info */}
-          <div className="mt-12 flex flex-col md:flex-row justify-center items-center gap-8">
-            <a href="tel:+17753059399" className="flex items-center gap-3 text-blue-500 hover:text-blue-400 transition-colors">
-              <Phone className="w-5 h-5" />
-              <span className="text-lg">+1 (775) 305 9399</span>
+          {/* Direct contact strip */}
+          <div className="mt-14 lg:mt-16 flex flex-col md:flex-row justify-center items-center gap-6 md:gap-10">
+            <a href="tel:+17753059399" className="flex items-center gap-2.5 text-cyan-300 hover:text-cyan-200 transition-colors">
+              <Phone className="w-4 h-4" />
+              <span className="text-base font-medium">+1 (775) 305 9399</span>
             </a>
-            <a href="mailto:contact@infotronsolutions.com" className="flex items-center gap-3 text-blue-500 hover:text-blue-400 transition-colors">
-              <Mail className="w-5 h-5" />
-              <span className="text-lg">contact@infotronsolutions.com</span>
+            <span className="hidden md:inline-block w-px h-5 bg-white/15" />
+            <a href="mailto:contact@infotronsolutions.com" className="flex items-center gap-2.5 text-cyan-300 hover:text-cyan-200 transition-colors">
+              <Mail className="w-4 h-4" />
+              <span className="text-base font-medium">contact@infotronsolutions.com</span>
             </a>
           </div>
         </div>

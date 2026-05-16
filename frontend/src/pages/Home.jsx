@@ -777,6 +777,89 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ─── TECHNOLOGY ECOSYSTEM ─── Standalone premium section ───────────────
+         Houses the AI Engineers On Demand highlight + the separator heading +
+         the existing TechEcosystem showcase. */}
+      <section
+        className="relative py-24 lg:py-28 overflow-hidden"
+        data-testid="tech-ecosystem-section"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 55% at 50% 30%, #0F1B3D 0%, #08122A 60%, #050917 100%),
+            #050917
+          `,
+        }}
+      >
+        {/* Faint dot grid for premium texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.06]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #67E8F9 1px, transparent 0)',
+            backgroundSize: '44px 44px',
+          }}
+        />
+        {/* Aurora corner halos */}
+        <div className="absolute -top-32 -left-32 w-[620px] h-[620px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.45) 0%, transparent 70%)' }} />
+        <div className="absolute -bottom-40 -right-32 w-[680px] h-[680px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.45) 0%, transparent 70%)' }} />
+
+        <div className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12">
+
+          {/* ── AI Engineers On Demand — premium highlight badge ── */}
+          <div className="ai-engineers-highlight scroll-reveal" data-testid="ai-engineers-highlight">
+            <div className="ai-eng-glow" aria-hidden="true" />
+            <div className="ai-eng-inner">
+              <div className="ai-eng-microlabel">
+                <span className="ai-eng-microlabel-dot" />
+                Recommended by Industry Leaders
+              </div>
+              <div className="ai-eng-headline-row">
+                <div className="ai-eng-orbit" aria-hidden="true">
+                  <span className="ai-eng-orbit-core" />
+                  <span className="ai-eng-orbit-ring ai-eng-orbit-ring-1" />
+                  <span className="ai-eng-orbit-ring ai-eng-orbit-ring-2" />
+                  <span className="ai-eng-orbit-spark" />
+                </div>
+                <div className="ai-eng-text">
+                  <h3 className="ai-eng-title">
+                    AI Engineers{' '}
+                    <span className="ai-eng-title-grad">On Demand</span>
+                  </h3>
+                  <p className="ai-eng-sub">
+                    Trusted by modern enterprises building next-generation AI teams.
+                  </p>
+                </div>
+                <Link
+                  to="/contact?type=client&service=ai-engineers"
+                  className="ai-eng-cta"
+                  data-testid="ai-engineers-cta"
+                >
+                  Talk to delivery
+                  <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Premium separator heading */}
+          <div className="tech-eco-separator" data-testid="tech-eco-separator">
+            <div className="tech-eco-separator-divider" aria-hidden="true">
+              <span className="tech-eco-separator-dot" />
+            </div>
+            <h3 className="tech-eco-separator-title">
+              Technology{' '}
+              <span className="tech-eco-separator-grad">Ecosystem</span>
+            </h3>
+            <p className="tech-eco-separator-sub">
+              Platforms powering modern digital transformation.
+            </p>
+          </div>
+
+          <TechEcosystem />
+        </div>
+      </section>
+
       {/* Build. Operate. Transfer. - Delivery Model Section */}
       <section className="py-24 bg-[#0A192F]">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
@@ -899,7 +982,7 @@ const Home = () => {
             }}
           >
             {/* INDUSTRIES — single continuous row moving LEFT, 55s */}
-            <div className="industries-marquee-viewport mb-12 lg:mb-14">
+            <div className="industries-marquee-viewport">
               <div className="industries-marquee-track industries-marquee-track--left-55">
                 {[...industries, ...industries].map((item, i) => (
                   <IndustryCard
@@ -911,22 +994,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          {/* Premium separator heading + Technology Ecosystem */}
-          <div className="tech-eco-separator" data-testid="tech-eco-separator">
-            <div className="tech-eco-separator-divider" aria-hidden="true">
-              <span className="tech-eco-separator-dot" />
-            </div>
-            <h3 className="tech-eco-separator-title">
-              Technology{' '}
-              <span className="tech-eco-separator-grad">Ecosystem</span>
-            </h3>
-            <p className="tech-eco-separator-sub">
-              Platforms powering modern digital transformation.
-            </p>
-          </div>
-
-          <TechEcosystem />
         </div>
       </section>
 

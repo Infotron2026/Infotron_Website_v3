@@ -50,7 +50,7 @@ const Header = () => {
           {/* Logo - proportionally scaled to fit header */}
           <Link to="/" className="flex items-center" onClick={scrollTop}>
             <img 
-              src="https://customer-assets.emergentagent.com/job_ba897003-eeca-4b0e-8e12-dd77cec76f35/artifacts/mcntdahb_INFOTRON%20Gradient%20Logo%20cropped.png" 
+              src="/logo-white.png"
               alt="Infotron Solutions" 
               className="h-16 sm:h-16 lg:h-14 w-auto object-contain"
               data-testid="header-logo"
@@ -322,16 +322,28 @@ const Header = () => {
                 </button>
                 {mobileServicesOpen && (
                   <div className="pl-4 mt-3 flex flex-col gap-3 border-l border-white/10">
-                    {/* Managed Services parent + sub-list */}
+                    {/* Managed Services parent + sub-list — label navigates, chevron toggles */}
                     <div>
-                      <button
-                        className="flex items-center justify-between w-full text-sm text-gray-200"
-                        onClick={() => setMobileManagedOpen(!mobileManagedOpen)}
-                        data-testid="mobile-managed-toggle"
-                      >
-                        <span>Managed Services</span>
-                        <ChevronRight className={`w-3.5 h-3.5 transition-transform ${mobileManagedOpen ? 'rotate-90' : ''}`} />
-                      </button>
+                      <div className="flex items-center justify-between w-full">
+                        <Link
+                          to="/services/managed-services"
+                          className="flex-1 text-sm text-gray-200 py-1.5"
+                          onClick={() => { setMobileMenuOpen(false); scrollTop(); }}
+                          data-testid="mobile-managed-link"
+                        >
+                          Managed Services
+                        </Link>
+                        <button
+                          type="button"
+                          aria-label={mobileManagedOpen ? 'Collapse Managed Services submenu' : 'Expand Managed Services submenu'}
+                          aria-expanded={mobileManagedOpen}
+                          className="p-2 -mr-2 text-gray-300 active:text-white"
+                          onClick={(e) => { e.stopPropagation(); setMobileManagedOpen(!mobileManagedOpen); }}
+                          data-testid="mobile-managed-toggle"
+                        >
+                          <ChevronRight className={`w-4 h-4 transition-transform ${mobileManagedOpen ? 'rotate-90' : ''}`} />
+                        </button>
+                      </div>
                       {mobileManagedOpen && (
                         <div className="pl-4 mt-2 flex flex-col gap-2 border-l border-white/10">
                           <Link to="/services/managed-services/oracle-ams" className="text-xs text-gray-400 py-1" onClick={() => setMobileMenuOpen(false)}>
