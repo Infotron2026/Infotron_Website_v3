@@ -806,8 +806,24 @@ const Home = () => {
 
         <div className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12">
 
-          {/* ── AI Engineers On Demand — premium highlight badge ── */}
-          <div className="ai-engineers-highlight scroll-reveal" data-testid="ai-engineers-highlight">
+          {/* Premium separator heading */}
+          <div className="tech-eco-separator" data-testid="tech-eco-separator">
+            <div className="tech-eco-separator-divider" aria-hidden="true">
+              <span className="tech-eco-separator-dot" />
+            </div>
+            <h3 className="tech-eco-separator-title">
+              Technology{' '}
+              <span className="tech-eco-separator-grad">Ecosystem</span>
+            </h3>
+            <p className="tech-eco-separator-sub">
+              Platforms powering modern digital transformation.
+            </p>
+          </div>
+
+          <TechEcosystem />
+
+          {/* ── AI Engineers On Demand — compact popup-style card BELOW the ecosystem ── */}
+          <div className="ai-engineers-highlight ai-engineers-highlight--compact scroll-reveal" data-testid="ai-engineers-highlight">
             <div className="ai-eng-glow" aria-hidden="true" />
             <div className="ai-eng-inner">
               <div className="ai-eng-microlabel">
@@ -841,77 +857,61 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          {/* Premium separator heading */}
-          <div className="tech-eco-separator" data-testid="tech-eco-separator">
-            <div className="tech-eco-separator-divider" aria-hidden="true">
-              <span className="tech-eco-separator-dot" />
-            </div>
-            <h3 className="tech-eco-separator-title">
-              Technology{' '}
-              <span className="tech-eco-separator-grad">Ecosystem</span>
-            </h3>
-            <p className="tech-eco-separator-sub">
-              Platforms powering modern digital transformation.
-            </p>
-          </div>
-
-          <TechEcosystem />
         </div>
       </section>
 
-      {/* Build. Operate. Transfer. - Delivery Model Section */}
-      <section className="py-24 bg-[#0A192F]">
+      {/* Build. Operate. Transfer. - Light contrasting section */}
+      <section className="py-24 bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
-          {/* Section with subtle gradient background */}
-          <div className="relative bg-[#111827]/50 rounded-2xl border border-[#3B82F6]/20 p-12 lg:p-16 shadow-xl backdrop-blur scroll-reveal">
+          {/* Section with subtle gradient inner panel */}
+          <div className="relative bg-white rounded-2xl border border-slate-200 p-12 lg:p-16 shadow-lg scroll-reveal">
             {/* Subtle gradient accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-violet-500 to-blue-600 rounded-t-2xl" />
-            
+
             <div className="text-center mb-10">
-              <h2 className="text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight scroll-reveal">
+              <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-4 tracking-tight scroll-reveal">
                 Build. Operate. Transfer.
               </h2>
-              <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto scroll-reveal delay-100">
+              <p className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto scroll-reveal delay-100">
                 A delivery-first model designed for companies that want speed now, and ownership later.
               </p>
             </div>
 
             {/* Body Copy */}
-            <p className="text-lg text-gray-400 leading-relaxed mb-10 max-w-3xl mx-auto text-center scroll-reveal delay-200">
-              We help companies build high-performing engineering teams, operate them to deliver real outcomes, 
-              and transfer full ownership when the organization is ready. This model reduces execution risk, 
+            <p className="text-lg text-slate-500 leading-relaxed mb-10 max-w-3xl mx-auto text-center scroll-reveal delay-200">
+              We help companies build high-performing engineering teams, operate them to deliver real outcomes,
+              and transfer full ownership when the organization is ready. This model reduces execution risk,
               accelerates time-to-market, and ensures long-term continuity, without vendor lock-in.
             </p>
 
             {/* Three Pillars */}
             <div className="grid md:grid-cols-3 gap-8 mt-12">
               <div className="text-center group scroll-reveal scroll-reveal-card delay-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600/20 to-blue-700/10 border border-[#3B82F6]/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-3xl font-black text-blue-500">B</span>
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                  <span className="text-3xl font-black text-blue-600">B</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Build</h3>
-                <p className="text-gray-400 leading-relaxed">
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Build</h3>
+                <p className="text-slate-600 leading-relaxed">
                   Assemble and onboard senior, outcome-driven teams
                 </p>
               </div>
 
               <div className="text-center group scroll-reveal scroll-reveal-card delay-400">
-                <div className="w-16 h-16 bg-gradient-to-br from-violet-500/20 to-violet-600/10 border border-violet-500/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-3xl font-black text-violet-400">O</span>
+                <div className="w-16 h-16 bg-gradient-to-br from-violet-50 to-violet-100 border border-violet-200 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                  <span className="text-3xl font-black text-violet-600">O</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Operate</h3>
-                <p className="text-gray-400 leading-relaxed">
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Operate</h3>
+                <p className="text-slate-600 leading-relaxed">
                   Own delivery, quality, and execution
                 </p>
               </div>
 
               <div className="text-center group scroll-reveal scroll-reveal-card delay-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600/20 to-violet-500/10 border border-[#3B82F6]/30 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-3xl font-black bg-gradient-to-r from-blue-500 to-violet-400 bg-clip-text text-transparent">T</span>
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-violet-100 border border-blue-200 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                  <span className="text-3xl font-black bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent">T</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Transfer</h3>
-                <p className="text-gray-400 leading-relaxed">
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Transfer</h3>
+                <p className="text-slate-600 leading-relaxed">
                   Seamlessly transition teams, systems, and knowledge
                 </p>
               </div>

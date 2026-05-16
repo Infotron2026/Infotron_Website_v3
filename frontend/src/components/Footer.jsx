@@ -113,7 +113,7 @@ const Footer = () => {
         {/* Global Offices */}
         <div className="border-t border-slate-800 mt-12 pt-8">
           <h4 className="text-sm font-semibold text-[#3B82F6] mb-6 uppercase tracking-wider">Global Offices</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex items-start gap-3">
               <MapPin className="w-4 h-4 text-[#3B82F6] mt-1 flex-shrink-0" />
               <div className="text-sm text-gray-400">
@@ -126,6 +126,15 @@ const Footer = () => {
                   27125 Sierra Hwy, Ste 325<br />
                   Santa Clarita, CA 91351
                 </div>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <MapPin className="w-4 h-4 text-cyan-300 mt-1 flex-shrink-0" />
+              <div className="text-sm text-gray-400">
+                <span className="font-semibold text-white">UNITED KINGDOM</span><br />
+                71–75 Shelton Street<br />
+                Covent Garden, London<br />
+                WC2H 9JQ
               </div>
             </div>
             <div className="flex items-start gap-3">

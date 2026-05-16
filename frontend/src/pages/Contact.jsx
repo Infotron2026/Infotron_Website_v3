@@ -176,7 +176,7 @@ const Contact = () => {
     <div className="min-h-screen bg-[#0A192F] pt-20">
       <SEO
         title="Contact Infotron Solutions"
-        description="Talk to our delivery team about Managed Services, Staff Augmentation, Business Consulting, or Capital Projects engagements. Offices in the USA, United Kingdom, and India."
+        description="Talk to our delivery team about Managed Services, Staff Augmentation, Business Consulting, or Capital Projects engagements. Offices in the USA, United Kingdom, Canada, and India."
         path="/contact"
       />
       {/* Hero */}
@@ -543,13 +543,13 @@ const Contact = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6">
             {/* ── United States ── */}
             <div className="loc-card group" data-testid="contact-office-usa">
               <span className="loc-card-border" aria-hidden="true" />
               <div className="loc-card-inner">
                 <div className="loc-card-head">
-                  <span className="loc-flag">🇺🇸</span>
+                  <img src="https://flagcdn.com/w160/us.png" alt="USA flag" className="loc-flag-img" />
                   <div className="loc-meta">
                     <div className="loc-region">Americas</div>
                     <h3 className="loc-country">United States</h3>
@@ -573,7 +573,7 @@ const Contact = () => {
               <span className="loc-card-border" aria-hidden="true" />
               <div className="loc-card-inner">
                 <div className="loc-card-head">
-                  <span className="loc-flag">🇬🇧</span>
+                  <img src="https://flagcdn.com/w160/gb.png" alt="UK flag" className="loc-flag-img" />
                   <div className="loc-meta">
                     <div className="loc-region">Europe</div>
                     <h3 className="loc-country">United Kingdom</h3>
@@ -588,12 +588,32 @@ const Contact = () => {
               </div>
             </div>
 
+            {/* ── Canada ── */}
+            <div className="loc-card group" data-testid="contact-office-canada">
+              <span className="loc-card-border" aria-hidden="true" />
+              <div className="loc-card-inner">
+                <div className="loc-card-head">
+                  <img src="https://flagcdn.com/w160/ca.png" alt="Canada flag" className="loc-flag-img" />
+                  <div className="loc-meta">
+                    <div className="loc-region">Americas</div>
+                    <h3 className="loc-country">Canada</h3>
+                  </div>
+                </div>
+                <ul className="loc-list">
+                  <li>
+                    <div className="loc-city">Toronto, Ontario</div>
+                    <div className="loc-addr">357 Bay Street, ON M5H 4A6</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             {/* ── India ── */}
             <div className="loc-card group" data-testid="contact-office-india">
               <span className="loc-card-border" aria-hidden="true" />
               <div className="loc-card-inner">
                 <div className="loc-card-head">
-                  <span className="loc-flag">🇮🇳</span>
+                  <img src="https://flagcdn.com/w160/in.png" alt="India flag" className="loc-flag-img" />
                   <div className="loc-meta">
                     <div className="loc-region">Asia Pacific</div>
                     <h3 className="loc-country">India</h3>
