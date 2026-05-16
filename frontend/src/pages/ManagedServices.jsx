@@ -303,45 +303,47 @@ const ManagedServices = () => {
           <div className="scroll-reveal delay-200 bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="p-12">
-                <div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-300 text-sm font-semibold rounded-full mb-4">FINTECH PLATFORM</div>
+                <div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-300 text-sm font-semibold rounded-full mb-4">MANAGED SERVICES ENGAGEMENT</div>
                 <h3 className="text-3xl font-bold text-white mb-6">
-                  Scaled Trading Infrastructure for 10X Growth
+                  Steady-State Support for a Growing Enterprise Platform
                 </h3>
                 
                 <div className="mb-8">
                   <h4 className="font-bold text-blue-300 mb-3">Challenge</h4>
                   <p className="text-gray-400 leading-relaxed">
-                    A rapidly growing trading platform needed to scale infrastructure to handle 10x transaction 
-                    volume while maintaining sub-50ms latency requirements and 99.99% uptime.
+                    A growing enterprise team needed dependable day to day support across its application and
+                    infrastructure stack. Ad hoc coverage and fragmented monitoring were creating recurring
+                    incidents and pulling internal engineers away from roadmap work.
                   </p>
                 </div>
 
                 <div className="mb-8">
                   <h4 className="font-bold text-blue-300 mb-3">Approach</h4>
                   <p className="text-gray-400 leading-relaxed">
-                    Deployed a managed DevOps and platform engineering team. Re-architected core trading systems 
-                    using microservices, Kubernetes, and real-time data pipelines with comprehensive monitoring.
+                    We set up a dedicated managed services pod covering application support, infrastructure
+                    operations, and release management. The team introduced standardized monitoring, on call
+                    rotations, and a structured incident response process aligned to the client's SLAs.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-blue-300 mb-3">Results</h4>
+                  <h4 className="font-bold text-blue-300 mb-3">Outcomes</h4>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Infrastructure scaled to handle 500M+ daily transactions</span>
+                      <span className="text-gray-300">Predictable, SLA backed support coverage across business hours and on call windows</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Reduced latency from 120ms to 35ms</span>
+                      <span className="text-gray-300">Consolidated monitoring and alerting into a single operating view</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Achieved 99.99% uptime during peak trading</span>
+                      <span className="text-gray-300">Fewer repeat incidents through structured root cause reviews</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Saved $2.3M annually in infrastructure costs</span>
+                      <span className="text-gray-300">Internal engineering capacity freed up to focus on the product roadmap</span>
                     </li>
                   </ul>
                 </div>
@@ -349,7 +351,7 @@ const ManagedServices = () => {
               <div className="relative h-full min-h-[400px]">
                 <img
                   src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=800&fit=crop&auto=format"
-                  alt="Trading Infrastructure"
+                  alt="Managed Services Operations"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-l from-transparent to-slate-800/50" />
