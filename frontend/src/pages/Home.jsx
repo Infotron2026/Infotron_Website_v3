@@ -904,7 +904,6 @@ const Home = () => {
             <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 relative">
               {/* Phase 1 — Build */}
               <div className="bot-phase group scroll-reveal delay-100" data-testid="bot-build">
-                <div className="bot-phase-num">01</div>
                 <div className="bot-phase-disc">
                   <span className="bot-phase-letter" style={{ color: '#2563EB' }}>B</span>
                 </div>
@@ -918,7 +917,6 @@ const Home = () => {
 
               {/* Phase 2 — Operate */}
               <div className="bot-phase group scroll-reveal delay-200" data-testid="bot-operate">
-                <div className="bot-phase-num">02</div>
                 <div className="bot-phase-disc bot-phase-disc--mid">
                   <span className="bot-phase-letter" style={{ color: '#7C3AED' }}>O</span>
                 </div>
@@ -932,7 +930,6 @@ const Home = () => {
 
               {/* Phase 3 — Transfer */}
               <div className="bot-phase group scroll-reveal delay-300" data-testid="bot-transfer">
-                <div className="bot-phase-num">03</div>
                 <div className="bot-phase-disc bot-phase-disc--end">
                   <span className="bot-phase-letter" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>T</span>
                 </div>
