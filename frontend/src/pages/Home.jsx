@@ -171,7 +171,7 @@ const TechEcosystem = () => {
         }}
       >
         <div ref={topTrackRef} className="tech-eco-track tech-eco-track--left-36">
-          {[...TECH_TOP_ROW, ...TECH_TOP_ROW].map((t, i) => (
+          {[...TECH_TOP_ROW, ...TECH_TOP_ROW, ...TECH_TOP_ROW].map((t, i) => (
             <TechLogoChip
               key={`top-${i}`}
               {...t}
@@ -278,7 +278,7 @@ const TechEcosystem = () => {
         }}
       >
         <div ref={botTrackRef} className="tech-eco-track tech-eco-track--right-44">
-          {[...TECH_BOTTOM_ROW, ...TECH_BOTTOM_ROW].map((t, i) => (
+          {[...TECH_BOTTOM_ROW, ...TECH_BOTTOM_ROW, ...TECH_BOTTOM_ROW].map((t, i) => (
             <TechLogoChip
               key={`bot-${i}`}
               {...t}
@@ -860,60 +860,88 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Build. Operate. Transfer. - Light contrasting section */}
-      <section className="py-24 bg-[#F8FAFC]">
-        <div className="max-w-5xl mx-auto px-6 lg:px-12">
-          {/* Section with subtle gradient inner panel */}
-          <div className="relative bg-white rounded-2xl border border-slate-200 p-12 lg:p-16 shadow-lg scroll-reveal">
-            {/* Subtle gradient accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-violet-500 to-blue-600 rounded-t-2xl" />
+      {/* Build. Operate. Transfer. — Premium timeline visual */}
+      <section className="relative py-24 bg-gradient-to-b from-[#F1F5FB] via-[#F8FAFC] to-[#F1F5FB] overflow-hidden">
+        {/* Soft aurora highlights in negative space */}
+        <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-50 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.20) 0%, transparent 70%)' }} />
+        <div className="absolute -bottom-32 -right-32 w-[560px] h-[560px] rounded-full blur-3xl opacity-50 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.20) 0%, transparent 70%)' }} />
 
-            <div className="text-center mb-10">
-              <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-4 tracking-tight scroll-reveal">
-                Build. Operate. Transfer.
-              </h2>
-              <p className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto scroll-reveal delay-100">
-                A delivery-first model designed for companies that want speed now, and ownership later.
-              </p>
+        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-12">
+
+          {/* Header */}
+          <div className="text-center mb-16 scroll-reveal">
+            <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-600 px-3 py-1.5 rounded-full border border-blue-200 bg-white/70 backdrop-blur mb-5">
+              Delivery Model
+            </span>
+            <h2
+              className="text-4xl lg:text-6xl font-semibold text-slate-900 mb-4"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.02em',
+                lineHeight: 1.05,
+              }}
+            >
+              Build.{' '}
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent italic" style={{ fontWeight: 600 }}>
+                Operate.
+              </span>{' '}
+              Transfer.
+            </h2>
+            <p className="text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Speed now. Ownership later. A delivery model that reduces execution risk and ensures continuity, without vendor lock-in.
+            </p>
+          </div>
+
+          {/* Timeline visual — 3 phases with an animated connector */}
+          <div className="relative">
+            {/* Horizontal connector line (desktop) */}
+            <div className="hidden lg:block absolute top-[68px] left-[16.66%] right-[16.66%] h-px pointer-events-none">
+              <div className="bot-connector" />
             </div>
 
-            {/* Body Copy */}
-            <p className="text-lg text-slate-500 leading-relaxed mb-10 max-w-3xl mx-auto text-center scroll-reveal delay-200">
-              We help companies build high-performing engineering teams, operate them to deliver real outcomes,
-              and transfer full ownership when the organization is ready. This model reduces execution risk,
-              accelerates time-to-market, and ensures long-term continuity, without vendor lock-in.
-            </p>
-
-            {/* Three Pillars */}
-            <div className="grid md:grid-cols-3 gap-8 mt-12">
-              <div className="text-center group scroll-reveal scroll-reveal-card delay-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                  <span className="text-3xl font-black text-blue-600">B</span>
+            <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 relative">
+              {/* Phase 1 — Build */}
+              <div className="bot-phase group scroll-reveal delay-100" data-testid="bot-build">
+                <div className="bot-phase-num">01</div>
+                <div className="bot-phase-disc">
+                  <span className="bot-phase-letter" style={{ color: '#2563EB' }}>B</span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">Build</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  Assemble and onboard senior, outcome-driven teams
-                </p>
+                <h3 className="bot-phase-title">Build</h3>
+                <p className="bot-phase-desc">Assemble and onboard senior, outcome-driven teams</p>
+                <div className="bot-phase-meta">
+                  <span className="bot-phase-chip">Senior pods</span>
+                  <span className="bot-phase-chip">2–4 weeks</span>
+                </div>
               </div>
 
-              <div className="text-center group scroll-reveal scroll-reveal-card delay-400">
-                <div className="w-16 h-16 bg-gradient-to-br from-violet-50 to-violet-100 border border-violet-200 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                  <span className="text-3xl font-black text-violet-600">O</span>
+              {/* Phase 2 — Operate */}
+              <div className="bot-phase group scroll-reveal delay-200" data-testid="bot-operate">
+                <div className="bot-phase-num">02</div>
+                <div className="bot-phase-disc bot-phase-disc--mid">
+                  <span className="bot-phase-letter" style={{ color: '#7C3AED' }}>O</span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">Operate</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  Own delivery, quality, and execution
-                </p>
+                <h3 className="bot-phase-title">Operate</h3>
+                <p className="bot-phase-desc">Own delivery, quality and execution with full accountability</p>
+                <div className="bot-phase-meta">
+                  <span className="bot-phase-chip">SLA-backed</span>
+                  <span className="bot-phase-chip">AI-augmented</span>
+                </div>
               </div>
 
-              <div className="text-center group scroll-reveal scroll-reveal-card delay-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-violet-100 border border-blue-200 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                  <span className="text-3xl font-black bg-gradient-to-r from-blue-600 to-violet-500 bg-clip-text text-transparent">T</span>
+              {/* Phase 3 — Transfer */}
+              <div className="bot-phase group scroll-reveal delay-300" data-testid="bot-transfer">
+                <div className="bot-phase-num">03</div>
+                <div className="bot-phase-disc bot-phase-disc--end">
+                  <span className="bot-phase-letter" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>T</span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">Transfer</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  Seamlessly transition teams, systems, and knowledge
-                </p>
+                <h3 className="bot-phase-title">Transfer</h3>
+                <p className="bot-phase-desc">Seamlessly transition teams, systems and knowledge in-house</p>
+                <div className="bot-phase-meta">
+                  <span className="bot-phase-chip">Zero lock-in</span>
+                  <span className="bot-phase-chip">Knowledge handoff</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1123,42 +1151,33 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
             {whyInfotron.map((item, index) => {
               const IconMap = { Zap, Target, Award, TrendingUp, Shield, Globe };
               const IconComponent = IconMap[item.icon];
+              const num = String(index + 1).padStart(2, '0');
               return (
-                <div 
-                  key={index} 
-                  className={`premium-card bg-white rounded-2xl p-8 hover-lift scroll-reveal delay-${index * 100 + 200}`}
+                <div
+                  key={index}
+                  className={`why-card group scroll-reveal delay-${index * 100 + 200}`}
                 >
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mb-6 icon-glow">
-                    <IconComponent className="w-7 h-7 text-white" />
+                  <span className="why-card-border" aria-hidden="true" />
+                  <div className="why-card-inner">
+                    {/* Watermark number — large, faint, slides on hover */}
+                    <div className="why-card-num" aria-hidden="true">{num}</div>
+
+                    {/* Icon + small dot row */}
+                    <div className="why-card-icon-wrap">
+                      <IconComponent className="why-card-icon" strokeWidth={1.8} />
+                      <span className="why-card-icon-glow" aria-hidden="true" />
+                    </div>
+
+                    <h3 className="why-card-title">{item.title}</h3>
+                    <p className="why-card-desc">{item.description}</p>
+
+                    {/* Gradient underline that grows on hover */}
+                    <div className="why-card-underline" aria-hidden="true" />
                   </div>
-                  <h3
-                    className="text-xl text-slate-900 mb-3"
-                    style={{
-                      fontFamily: "'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif",
-                      fontWeight: 600,
-                      letterSpacing: '-0.015em',
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    className="text-slate-500"
-                    style={{
-                      fontFamily: "'Inter', 'Neue Haas Grotesk', system-ui, -apple-system, sans-serif",
-                      fontSize: '15px',
-                      lineHeight: 1.7,
-                      letterSpacing: '-0.003em',
-                      fontWeight: 400,
-                    }}
-                  >
-                    {item.description}
-                  </p>
-                  <div className="mt-4 h-1 w-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                 </div>
               );
             })}
