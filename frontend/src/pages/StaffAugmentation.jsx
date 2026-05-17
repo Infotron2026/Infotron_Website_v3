@@ -187,45 +187,47 @@ const StaffAugmentation = () => {
           <div className="scroll-reveal delay-200 bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="p-12">
-                <div className="inline-block px-3 py-1 bg-blue-600/20 text-blue-400 text-sm font-semibold rounded-full mb-4">ENTERPRISE SAAS</div>
+                <div className="inline-block px-3 py-1 bg-blue-600/20 text-blue-400 text-sm font-semibold rounded-full mb-4">STAFF AUGMENTATION ENGAGEMENT</div>
                 <h3 className="text-3xl font-bold text-white mb-6">
-                  Modernized Legacy Platform in 90 Days
+                  Embedded Engineering Pod for a Platform Modernization
                 </h3>
                 
                 <div className="mb-8">
                   <h4 className="font-bold text-blue-400 mb-3">Challenge</h4>
                   <p className="text-gray-400 leading-relaxed">
-                    A B2B SaaS company with 500+ enterprise clients needed to modernize a 15-year-old monolithic 
-                    application without service disruption, but lacked internal expertise in cloud-native architectures.
+                    An established product team needed additional senior engineering capacity to accelerate a
+                    long running modernization effort. Internal hiring was slow, and the team did not want to
+                    pause feature delivery to grow headcount.
                   </p>
                 </div>
 
                 <div className="mb-8">
                   <h4 className="font-bold text-blue-400 mb-3">Approach</h4>
                   <p className="text-gray-400 leading-relaxed">
-                    Assembled an 18-person team including architects, full-stack engineers, and DevOps specialists. 
-                    Team integrated with client's product organization and executed phased migration to cloud-native stack.
+                    We embedded a vetted pod of senior engineers, an architect, and a DevOps specialist
+                    directly into the client's product organization. The pod worked inside the client's tools,
+                    sprint cadence, and engineering standards, with structured weekly review checkpoints.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-blue-400 mb-3">Results</h4>
+                  <h4 className="font-bold text-blue-400 mb-3">Outcomes</h4>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Migrated 2.5M users to new platform with zero downtime</span>
+                      <span className="text-gray-300">Open workstreams picked up without disrupting in flight sprints</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Reduced page load times by 65%</span>
+                      <span className="text-gray-300">Long standing technical debt addressed alongside new feature work</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Cut operational costs by 40%</span>
+                      <span className="text-gray-300">Repeatable engineering patterns adopted by the internal team</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Enabled weekly feature releases vs quarterly</span>
+                      <span className="text-gray-300">Delivery cadence maintained while internal hiring continued in parallel</span>
                     </li>
                   </ul>
                 </div>

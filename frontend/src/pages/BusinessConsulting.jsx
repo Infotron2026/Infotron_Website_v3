@@ -187,46 +187,47 @@ const BusinessConsulting = () => {
           <div className="scroll-reveal delay-200 bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="p-12">
-                <div className="inline-block px-3 py-1 bg-blue-600/20 text-blue-400 text-sm font-semibold rounded-full mb-4">HEDGE FUND</div>
+                <div className="inline-block px-3 py-1 bg-blue-600/20 text-blue-400 text-sm font-semibold rounded-full mb-4">BUSINESS CONSULTING ENGAGEMENT</div>
                 <h3 className="text-3xl font-bold text-white mb-6">
-                  Built Algorithmic Trading Platform from Scratch
+                  Technology Strategy Support for a Growing Firm
                 </h3>
                 
                 <div className="mb-8">
                   <h4 className="font-bold text-blue-400 mb-3">Challenge</h4>
                   <p className="text-gray-400 leading-relaxed">
-                    A $5B hedge fund required a proprietary algorithmic trading platform with complex quantitative 
-                    models, real-time risk management, and institutional-grade reliability. No internal technology leadership.
+                    A growing firm with domain specialist leadership needed senior technology guidance to shape
+                    its multi year platform direction. Leadership wanted an independent perspective before
+                    committing to long term build, buy, and hiring decisions.
                   </p>
                 </div>
 
                 <div className="mb-8">
                   <h4 className="font-bold text-blue-400 mb-3">Approach</h4>
                   <p className="text-gray-400 leading-relaxed">
-                    Embedded fractional CTO and technology advisory team. Defined architecture, selected technology stack, 
-                    assembled specialized team (quant developers, data engineers, trading system specialists), and 
-                    provided hands-on delivery oversight.
+                    We provided fractional CTO level advisory covering architecture, vendor evaluation, and team
+                    design. The engagement included structured working sessions with leadership, a documented
+                    target state, and a prioritized roadmap reviewed at regular checkpoints.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-blue-400 mb-3">Results</h4>
+                  <h4 className="font-bold text-blue-400 mb-3">Outcomes</h4>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Platform handling $2B+ daily trade volume</span>
+                      <span className="text-gray-300">Documented technology strategy aligned to business priorities</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Real-time risk calculations across 10,000+ positions</span>
+                      <span className="text-gray-300">Build vs buy decisions supported by structured trade off analysis</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">99.999% system reliability achieved</span>
+                      <span className="text-gray-300">Staged delivery roadmap the internal team could execute against</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">Reduced trade execution time by 85%</span>
+                      <span className="text-gray-300">Clearer hiring priorities for the next phase of the platform</span>
                     </li>
                   </ul>
                 </div>
@@ -234,7 +235,7 @@ const BusinessConsulting = () => {
               <div className="relative h-full min-h-[400px]">
                 <img
                   src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=800&fit=crop&auto=format"
-                  alt="Trading Platform"
+                  alt="Strategy Working Session"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-l from-transparent to-slate-800/50" />
