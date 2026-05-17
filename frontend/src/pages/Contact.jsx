@@ -41,6 +41,19 @@ const Contact = () => {
     if (jobId) setFormData(prev => ({ ...prev, jobId }));
   }, [searchParams]);
 
+  // Hide the floating CTA dock once the form section is in view
+  const [showFloatingCta, setShowFloatingCta] = useState(true);
+  useEffect(() => {
+    const el = document.getElementById('contact-form');
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setShowFloatingCta(!entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const scrollToForm = (type) => {
     setFormType(type);
     requestAnimationFrame(() => {
@@ -187,6 +200,37 @@ const Contact = () => {
         description="Talk to our delivery team about Managed Services, Staff Augmentation, Business Consulting, or Capital Projects engagements. Offices in the USA, United Kingdom, Canada, and India."
         path="/contact"
       />
+
+      {/* ─── Floating right-side CTA dock (sticky while scrolling) ─── */}
+      <div
+        aria-hidden={!showFloatingCta}
+        className={`hidden lg:flex fixed right-5 top-1/2 -translate-y-1/2 z-40 flex-col gap-3 transition-all duration-500 ${
+          showFloatingCta
+            ? 'opacity-100 translate-x-0 pointer-events-auto'
+            : 'opacity-0 translate-x-6 pointer-events-none'
+        }`}
+        data-testid="floating-cta-dock"
+      >
+        <button
+          type="button"
+          onClick={() => scrollToForm('client')}
+          data-testid="floating-cta-client"
+          className="group relative flex items-center gap-2.5 pl-4 pr-5 py-3 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-500 shadow-[0_12px_30px_-10px_rgba(59,130,246,0.55)] hover:shadow-[0_18px_40px_-10px_rgba(59,130,246,0.75)] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+        >
+          <span className="w-2 h-2 rounded-full bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+          I'm a Client
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToForm('candidate')}
+          data-testid="floating-cta-candidate"
+          className="group relative flex items-center gap-2.5 pl-4 pr-5 py-3 rounded-full text-sm font-semibold text-cyan-100 bg-white/[0.06] border border-cyan-300/30 backdrop-blur-md hover:bg-cyan-300/[0.12] hover:border-cyan-300/60 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+        >
+          <span className="w-2 h-2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(103,232,249,0.9)]" />
+          I'm a Candidate
+        </button>
+      </div>
+
       {/* Global Offices — premium glassmorphism cards (US · UK · Canada · India) */}
       <section
         className="relative pt-24 lg:pt-28 pb-20 lg:pb-24 overflow-hidden"
@@ -342,27 +386,6 @@ const Contact = () => {
               <Mail className="w-4 h-4" />
               <span className="text-base font-medium">contact@infotronsolutions.com</span>
             </a>
-          </div>
-
-          {/* Path CTAs — scroll directly to the matching form */}
-          <div className="mt-10 lg:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <Button
-              onClick={() => scrollToForm('client')}
-              size="lg"
-              data-testid="hero-cta-client"
-              className="w-full sm:w-auto px-8 py-6 text-base font-semibold bg-gradient-to-r from-blue-600 to-violet-500 text-white hover:from-blue-500 hover:to-violet-400 transition-all duration-300 shadow-[0_10px_30px_-10px_rgba(59,130,246,0.6)]"
-            >
-              I'm a Client
-            </Button>
-            <Button
-              onClick={() => scrollToForm('candidate')}
-              size="lg"
-              variant="outline"
-              data-testid="hero-cta-candidate"
-              className="w-full sm:w-auto px-8 py-6 text-base font-semibold border border-cyan-300/40 bg-white/[0.03] text-cyan-200 hover:bg-cyan-300/10 hover:border-cyan-300/70 backdrop-blur transition-all duration-300"
-            >
-              I'm a Candidate
-            </Button>
           </div>
         </div>
       </section>
