@@ -204,7 +204,7 @@ const Contact = () => {
       {/* ─── Floating right-side CTA dock (sticky while scrolling) ─── */}
       <div
         aria-hidden={!showFloatingCta}
-        className={`hidden lg:flex fixed right-5 top-1/2 -translate-y-1/2 z-40 flex-col gap-3 transition-all duration-500 ${
+        className={`hidden lg:flex fixed right-5 top-[42%] -translate-y-1/2 z-40 flex-col gap-3 transition-all duration-500 ${
           showFloatingCta
             ? 'opacity-100 translate-x-0 pointer-events-auto'
             : 'opacity-0 translate-x-6 pointer-events-none'
@@ -233,7 +233,7 @@ const Contact = () => {
 
       {/* Global Offices — premium glassmorphism cards (US · UK · Canada · India) */}
       <section
-        className="relative pt-24 lg:pt-28 pb-20 lg:pb-24 overflow-hidden"
+        className="relative pt-16 lg:pt-20 pb-20 lg:pb-24 overflow-hidden"
         data-testid="contact-locations"
         style={{
           background: `
