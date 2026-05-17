@@ -41,6 +41,14 @@ const Contact = () => {
     if (jobId) setFormData(prev => ({ ...prev, jobId }));
   }, [searchParams]);
 
+  const scrollToForm = (type) => {
+    setFormType(type);
+    requestAnimationFrame(() => {
+      const el = document.getElementById('contact-form');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -335,11 +343,32 @@ const Contact = () => {
               <span className="text-base font-medium">contact@infotronsolutions.com</span>
             </a>
           </div>
+
+          {/* Path CTAs — scroll directly to the matching form */}
+          <div className="mt-10 lg:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <Button
+              onClick={() => scrollToForm('client')}
+              size="lg"
+              data-testid="hero-cta-client"
+              className="w-full sm:w-auto px-8 py-6 text-base font-semibold bg-gradient-to-r from-blue-600 to-violet-500 text-white hover:from-blue-500 hover:to-violet-400 transition-all duration-300 shadow-[0_10px_30px_-10px_rgba(59,130,246,0.6)]"
+            >
+              I'm a Client
+            </Button>
+            <Button
+              onClick={() => scrollToForm('candidate')}
+              size="lg"
+              variant="outline"
+              data-testid="hero-cta-candidate"
+              className="w-full sm:w-auto px-8 py-6 text-base font-semibold border border-cyan-300/40 bg-white/[0.03] text-cyan-200 hover:bg-cyan-300/10 hover:border-cyan-300/70 backdrop-blur transition-all duration-300"
+            >
+              I'm a Candidate
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Contact Form */}
-      <section className="py-20 bg-[#0A192F]">
+      <section id="contact-form" className="py-20 bg-[#0A192F] scroll-mt-24">
         <div className="max-w-[800px] mx-auto px-6 lg:px-12">
           {/* Form Type Toggle */}
           <div className="flex gap-4 mb-10 justify-center">
