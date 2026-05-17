@@ -181,7 +181,7 @@ const Contact = () => {
       />
       {/* Global Offices — premium glassmorphism cards (US · UK · Canada · India) */}
       <section
-        className="relative pt-28 lg:pt-32 pb-20 lg:pb-24 overflow-hidden"
+        className="relative pt-24 lg:pt-28 pb-20 lg:pb-24 overflow-hidden"
         data-testid="contact-locations"
         style={{
           background: `
@@ -233,7 +233,7 @@ const Contact = () => {
               </span>
             </h2>
             <p className="text-base lg:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
-              Three regions. One delivery standard. Talk to the team closest to you.
+              Four regions. One delivery standard. Talk to the team closest to you.
             </p>
           </div>
 
