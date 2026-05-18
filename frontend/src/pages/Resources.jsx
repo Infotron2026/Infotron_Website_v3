@@ -209,36 +209,34 @@ const Resources = () => {
         className="py-14 lg:py-20 bg-[#0A192F] scroll-mt-24"
       >
         <div className="max-w-[1300px] mx-auto px-6 lg:px-12">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10 scroll-reveal">
-            <div>
-              <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 mb-3">
-                <FileText className="w-3.5 h-3.5" />
-                Case Studies
-              </div>
-              <h2
-                className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white"
+          <div className="mb-10 scroll-reveal">
+            <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 mb-3">
+              <FileText className="w-3.5 h-3.5" />
+              Case Studies
+            </div>
+            <h2
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white mb-3"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.15,
+              }}
+            >
+              Delivery in{' '}
+              <span
+                className="italic"
                 style={{
-                  fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
-                  letterSpacing: '-0.018em',
-                  lineHeight: 1.15,
+                  backgroundImage: 'linear-gradient(90deg, #93C5FD 0%, #A78BFA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  fontWeight: 600,
                 }}
               >
-                Delivery in{' '}
-                <span
-                  className="italic"
-                  style={{
-                    backgroundImage: 'linear-gradient(90deg, #93C5FD 0%, #A78BFA 100%)',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    color: 'transparent',
-                    fontWeight: 600,
-                  }}
-                >
-                  the field.
-                </span>
-              </h2>
-            </div>
-            <p className="text-sm text-slate-400 max-w-md">
+                the field.
+              </span>
+            </h2>
+            <p className="text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
               How our teams execute against real client problems, told with the same rigor we bring to the work.
             </p>
           </div>
@@ -297,36 +295,34 @@ const Resources = () => {
         className="py-14 lg:py-20 bg-[#0A192F] scroll-mt-24 border-t border-white/[0.04]"
       >
         <div className="max-w-[1300px] mx-auto px-6 lg:px-12">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10 scroll-reveal">
-            <div>
-              <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 mb-3">
-                <BookOpen className="w-3.5 h-3.5" />
-                Blog
-              </div>
-              <h2
-                className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white"
+          <div className="mb-10 scroll-reveal">
+            <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 mb-3">
+              <BookOpen className="w-3.5 h-3.5" />
+              Blog
+            </div>
+            <h2
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white mb-3"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.15,
+              }}
+            >
+              Notes from{' '}
+              <span
+                className="italic"
                 style={{
-                  fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
-                  letterSpacing: '-0.018em',
-                  lineHeight: 1.15,
+                  backgroundImage: 'linear-gradient(90deg, #93C5FD 0%, #A78BFA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  fontWeight: 600,
                 }}
               >
-                Notes from{' '}
-                <span
-                  className="italic"
-                  style={{
-                    backgroundImage: 'linear-gradient(90deg, #93C5FD 0%, #A78BFA 100%)',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    color: 'transparent',
-                    fontWeight: 600,
-                  }}
-                >
-                  the desk.
-                </span>
-              </h2>
-            </div>
-            <p className="text-sm text-slate-400 max-w-md">
+                the desk.
+              </span>
+            </h2>
+            <p className="text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
               Short reads on delivery, technology choices, and what we've learned working with enterprise teams.
             </p>
           </div>

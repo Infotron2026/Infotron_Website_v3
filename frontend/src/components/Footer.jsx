@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { openCookiePreferences } from './CookieConsent';
 
 const Footer = () => {
   return (
@@ -160,13 +161,21 @@ const Footer = () => {
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} Infotron Solutions. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm justify-center md:justify-end">
             <Link to="/privacy" className="text-gray-500 hover:text-[#3B82F6] transition-colors">
               Privacy Policy
             </Link>
             <Link to="/terms" className="text-gray-500 hover:text-[#3B82F6] transition-colors">
               Terms of Service
             </Link>
+            <button
+              type="button"
+              onClick={openCookiePreferences}
+              data-testid="footer-cookie-prefs"
+              className="text-gray-500 hover:text-[#3B82F6] transition-colors"
+            >
+              Cookie Preferences
+            </button>
           </div>
         </div>
       </div>
