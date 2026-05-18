@@ -12,6 +12,9 @@ const Careers = () => {
     script.src = 'https://jobsapi.ceipal.com/APISource/widget.js';
     script.setAttribute('data-ceipal-api-key', 'dC9SNzQyRVlIMTgwdVcweko3Mm5Gdz09');
     script.setAttribute('data-ceipal-career-portal-id', 'Z3RkUkt2OXZJVld2MjFpOVRSTXoxZz09');
+    // CEIPAL widget renders inside a cross-origin iframe; the only way to influence its
+    // interior look from the parent page is via these supported data-* parameters.
+    script.setAttribute('data-bg-color', '#0E1B36');
     script.async = true;
     
     const container = document.getElementById('ceipal-jobs-container');
