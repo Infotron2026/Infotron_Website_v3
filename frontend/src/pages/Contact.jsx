@@ -659,12 +659,11 @@ const Contact = () => {
               {/* Message */}
               <div>
                 <label htmlFor="message" className="block text-sm font-semibold text-gray-300 mb-2">
-                  {formType === 'client' ? 'Project Details / Requirements *' : 'Cover Letter / Additional Information *'}
+                  {formType === 'client' ? 'Project Details / Requirements' : 'Cover Letter / Additional Information'}
                 </label>
                 <Textarea
                   id="message"
                   name="message"
-                  required
                   value={formData.message}
                   onChange={handleChange}
                   placeholder={formType === 'client' 
