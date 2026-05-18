@@ -676,7 +676,12 @@ button, input, textarea, select {
 
 
 
-/* CEIPAL Widget Styling for Dark Theme */
+/* ─── CEIPAL Widget Styling — Native to Infotron Brand ──────────────────
+   The CEIPAL embed defaults to harsh emerald / cyan / bright blue and a
+   filter bar that's too tall on mobile. These overrides make the widget
+   feel like it was designed for the site: soft brand blue + violet, muted
+   borders, premium card surfaces, and tighter mobile spacing. */
+
 .ceipal-wrapper {
     max-width: 100%;
 }
@@ -687,7 +692,7 @@ button, input, textarea, select {
 
 #example-widget-container {
     background: transparent !important;
-    color: #e5e7eb !important;
+    color: #d8def0 !important;
     width: 100% !important;
     max-width: 100% !important;
 }
@@ -697,37 +702,45 @@ button, input, textarea, select {
     box-sizing: border-box !important;
 }
 
+/* Job card / row surface — premium glass over the dark container */
 #example-widget-container .job-listing,
 #example-widget-container .job-card,
-#example-widget-container [class*="job"],
+#example-widget-container [class*="job-item"],
+#example-widget-container [class*="JobItem"],
+#example-widget-container [class*="job-row"],
 #example-widget-container .card,
 #example-widget-container .list-item {
-    background: rgba(30, 41, 59, 0.5) !important;
-    border: 1px solid rgba(16, 185, 129, 0.2) !important;
-    border-radius: 12px !important;
-    color: #e5e7eb !important;
-    margin-bottom: 1rem !important;
-    padding: 1rem !important;
-    transition: all 0.3s ease !important;
+    background: rgba(15, 27, 52, 0.55) !important;
+    border: 1px solid rgba(99, 137, 255, 0.14) !important;
+    border-radius: 14px !important;
+    color: #d8def0 !important;
+    margin-bottom: 0.9rem !important;
+    padding: 1.1rem 1.25rem !important;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
 }
 
 #example-widget-container .job-listing:hover,
 #example-widget-container .job-card:hover,
-#example-widget-container [class*="job"]:hover {
-    border-color: rgba(16, 185, 129, 0.4) !important;
+#example-widget-container [class*="job-item"]:hover,
+#example-widget-container [class*="JobItem"]:hover,
+#example-widget-container [class*="job-row"]:hover {
+    border-color: rgba(124, 58, 237, 0.45) !important;
+    background: rgba(20, 33, 64, 0.7) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15) !important;
+    box-shadow: 0 12px 28px -12px rgba(59, 130, 246, 0.35) !important;
 }
 
+/* Links — refined brand blue, no harsh emerald */
 #example-widget-container a {
-    color: #34d399 !important;
+    color: #93C5FD !important;
     transition: color 0.2s ease !important;
 }
 
 #example-widget-container a:hover {
-    color: #6ee7b7 !important;
+    color: #C4B5FD !important;
 }
 
+/* Headings */
 #example-widget-container h1,
 #example-widget-container h2,
 #example-widget-container h3,
@@ -735,77 +748,182 @@ button, input, textarea, select {
 #example-widget-container h5,
 #example-widget-container h6 {
     color: #ffffff !important;
+    letter-spacing: -0.01em !important;
 }
 
+/* Body text */
 #example-widget-container p,
 #example-widget-container span,
-#example-widget-container div {
-    color: #d1d5db !important;
+#example-widget-container div,
+#example-widget-container label,
+#example-widget-container li {
+    color: #c7cee2 !important;
 }
 
+/* Form controls — match Infotron's input styling */
 #example-widget-container input,
 #example-widget-container select,
 #example-widget-container textarea {
-    background: rgba(30, 41, 59, 0.8) !important;
-    border: 1px solid rgba(16, 185, 129, 0.3) !important;
-    color: #e5e7eb !important;
-    border-radius: 8px !important;
-    padding: 0.75rem 1rem !important;
+    background: rgba(10, 20, 40, 0.7) !important;
+    border: 1px solid rgba(99, 137, 255, 0.22) !important;
+    color: #e6ebf7 !important;
+    border-radius: 10px !important;
+    padding: 0.65rem 0.9rem !important;
     width: 100% !important;
     max-width: 100% !important;
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+}
+
+#example-widget-container input::placeholder,
+#example-widget-container textarea::placeholder {
+    color: rgba(199, 206, 226, 0.45) !important;
 }
 
 #example-widget-container input:focus,
 #example-widget-container select:focus,
 #example-widget-container textarea:focus {
-    border-color: rgba(16, 185, 129, 0.6) !important;
+    border-color: rgba(124, 58, 237, 0.55) !important;
     outline: none !important;
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18) !important;
 }
 
+/* Buttons — brand gradient, not emerald */
 #example-widget-container button,
 #example-widget-container .btn,
-#example-widget-container [type="submit"] {
-    background: linear-gradient(to right, #10b981, #06b6d4) !important;
-    color: white !important;
+#example-widget-container [type="submit"],
+#example-widget-container [type="button"] {
+    background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%) !important;
+    color: #ffffff !important;
     border: none !important;
-    border-radius: 8px !important;
-    padding: 0.75rem 1.5rem !important;
+    border-radius: 10px !important;
+    padding: 0.65rem 1.25rem !important;
     cursor: pointer !important;
     font-weight: 600 !important;
-    transition: all 0.3s ease !important;
+    font-size: 0.92rem !important;
+    transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease !important;
 }
 
 #example-widget-container button:hover,
 #example-widget-container .btn:hover,
-#example-widget-container [type="submit"]:hover {
-    opacity: 0.9 !important;
+#example-widget-container [type="submit"]:hover,
+#example-widget-container [type="button"]:hover {
+    filter: brightness(1.08) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+    box-shadow: 0 8px 22px -8px rgba(59, 130, 246, 0.55) !important;
 }
 
+/* Tables (job listings often render as tables) */
 #example-widget-container table {
     width: 100% !important;
-    border-collapse: collapse !important;
+    border-collapse: separate !important;
+    border-spacing: 0 8px !important;
 }
 
 #example-widget-container th,
 #example-widget-container td {
-    padding: 1rem !important;
-    border-bottom: 1px solid rgba(16, 185, 129, 0.1) !important;
+    padding: 0.9rem 1rem !important;
+    border-bottom: 1px solid rgba(99, 137, 255, 0.10) !important;
     text-align: left !important;
+    vertical-align: middle !important;
 }
 
 #example-widget-container th {
-    color: #10b981 !important;
+    color: #93C5FD !important;
     font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    border-bottom: 1px solid rgba(99, 137, 255, 0.20) !important;
 }
 
-/* Remove any white backgrounds from widget */
+/* Strip any white/light backgrounds CEIPAL may inject */
+#example-widget-container,
 #example-widget-container > div,
 #example-widget-container .container,
-#example-widget-container .wrapper {
+#example-widget-container .wrapper,
+#example-widget-container [class*="background-white"],
+#example-widget-container [class*="bg-white"] {
     background: transparent !important;
+}
+
+/* Pagination, chips, tags */
+#example-widget-container [class*="badge"],
+#example-widget-container [class*="tag"],
+#example-widget-container [class*="chip"],
+#example-widget-container [class*="pill"] {
+    background: rgba(59, 130, 246, 0.12) !important;
+    border: 1px solid rgba(59, 130, 246, 0.22) !important;
+    color: #BFDBFE !important;
+    border-radius: 999px !important;
+    padding: 0.2rem 0.65rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+}
+
+/* Filter / search bar — flatten visual height, especially on mobile */
+#example-widget-container [class*="filter"],
+#example-widget-container [class*="search"],
+#example-widget-container [class*="toolbar"] {
+    background: rgba(10, 20, 40, 0.45) !important;
+    border: 1px solid rgba(99, 137, 255, 0.12) !important;
+    border-radius: 14px !important;
+    padding: 0.75rem 1rem !important;
+}
+
+/* ── Mobile-first compaction (below 640px) ────────────────────────────── */
+@media (max-width: 640px) {
+    #example-widget-container .job-listing,
+    #example-widget-container .job-card,
+    #example-widget-container [class*="job-item"],
+    #example-widget-container [class*="JobItem"],
+    #example-widget-container [class*="job-row"] {
+        padding: 0.85rem 0.95rem !important;
+        margin-bottom: 0.7rem !important;
+        border-radius: 12px !important;
+    }
+
+    #example-widget-container input,
+    #example-widget-container select,
+    #example-widget-container textarea {
+        padding: 0.55rem 0.75rem !important;
+        font-size: 0.88rem !important;
+        border-radius: 9px !important;
+    }
+
+    #example-widget-container button,
+    #example-widget-container .btn,
+    #example-widget-container [type="submit"],
+    #example-widget-container [type="button"] {
+        padding: 0.55rem 1rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Force the filter/search rail to a tight, single-purpose bar */
+    #example-widget-container [class*="filter"],
+    #example-widget-container [class*="search"],
+    #example-widget-container [class*="toolbar"] {
+        padding: 0.55rem 0.75rem !important;
+        border-radius: 12px !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Stack any inline rows of filter inputs into a column on mobile */
+    #example-widget-container [class*="filter"] > div,
+    #example-widget-container [class*="search"] > div,
+    #example-widget-container [class*="toolbar"] > div {
+        margin-bottom: 0.45rem !important;
+    }
+
+    #example-widget-container th,
+    #example-widget-container td {
+        padding: 0.65rem 0.55rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Headings tighter on small screens */
+    #example-widget-container h2 { font-size: 1.15rem !important; }
+    #example-widget-container h3 { font-size: 1rem !important; }
 }
 
 

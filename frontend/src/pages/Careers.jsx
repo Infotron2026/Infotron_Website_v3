@@ -97,17 +97,77 @@ const Careers = () => {
       </section>
 
       {/* CEIPAL Job Listings */}
-      <section className="py-20 bg-slate-800">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Open Positions</h2>
-          
-          {/* CEIPAL Widget Container - Styled to match theme */}
-          <div 
-            id="ceipal-jobs-container" 
-            className="ceipal-wrapper w-full bg-[#111827]/50 rounded-2xl border border-[#3B82F6]/20 p-6 lg:p-8"
-            style={{ minHeight: '400px' }}
-          >
-            <div id="example-widget-container" className="w-full"></div>
+      <section className="relative py-20 lg:py-28 overflow-hidden bg-[#050B1A]">
+        {/* Ambient brand glow — deep blue / violet, never green or harsh */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-70"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 50% at 20% 30%, rgba(37,99,235,0.16) 0%, transparent 60%), radial-gradient(ellipse 55% 45% at 85% 75%, rgba(124,58,237,0.14) 0%, transparent 60%)',
+          }}
+        />
+        {/* Faint dot grid texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.05]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #93c5fd 1px, transparent 0)',
+            backgroundSize: '44px 44px',
+          }}
+        />
+
+        <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-12">
+          {/* Section header — eyebrow + headline + subtitle for native feel */}
+          <div className="text-center mb-10 lg:mb-14">
+            <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 px-3 py-1.5 rounded-full border border-blue-400/25 bg-blue-400/5 mb-5">
+              Talent Network
+            </span>
+            <h2
+              className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-3"
+              style={{
+                fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+                letterSpacing: '-0.018em',
+                lineHeight: 1.1,
+              }}
+            >
+              Open{' '}
+              <span
+                className="italic"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #93C5FD 0%, #A78BFA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  fontWeight: 600,
+                }}
+              >
+                Positions.
+              </span>
+            </h2>
+            <p className="text-sm sm:text-base lg:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
+              Live roles across our delivery teams. Updated as new requirements come in.
+            </p>
+          </div>
+
+          {/* Premium dark container with subtle border glow — wraps the embed natively */}
+          <div className="relative">
+            {/* Soft outer halo for depth */}
+            <div
+              aria-hidden="true"
+              className="absolute -inset-px rounded-3xl pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(135deg, rgba(59,130,246,0.35) 0%, rgba(124,58,237,0.25) 50%, rgba(59,130,246,0.20) 100%)',
+                filter: 'blur(0.5px)',
+              }}
+            />
+            <div
+              id="ceipal-jobs-container"
+              data-testid="careers-jobs-container"
+              className="ceipal-wrapper relative w-full rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#0E1B36]/95 to-[#0A1428]/95 backdrop-blur-sm p-4 sm:p-6 lg:p-10 shadow-[0_30px_80px_-30px_rgba(15,30,80,0.7)]"
+              style={{ minHeight: '480px' }}
+            >
+              <div id="example-widget-container" className="w-full"></div>
+            </div>
           </div>
         </div>
       </section>
