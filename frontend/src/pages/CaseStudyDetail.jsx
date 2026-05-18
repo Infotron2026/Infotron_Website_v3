@@ -46,7 +46,26 @@ const CaseStudyDetail = () => {
         description={study.impact ? `${study.impact}. ${study.challenge}` : study.challenge}
         path={`/case-studies/${study.slug}`}
         image={study.image}
+        imageAlt={study.title}
         type="article"
+        keywords={study.industry}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": study.title,
+          "description": study.impact ? `${study.impact}. ${study.challenge}` : study.challenge,
+          "image": study.image,
+          "author": { "@type": "Organization", "name": "Infotron Solutions" },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Infotron Solutions",
+            "logo": { "@type": "ImageObject", "url": "https://customer-assets.emergentagent.com/job_ba897003-eeca-4b0e-8e12-dd77cec76f35/artifacts/mcntdahb_INFOTRON%20Gradient%20Logo%20cropped.png" }
+          },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://infotronsolutions.com/case-studies/${study.slug}` },
+          "articleSection": study.industry,
+          "about": study.client,
+          "inLanguage": "en-US"
+        }}
       />
       {/* Breadcrumb / Back nav */}
       <div className="border-b border-white/5 bg-[#0A192F]/80 backdrop-blur">

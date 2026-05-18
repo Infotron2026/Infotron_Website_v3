@@ -36,6 +36,15 @@ const Careers = () => {
         title="Careers | Join World-Class Technology Teams"
         description="Open roles at Infotron Solutions. Work on high-impact engineering, AI, cloud, and platform programs with Fortune 500 clients across Americas, EMEA, and APAC."
         path="/careers"
+        keywords="Infotron careers, technology jobs, engineering jobs, AI jobs, cloud jobs, remote engineering roles"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Careers at Infotron Solutions",
+          "url": "https://infotronsolutions.com/careers",
+          "description": "Open roles across engineering, AI, cloud, and platform delivery programs.",
+          "isPartOf": { "@type": "WebSite", "name": "Infotron Solutions", "url": "https://infotronsolutions.com" }
+        }}
       />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>

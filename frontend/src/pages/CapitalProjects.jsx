@@ -144,6 +144,17 @@ const CapitalProjects = () => {
         title="Capital Projects | Talent & Execution Partner"
         description="Specialized talent and program execution support for capital projects across energy, infrastructure, manufacturing, telecom, and life sciences. Field-ready engineers, PMO acceleration, and cross-discipline delivery."
         path="/capital-projects"
+        keywords="capital projects, energy projects, infrastructure delivery, PMO acceleration, field engineers, EPC support"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "Capital Projects",
+          "provider": { "@type": "Organization", "name": "Infotron Solutions", "url": "https://infotronsolutions.com" },
+          "url": "https://infotronsolutions.com/capital-projects",
+          "description": "Specialized talent and program execution support for capital projects across energy, infrastructure, manufacturing, telecom, and life sciences.",
+          "serviceType": "Capital Projects",
+          "areaServed": ["US", "GB", "CA", "IN"]
+        }}
       />
       {/* HERO SECTION */}
       <section className="py-24 lg:py-32 relative overflow-hidden" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>

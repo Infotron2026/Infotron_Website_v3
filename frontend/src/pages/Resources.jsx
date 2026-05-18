@@ -71,6 +71,15 @@ const Resources = () => {
         title="Resources & Insights"
         description="Case studies, expert perspectives, and field-tested playbooks on enterprise technology delivery, talent strategy, AI adoption, and platform transformation."
         path="/resources"
+        keywords="resources, case studies, technology blog, AI insights, platform transformation, talent strategy"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Resources & Insights",
+          "url": "https://infotronsolutions.com/resources",
+          "description": "Case studies and field-tested perspectives on enterprise technology delivery, talent strategy, and platform transformation.",
+          "isPartOf": { "@type": "WebSite", "name": "Infotron Solutions", "url": "https://infotronsolutions.com" }
+        }}
       />
 
       {/* ─── Floating right-side jump dock ─── */}

@@ -57,6 +57,28 @@ const BusinessConsulting = () => {
         title="Business Consulting"
         description="Strategic technology advisory from former CTOs and VPs of Engineering. AI strategy, platform modernization roadmaps, and transformation leadership for enterprise programs."
         path="/services/business-consulting"
+        keywords="business consulting, technology strategy, fractional CTO, AI strategy, platform modernization, digital transformation"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Business Consulting",
+            "provider": { "@type": "Organization", "name": "Infotron Solutions", "url": "https://infotronsolutions.com" },
+            "url": "https://infotronsolutions.com/services/business-consulting",
+            "description": "Strategic technology advisory: AI strategy, platform modernization, fractional CTO support, and transformation leadership for enterprise programs.",
+            "serviceType": "Business Consulting",
+            "areaServed": ["US", "GB", "CA", "IN"]
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://infotronsolutions.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Services" },
+              { "@type": "ListItem", "position": 3, "name": "Business Consulting", "item": "https://infotronsolutions.com/services/business-consulting" }
+            ]
+          }
+        ]}
       />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>

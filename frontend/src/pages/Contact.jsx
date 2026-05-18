@@ -199,6 +199,31 @@ const Contact = () => {
         title="Contact Infotron Solutions"
         description="Talk to our delivery team about Managed Services, Staff Augmentation, Business Consulting, or Capital Projects engagements. Offices in the USA, United Kingdom, Canada, and India."
         path="/contact"
+        keywords="contact Infotron, IT services contact, enterprise technology consultation, hire engineers, staff augmentation inquiry"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "Contact Infotron Solutions",
+            "url": "https://infotronsolutions.com/contact",
+            "description": "Reach the Infotron Solutions delivery team. Offices in the USA, United Kingdom, Canada, and India."
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Infotron Solutions",
+            "url": "https://infotronsolutions.com",
+            "telephone": "+1-775-305-9399",
+            "email": "contact@infotronsolutions.com",
+            "address": [
+              { "@type": "PostalAddress", "streetAddress": "3225 McLeod Dr. Ste 100", "addressLocality": "Las Vegas", "addressRegion": "NV", "postalCode": "89121", "addressCountry": "US" },
+              { "@type": "PostalAddress", "streetAddress": "27125 Sierra Hwy, Ste 325", "addressLocality": "Santa Clarita", "addressRegion": "CA", "postalCode": "91351", "addressCountry": "US" },
+              { "@type": "PostalAddress", "streetAddress": "71-75 Shelton Street, Covent Garden", "addressLocality": "London", "postalCode": "WC2H 9JQ", "addressCountry": "GB" },
+              { "@type": "PostalAddress", "streetAddress": "357 Bay Street", "addressLocality": "Toronto", "addressRegion": "ON", "postalCode": "M5H 4A6", "addressCountry": "CA" },
+              { "@type": "PostalAddress", "streetAddress": "C-20, G Block, Bandra Kurla Complex", "addressLocality": "Mumbai", "addressRegion": "MH", "postalCode": "400051", "addressCountry": "IN" }
+            ]
+          }
+        ]}
       />
 
       {/* ─── Floating right-side CTA dock (sticky while scrolling) ─── */}

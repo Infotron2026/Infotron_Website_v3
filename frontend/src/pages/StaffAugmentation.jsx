@@ -57,6 +57,28 @@ const StaffAugmentation = () => {
         title="Staff Augmentation"
         description="Senior, vetted engineers embedded with your team in two weeks. Pre-qualified specialists across cloud, data, security, AI, and product engineering. Billed per outcome, not per seat."
         path="/services/staff-augmentation"
+        keywords="staff augmentation, engineering talent, embedded engineers, senior developers, vetted engineers"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Staff Augmentation",
+            "provider": { "@type": "Organization", "name": "Infotron Solutions", "url": "https://infotronsolutions.com" },
+            "url": "https://infotronsolutions.com/services/staff-augmentation",
+            "description": "Senior, vetted engineers embedded with your team. Pre-qualified specialists across cloud, data, security, AI, and product engineering.",
+            "serviceType": "Staff Augmentation",
+            "areaServed": ["US", "GB", "CA", "IN"]
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://infotronsolutions.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Services" },
+              { "@type": "ListItem", "position": 3, "name": "Staff Augmentation", "item": "https://infotronsolutions.com/services/staff-augmentation" }
+            ]
+          }
+        ]}
       />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>

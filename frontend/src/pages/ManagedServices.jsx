@@ -85,6 +85,28 @@ const ManagedServices = () => {
         title="Managed Services"
         description="Full-stack delivery pods that own outcomes, from architecture to production support. AI-augmented teams in DevOps, Cloud, Data, and Application Engineering for enterprise clients."
         path="/services/managed-services"
+        keywords="managed services, application support, infrastructure operations, oracle AMS, microsoft workplace support, devops, cloud"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Managed Services",
+            "provider": { "@type": "Organization", "name": "Infotron Solutions", "url": "https://infotronsolutions.com" },
+            "url": "https://infotronsolutions.com/services/managed-services",
+            "description": "Full-stack delivery pods covering DevOps, Cloud, Data, Application Engineering, and AI-augmented production support.",
+            "serviceType": "Managed Services",
+            "areaServed": ["US", "GB", "CA", "IN"]
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://infotronsolutions.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Services" },
+              { "@type": "ListItem", "position": 3, "name": "Managed Services", "item": "https://infotronsolutions.com/services/managed-services" }
+            ]
+          }
+        ]}
       />
       {/* Hero — headline + premium offerings nav (merged)
          Deep aurora-stage background: keeps the area BEHIND the cards dark

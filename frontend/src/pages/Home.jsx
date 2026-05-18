@@ -556,6 +556,34 @@ const Home = () => {
         title="Outcomes. Not Headcount."
         description="Infotron Solutions delivers Managed Services, Staff Augmentation, Business Consulting, and Capital Projects execution for enterprise clients. Delivery-first. Outcome-owned."
         path="/"
+        keywords="Infotron Solutions, managed services, staff augmentation, business consulting, capital projects, enterprise IT, technology delivery, outcomes"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          "name": "Infotron Solutions",
+          "url": "https://infotronsolutions.com",
+          "image": "https://customer-assets.emergentagent.com/job_ba897003-eeca-4b0e-8e12-dd77cec76f35/artifacts/mcntdahb_INFOTRON%20Gradient%20Logo%20cropped.png",
+          "description": "Enterprise IT services and talent solutions firm delivering Managed Services, Staff Augmentation, Business Consulting, and Capital Projects execution.",
+          "telephone": "+1-775-305-9399",
+          "email": "contact@infotronsolutions.com",
+          "areaServed": ["US", "GB", "CA", "IN"],
+          "serviceType": [
+            "Managed Services",
+            "Staff Augmentation",
+            "Business Consulting",
+            "Capital Projects"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Service offerings",
+            "itemListElement": [
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Managed Services", "url": "https://infotronsolutions.com/services/managed-services" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Staff Augmentation", "url": "https://infotronsolutions.com/services/staff-augmentation" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Business Consulting", "url": "https://infotronsolutions.com/services/business-consulting" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Capital Projects", "url": "https://infotronsolutions.com/capital-projects" } }
+            ]
+          }
+        }}
       />
       {/* HERO SECTION — Pinned scroll on lg+ ONLY. Mobile shows simple hero
           (no canvas, no video, no scroll choreography) and flows directly

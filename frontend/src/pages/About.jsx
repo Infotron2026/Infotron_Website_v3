@@ -40,6 +40,14 @@ const About = () => {
         title="About Us"
         description="Infotron Solutions is a US-headquartered IT services and talent solutions firm built for enterprise technology delivery: Managed Services, Staff Augmentation, and Business Consulting."
         path="/about"
+        keywords="about Infotron, IT services firm, talent solutions company, enterprise technology partner"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "About Infotron Solutions",
+          "url": "https://infotronsolutions.com/about",
+          "description": "Infotron Solutions is a US-headquartered IT services and talent solutions firm built for enterprise technology delivery."
+        }}
       />
       {/* Hero */}
       <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>

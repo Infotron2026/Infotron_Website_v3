@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Disallow common build / dev artifacts (none expected, but defensive)
+Disallow: /*.json$
+
+# Sitemap location
+Sitemap: https://infotronsolutions.com/sitemap.xml

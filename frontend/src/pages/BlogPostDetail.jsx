@@ -36,9 +36,32 @@ const BlogPostDetail = () => {
       <SEO
         title={post.title}
         description={post.excerpt}
-        path={`/blog/${post.slug}`}
+        path={`/resources/blog/${post.slug}`}
         image={post.image}
+        imageAlt={post.title}
         type="article"
+        publishedTime={post.date}
+        modifiedTime={post.date}
+        author={post.author}
+        keywords={post.category}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": post.title,
+          "description": post.excerpt,
+          "image": post.image,
+          "datePublished": post.date,
+          "dateModified": post.date,
+          "author": { "@type": "Person", "name": post.author },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Infotron Solutions",
+            "logo": { "@type": "ImageObject", "url": "https://customer-assets.emergentagent.com/job_ba897003-eeca-4b0e-8e12-dd77cec76f35/artifacts/mcntdahb_INFOTRON%20Gradient%20Logo%20cropped.png" }
+          },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://infotronsolutions.com/resources/blog/${post.slug}` },
+          "articleSection": post.category,
+          "inLanguage": "en-US"
+        }}
       />
       {/* Back nav */}
       <div className="border-b border-white/5 bg-[#0A192F]/80 backdrop-blur">
