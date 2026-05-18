@@ -3,37 +3,48 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { blogPosts, caseStudies } from '../data/mockData';
-import { ArrowRight, Calendar, Clock, Tag } from 'lucide-react';
+import { ArrowRight, Calendar, Clock, Tag, FileText, BookOpen } from 'lucide-react';
 
 const Resources = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('case-studies');
   const observerRef = useRef(null);
+  const contentRef = useRef(null);
 
+  // Animate-in observer for cards
   useEffect(() => {
-    const options = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
+    const options = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('animate-fade-in-up');
           entry.target.classList.remove('scroll-reveal');
         }
       });
     }, options);
-
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-      observerRef.current.observe(el);
-    });
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
+    document.querySelectorAll('.scroll-reveal').forEach((el) => observerRef.current.observe(el));
+    return () => observerRef.current && observerRef.current.disconnect();
   }, [activeTab]);
+
+  // Auto-hide floating dock when the CTA section is in view
+  const [showFloatingTabs, setShowFloatingTabs] = useState(true);
+  useEffect(() => {
+    const el = document.getElementById('resources-cta');
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setShowFloatingTabs(!entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const switchTab = (tab) => {
+    setActiveTab(tab);
+    requestAnimationFrame(() => {
+      const target = document.getElementById('resources-content');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#0A192F] pt-20">
@@ -42,170 +53,147 @@ const Resources = () => {
         description="Case studies, expert perspectives, and field-tested playbooks on enterprise technology delivery, talent strategy, AI adoption, and platform transformation."
         path="/resources"
       />
-      {/* Hero */}
-      <section className="py-24 lg:py-32" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="max-w-4xl mx-auto text-center scroll-reveal">
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-8">
-              Resources & Insights
-            </h1>
-            <p className="text-lg lg:text-xl text-gray-300 leading-relaxed">
-              Expert perspectives on technology delivery, talent strategy, and enterprise transformation
-            </p>
-          </div>
+
+      {/* ─── Floating right-side tab dock (sticky while scrolling) ─── */}
+      <div
+        aria-hidden={!showFloatingTabs}
+        className={`hidden lg:flex fixed right-5 top-[42%] -translate-y-1/2 z-40 flex-col gap-3 transition-all duration-500 ${
+          showFloatingTabs
+            ? 'opacity-100 translate-x-0 pointer-events-auto'
+            : 'opacity-0 translate-x-6 pointer-events-none'
+        }`}
+        data-testid="resources-floating-dock"
+      >
+        <button
+          type="button"
+          onClick={() => switchTab('case-studies')}
+          data-testid="floating-tab-case-studies"
+          aria-pressed={activeTab === 'case-studies'}
+          className={`group relative flex items-center gap-2.5 pl-4 pr-5 py-3 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] ${
+            activeTab === 'case-studies'
+              ? 'text-white bg-gradient-to-r from-blue-600 to-violet-500 shadow-[0_12px_30px_-10px_rgba(59,130,246,0.55)]'
+              : 'text-blue-100 bg-white/[0.06] border border-blue-300/30 backdrop-blur-md hover:bg-blue-300/[0.12] hover:border-blue-300/60'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          Case Studies
+        </button>
+        <button
+          type="button"
+          onClick={() => switchTab('blogs')}
+          data-testid="floating-tab-blogs"
+          aria-pressed={activeTab === 'blogs'}
+          className={`group relative flex items-center gap-2.5 pl-4 pr-5 py-3 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] ${
+            activeTab === 'blogs'
+              ? 'text-white bg-gradient-to-r from-blue-600 to-violet-500 shadow-[0_12px_30px_-10px_rgba(59,130,246,0.55)]'
+              : 'text-blue-100 bg-white/[0.06] border border-blue-300/30 backdrop-blur-md hover:bg-blue-300/[0.12] hover:border-blue-300/60'
+          }`}
+        >
+          <BookOpen className="w-3.5 h-3.5" />
+          Blog
+        </button>
+      </div>
+
+      {/* ─── Premium light hero (matches Contact "Where we deliver" feel) ─── */}
+      <section
+        className="relative pt-16 lg:pt-20 pb-14 lg:pb-16 overflow-hidden"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 55% at 50% 30%, #0F1B3D 0%, #08122A 60%, #050917 100%),
+            #050917
+          `,
+        }}
+      >
+        {/* Faint dot grid */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.06]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #93C5FD 1px, transparent 0)',
+            backgroundSize: '44px 44px',
+          }}
+        />
+        {/* Soft aurora halos */}
+        <div
+          className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.40) 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute -bottom-40 -right-32 w-[560px] h-[560px] rounded-full blur-3xl opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.40) 0%, transparent 70%)' }}
+        />
+
+        <div className="relative z-10 max-w-[1100px] mx-auto px-6 lg:px-12 text-center">
+          <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 px-3 py-1.5 rounded-full border border-blue-400/25 bg-blue-400/5 mb-4">
+            Resources
+          </span>
+          <h1
+            className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-3"
+            style={{
+              fontFamily: "'Playfair Display', 'Libre Baskerville', Georgia, serif",
+              letterSpacing: '-0.018em',
+              lineHeight: 1.1,
+            }}
+          >
+            Insights worth{' '}
+            <span
+              className="italic"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, #93C5FD 0%, #A78BFA 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+                fontWeight: 600,
+              }}
+            >
+              your time.
+            </span>
+          </h1>
+          <p className="text-sm sm:text-base lg:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Field-tested perspectives on delivery, talent strategy, and platform transformation.
+          </p>
         </div>
       </section>
 
-      {/* Tabs */}
-      <section className="py-8 bg-[#111827]/80 border-b border-[#3B82F6]/20 sticky top-20 z-40 backdrop-blur-md">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="flex gap-6 justify-center">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`px-6 py-3 font-semibold text-lg transition-all rounded-lg ${
-                activeTab === 'all'
-                  ? 'text-violet-400 bg-violet-500/10 border border-violet-500/30'
-                  : 'text-gray-400 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              All Resources
-            </button>
-            <button
-              onClick={() => setActiveTab('case-studies')}
-              className={`px-6 py-3 font-semibold text-lg transition-all rounded-lg ${
-                activeTab === 'case-studies'
-                  ? 'text-violet-400 bg-violet-500/10 border border-violet-500/30'
-                  : 'text-gray-400 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              Case Studies
-            </button>
-            <button
-              onClick={() => setActiveTab('blogs')}
-              className={`px-6 py-3 font-semibold text-lg transition-all rounded-lg ${
-                activeTab === 'blogs'
-                  ? 'text-violet-400 bg-violet-500/10 border border-violet-500/30'
-                  : 'text-gray-400 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              Blog
-            </button>
-          </div>
+      {/* ─── Mobile-only inline tab pills (replaces the sticky bar) ─── */}
+      <div className="lg:hidden bg-[#0A192F] border-b border-white/[0.05]">
+        <div className="max-w-[1100px] mx-auto px-4 py-3 flex gap-2 justify-center">
+          <button
+            type="button"
+            onClick={() => switchTab('case-studies')}
+            data-testid="mobile-tab-case-studies"
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+              activeTab === 'case-studies'
+                ? 'text-white bg-gradient-to-r from-blue-600 to-violet-500'
+                : 'text-blue-200 bg-white/[0.04] border border-white/[0.08]'
+            }`}
+          >
+            <FileText className="w-3 h-3" />
+            Case Studies
+          </button>
+          <button
+            type="button"
+            onClick={() => switchTab('blogs')}
+            data-testid="mobile-tab-blogs"
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+              activeTab === 'blogs'
+                ? 'text-white bg-gradient-to-r from-blue-600 to-violet-500'
+                : 'text-blue-200 bg-white/[0.04] border border-white/[0.08]'
+            }`}
+          >
+            <BookOpen className="w-3 h-3" />
+            Blog
+          </button>
         </div>
-      </section>
+      </div>
 
-      {/* Content Grid */}
-      <section className="py-20 bg-[#0A192F]">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          {/* All Resources */}
-          {activeTab === 'all' && (
-            <div>
-              {/* Featured Case Studies */}
-              <div className="mb-20">
-                <h2 className="text-3xl font-bold mb-8 scroll-reveal">
-                  <span className="bg-gradient-to-r from-[#3B82F6] to-[#7C3AED] bg-clip-text text-transparent">
-                    Featured Case Studies
-                  </span>
-                </h2>
-                <div className="grid lg:grid-cols-2 gap-8">
-                  {caseStudies.slice(0, 2).map((study, index) => (
-                    <Link
-                      key={study.id}
-                      to={`/case-studies/${study.slug}`}
-                      className={`scroll-reveal delay-${index * 100} group bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300`}
-                      data-testid={`case-study-card-${study.slug}`}
-                    >
-                      <div className="relative overflow-hidden h-64">
-                        <img
-                          src={study.image}
-                          alt={study.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
-                        <div className="absolute top-4 left-4">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-[11px] font-semibold tracking-wider uppercase">
-                            {study.industry}
-                          </span>
-                        </div>
-                        <div className="absolute bottom-4 left-6 text-white">
-                          <div className="text-xs text-gray-300">{study.client}</div>
-                        </div>
-                      </div>
-                      <div className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-violet-400 transition-colors">
-                          {study.title}
-                        </h3>
-                        <p className="text-sm text-blue-300/90 font-medium mb-3">{study.impact}</p>
-                        <p className="text-gray-400 mb-6 line-clamp-2">{study.challenge}</p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex gap-3 text-xs text-gray-500">
-                            <span>{study.duration}</span>
-                            <span>•</span>
-                            <span>{study.teamSize}</span>
-                          </div>
-                          <div className="inline-flex items-center gap-2 text-sm font-semibold text-violet-400 group-hover:gap-3 transition-all">
-                            View Case Study
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Latest Blog Posts */}
-              <div>
-                <h2 className="text-3xl font-bold mb-8 scroll-reveal">
-                  <span className="bg-gradient-to-r from-[#3B82F6] to-[#7C3AED] bg-clip-text text-transparent">
-                    Latest Insights
-                  </span>
-                </h2>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {blogPosts.slice(0, 3).map((post, index) => (
-                    <Link
-                      key={post.id}
-                      to={`/resources/blog/${post.slug}`}
-                      className={`scroll-reveal delay-${index * 100} group bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300`}
-                    >
-                      <div className="relative overflow-hidden h-48">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                      <div className="p-6">
-                        <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
-                          <span className="inline-flex items-center gap-1 bg-violet-500/20 text-violet-400 px-3 py-1 rounded-full text-xs font-semibold">
-                            <Tag className="w-3 h-3" />
-                            {post.category}
-                          </span>
-                          <span className="flex items-center gap-1 text-gray-400">
-                            <Clock className="w-4 h-4" />
-                            {post.readTime}
-                          </span>
-                        </div>
-                        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-violet-400 transition-colors">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-400 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-500 flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </span>
-                          <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Case Studies Only */}
+      {/* ─── Content Grid ─── */}
+      <section
+        id="resources-content"
+        ref={contentRef}
+        className="py-14 lg:py-20 bg-[#0A192F] scroll-mt-24"
+      >
+        <div className="max-w-[1300px] mx-auto px-6 lg:px-12">
+          {/* Case Studies */}
           {activeTab === 'case-studies' && (
             <div className="grid lg:grid-cols-2 gap-8">
               {caseStudies.map((study, index) => (
@@ -254,7 +242,7 @@ const Resources = () => {
             </div>
           )}
 
-          {/* Blog Posts Only */}
+          {/* Blog */}
           {activeTab === 'blogs' && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogPosts.map((post, index) => (
@@ -262,6 +250,7 @@ const Resources = () => {
                   key={post.id}
                   to={`/resources/blog/${post.slug}`}
                   className={`scroll-reveal delay-${index * 100} group bg-[#111827]/80 border border-[#3B82F6]/20 rounded-2xl overflow-hidden hover:border-[#3B82F6]/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300`}
+                  data-testid={`blog-card-${post.slug}`}
                 >
                   <div className="relative overflow-hidden h-48">
                     <img
@@ -301,7 +290,11 @@ const Resources = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24" style={{background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)'}}>
+      <section
+        id="resources-cta"
+        className="py-24"
+        style={{ background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 40%, #3B82F6 75%, #7C3AED 100%)' }}
+      >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 text-center scroll-reveal">
           <h2 className="text-4xl font-bold text-white mb-6">
             Ready to Start Your Success Story?
