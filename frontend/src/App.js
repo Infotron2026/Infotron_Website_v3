@@ -19,6 +19,8 @@ import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import BlogPostDetail from "@/pages/BlogPostDetail";
 import Careers from "@/pages/Careers";
 import JobDetail from "@/pages/JobDetail";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminJobs from "@/pages/AdminJobs";
 import Contact from "@/pages/Contact";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
@@ -48,6 +50,8 @@ function App() {
             <Route path="/resources/blog/:slug" element={<BlogPostDetail />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/careers/:jobId" element={<JobDetail />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/jobs" element={<AdminJobs />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />

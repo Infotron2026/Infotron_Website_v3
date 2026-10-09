@@ -1,33 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MapPin, Briefcase, Clock, Loader2 } from 'lucide-react';
+import { jobsApi } from '../lib/api';
 
 const Careers = () => {
-  useEffect(() => {
-    // Load CEIPAL script
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://jobsapi.ceipal.com/APISource/widget.js';
-    script.setAttribute('data-ceipal-api-key', 'dC9SNzQyRVlIMTgwdVcweko3Mm5Gdz09');
-    script.setAttribute('data-ceipal-career-portal-id', 'Z3RkUkt2OXZJVld2MjFpOVRSTXoxZz09');
-    // CEIPAL widget renders inside a cross-origin iframe; the only way to influence its
-    // interior look from the parent page is via these supported data-* parameters.
-    script.setAttribute('data-bg-color', '#0E1B36');
-    script.async = true;
-    
-    const container = document.getElementById('ceipal-jobs-container');
-    if (container) {
-      container.appendChild(script);
-    }
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-    return () => {
-      // Cleanup script on unmount
-      if (container && script.parentNode === container) {
-        container.removeChild(script);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await jobsApi.listPublished();
+        if (!cancelled) setJobs(data || []);
+      } catch (err) {
+        if (!cancelled) setError(err.message || 'Unable to load positions right now.');
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    };
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   return (
@@ -108,9 +103,8 @@ const Careers = () => {
         </div>
       </section>
 
-      {/* CEIPAL Job Listings */}
+      {/* Open Positions — now powered by the self-managed job database */}
       <section className="relative py-20 lg:py-28 overflow-hidden bg-[#050B1A]">
-        {/* Ambient brand glow — deep blue / violet, never green or harsh */}
         <div
           className="absolute inset-0 pointer-events-none opacity-70"
           style={{
@@ -118,7 +112,6 @@ const Careers = () => {
               'radial-gradient(ellipse 60% 50% at 20% 30%, rgba(37,99,235,0.16) 0%, transparent 60%), radial-gradient(ellipse 55% 45% at 85% 75%, rgba(124,58,237,0.14) 0%, transparent 60%)',
           }}
         />
-        {/* Faint dot grid texture */}
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.05]"
           style={{
@@ -128,7 +121,6 @@ const Careers = () => {
         />
 
         <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-12">
-          {/* Section header — eyebrow + headline + subtitle for native feel */}
           <div className="text-center mb-10 lg:mb-14">
             <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-blue-300/90 px-3 py-1.5 rounded-full border border-blue-400/25 bg-blue-400/5 mb-5">
               Talent Network
@@ -160,9 +152,7 @@ const Careers = () => {
             </p>
           </div>
 
-          {/* Premium dark container with subtle border glow — wraps the embed natively */}
           <div className="relative">
-            {/* Soft outer halo for depth */}
             <div
               aria-hidden="true"
               className="absolute -inset-px rounded-3xl pointer-events-none"
@@ -173,12 +163,60 @@ const Careers = () => {
               }}
             />
             <div
-              id="ceipal-jobs-container"
               data-testid="careers-jobs-container"
-              className="ceipal-wrapper relative w-full rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#0E1B36]/95 to-[#0A1428]/95 backdrop-blur-sm p-4 sm:p-6 lg:p-10 shadow-[0_30px_80px_-30px_rgba(15,30,80,0.7)]"
-              style={{ minHeight: '480px' }}
+              className="relative w-full rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#0E1B36]/95 to-[#0A1428]/95 backdrop-blur-sm p-4 sm:p-6 lg:p-10 shadow-[0_30px_80px_-30px_rgba(15,30,80,0.7)]"
+              style={{ minHeight: '320px' }}
             >
-              <div id="example-widget-container" className="w-full"></div>
+              {loading && (
+                <div className="flex items-center justify-center py-14 text-slate-400 gap-2" data-testid="careers-loading">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Loading open positions…
+                </div>
+              )}
+
+              {!loading && error && (
+                <div className="text-center py-14 text-slate-400" data-testid="careers-error">
+                  Unable to load positions right now. Please try again shortly or reach out to{' '}
+                  <a href="mailto:syno@infotronsolutions.com" className="text-blue-300 hover:text-violet-300">syno@infotronsolutions.com</a>.
+                </div>
+              )}
+
+              {!loading && !error && jobs.length === 0 && (
+                <div className="text-center py-14" data-testid="careers-empty">
+                  <p className="text-slate-300 text-base">No open positions at the moment.</p>
+                  <p className="text-slate-400 text-sm mt-2">
+                    We're always keen to hear from strong candidates — submit your profile below.
+                  </p>
+                </div>
+              )}
+
+              {!loading && !error && jobs.length > 0 && (
+                <ul className="divide-y divide-white/[0.06]" data-testid="careers-jobs-list">
+                  {jobs.map((job) => (
+                    <li key={job.id} className="py-4 sm:py-5" data-testid={`job-row-${job.slug}`}>
+                      <Link
+                        to={`/careers/${job.slug}`}
+                        className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 rounded-xl px-3 sm:px-4 py-3 hover:bg-white/[0.03] transition-colors"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base sm:text-lg font-semibold text-white group-hover:text-blue-200 transition-colors">
+                            {job.title}
+                          </h3>
+                          <div className="mt-1.5 flex items-center gap-3 flex-wrap text-xs sm:text-sm text-slate-400">
+                            <span className="inline-flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{job.location}</span>
+                            <span className="inline-flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5" />{job.work_mode}</span>
+                            <span className="inline-flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{job.employment_type}</span>
+                            {job.experience ? <span className="text-slate-500">• {job.experience}</span> : null}
+                          </div>
+                        </div>
+                        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-300 group-hover:text-violet-300 group-hover:gap-2.5 transition-all whitespace-nowrap">
+                          View role
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

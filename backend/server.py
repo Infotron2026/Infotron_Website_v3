@@ -1,72 +1,223 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
-import logging
-from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+import re
 import uuid
-from datetime import datetime, timezone
+import logging
+import bcrypt
+import jwt
+from pathlib import Path
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from typing import List, Literal, Optional
+from datetime import datetime, timezone, timedelta
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
+# ─── Env / Mongo ───────────────────────────────────────────────────────────
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
+ADMIN_PASSWORD_HASH = os.environ['ADMIN_PASSWORD_HASH']
+JWT_SECRET = os.environ['JWT_SECRET']
+JWT_EXPIRY_HOURS = int(os.environ.get('JWT_EXPIRY_HOURS', '24'))
+JWT_ALGO = 'HS256'
+
 app = FastAPI()
-
-# Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+bearer_scheme = HTTPBearer(auto_error=True)
 
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+# ─── Models ────────────────────────────────────────────────────────────────
+WorkMode = Literal['Remote', 'Hybrid', 'Onsite']
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
 
-# Add your routes to the router instead of directly to app
+class JobBase(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    location: str = Field(..., min_length=1, max_length=200)
+    work_mode: WorkMode
+    employment_type: str = Field(..., min_length=1, max_length=80)
+    experience: Optional[str] = Field(None, max_length=120)
+    description: str = Field(..., min_length=1)
+    requirements: Optional[str] = None
+    published: bool = True
+
+
+class JobCreate(JobBase):
+    pass
+
+
+class JobUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=1, max_length=200)
+    location: Optional[str] = Field(None, min_length=1, max_length=200)
+    work_mode: Optional[WorkMode] = None
+    employment_type: Optional[str] = Field(None, min_length=1, max_length=80)
+    experience: Optional[str] = Field(None, max_length=120)
+    description: Optional[str] = Field(None, min_length=1)
+    requirements: Optional[str] = None
+    published: Optional[bool] = None
+
+
+class Job(JobBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    slug: str
+    created_at: str
+    updated_at: str
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class LoginResponse(BaseModel):
+    token: str
+    expires_at: str
+
+
+# ─── Helpers ───────────────────────────────────────────────────────────────
+def _slugify(text: str) -> str:
+    s = re.sub(r'[^a-zA-Z0-9\s-]', '', text).strip().lower()
+    s = re.sub(r'[\s_-]+', '-', s)
+    return s[:120] or 'job'
+
+
+async def _ensure_unique_slug(base: str, exclude_id: Optional[str] = None) -> str:
+    slug = base
+    i = 2
+    while True:
+        q = {'slug': slug}
+        if exclude_id:
+            q['id'] = {'$ne': exclude_id}
+        exists = await db.jobs.find_one(q, {'_id': 0, 'id': 1})
+        if not exists:
+            return slug
+        slug = f"{base}-{i}"
+        i += 1
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _issue_token() -> LoginResponse:
+    exp = datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRY_HOURS)
+    payload = {'sub': ADMIN_EMAIL, 'role': 'admin', 'exp': exp}
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
+    return LoginResponse(token=token, expires_at=exp.isoformat())
+
+
+def require_admin(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
+    try:
+        payload = jwt.decode(creds.credentials, JWT_SECRET, algorithms=[JWT_ALGO])
+        if payload.get('role') != 'admin':
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Not an admin token')
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Token expired')
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token')
+
+
+# ─── Health ────────────────────────────────────────────────────────────────
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Infotron API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+# ─── Admin auth ────────────────────────────────────────────────────────────
+@api_router.post("/admin/login", response_model=LoginResponse)
+async def admin_login(payload: LoginRequest):
+    if payload.email.lower() != ADMIN_EMAIL.lower():
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid credentials')
+    ok = bcrypt.checkpw(payload.password.encode(), ADMIN_PASSWORD_HASH.encode())
+    if not ok:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid credentials')
+    return _issue_token()
 
-# Include the router in the main app
+
+@api_router.get("/admin/me")
+async def admin_me(user=Depends(require_admin)):
+    return {"email": user.get('sub'), "role": user.get('role')}
+
+
+# ─── Public jobs (published only) ──────────────────────────────────────────
+@api_router.get("/jobs", response_model=List[Job])
+async def list_published_jobs():
+    cursor = db.jobs.find({'published': True}, {'_id': 0}).sort('created_at', -1)
+    return await cursor.to_list(500)
+
+
+@api_router.get("/jobs/{slug}", response_model=Job)
+async def get_published_job(slug: str):
+    doc = await db.jobs.find_one({'slug': slug, 'published': True}, {'_id': 0})
+    if not doc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
+    return doc
+
+
+# ─── Admin jobs CRUD (auth required) ───────────────────────────────────────
+@api_router.get("/admin/jobs", response_model=List[Job])
+async def admin_list_jobs(user=Depends(require_admin)):
+    cursor = db.jobs.find({}, {'_id': 0}).sort('created_at', -1)
+    return await cursor.to_list(1000)
+
+
+@api_router.get("/admin/jobs/{job_id}", response_model=Job)
+async def admin_get_job(job_id: str, user=Depends(require_admin)):
+    doc = await db.jobs.find_one({'id': job_id}, {'_id': 0})
+    if not doc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
+    return doc
+
+
+@api_router.post("/admin/jobs", response_model=Job, status_code=status.HTTP_201_CREATED)
+async def admin_create_job(payload: JobCreate, user=Depends(require_admin)):
+    now = _now_iso()
+    slug = await _ensure_unique_slug(_slugify(payload.title))
+    doc = payload.model_dump()
+    doc.update({
+        'id': str(uuid.uuid4()),
+        'slug': slug,
+        'created_at': now,
+        'updated_at': now,
+    })
+    await db.jobs.insert_one(doc)
+    doc.pop('_id', None)
+    return doc
+
+
+@api_router.put("/admin/jobs/{job_id}", response_model=Job)
+async def admin_update_job(job_id: str, payload: JobUpdate, user=Depends(require_admin)):
+    existing = await db.jobs.find_one({'id': job_id}, {'_id': 0})
+    if not existing:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
+    updates = {k: v for k, v in payload.model_dump(exclude_unset=True).items() if v is not None or k in ('experience', 'requirements')}
+    # Regenerate slug only if the title changed
+    if 'title' in updates and updates['title'] != existing['title']:
+        updates['slug'] = await _ensure_unique_slug(_slugify(updates['title']), exclude_id=job_id)
+    updates['updated_at'] = _now_iso()
+    await db.jobs.update_one({'id': job_id}, {'$set': updates})
+    merged = {**existing, **updates}
+    return merged
+
+
+@api_router.delete("/admin/jobs/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def admin_delete_job(job_id: str, user=Depends(require_admin)):
+    result = await db.jobs.delete_one({'id': job_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
+    return None
+
+
+# ─── App wiring ────────────────────────────────────────────────────────────
 app.include_router(api_router)
 
 app.add_middleware(
@@ -77,12 +228,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
