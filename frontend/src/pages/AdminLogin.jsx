@@ -4,25 +4,42 @@ import SEO from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Loader2, Lock } from 'lucide-react';
-import { adminApi, adminAuth } from '../lib/api';
+import { adminApi, adminAuth, getBackendBaseUrl } from '../lib/api';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [errorDetail, setErrorDetail] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setErrorDetail('');
     setSubmitting(true);
     try {
       const res = await adminApi.login(email.trim(), password);
       adminAuth.set(res.token);
       navigate('/admin/jobs', { replace: true });
     } catch (err) {
-      setError(err.status === 401 ? 'Invalid email or password.' : 'Something went wrong. Try again.');
+      // This is an admin-only page (noIndex) so surfacing diagnostic info
+      // helps the operator fix misconfiguration without leaking credentials.
+      // Note: 'err.message' never contains passwords or JWT secrets.
+      if (err.status === 401) {
+        setError('Invalid email or password.');
+      } else if (err.status === 0) {
+        setError('Cannot reach the backend.');
+        const base = getBackendBaseUrl() || '(not configured)';
+        setErrorDetail(`${err.message} Backend URL in this build: ${base}`);
+      } else if (err.status) {
+        setError(`Server error (HTTP ${err.status}).`);
+        setErrorDetail(err.message || '');
+      } else {
+        setError('Something went wrong.');
+        setErrorDetail(err.message || '');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -69,8 +86,16 @@ const AdminLogin = () => {
               />
             </div>
             {error && (
-              <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2" data-testid="admin-login-error">
-                {error}
+              <div
+                className="text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2"
+                data-testid="admin-login-error"
+              >
+                <div className="font-semibold">{error}</div>
+                {errorDetail && (
+                  <div className="mt-1 text-xs text-red-200/80 break-words" data-testid="admin-login-error-detail">
+                    {errorDetail}
+                  </div>
+                )}
               </div>
             )}
             <Button
