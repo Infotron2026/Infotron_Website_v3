@@ -1,4 +1,11 @@
 // Lightweight API client for Infotron jobs/admin endpoints.
+//
+// REACT_APP_BACKEND_URL may be:
+//  • an absolute origin (e.g. https://api.example.com) — used in dev and
+//    when the frontend is hosted separately from the backend
+//  • empty / unset — used when the frontend and backend share the same
+//    origin (e.g. deployed together on Vercel as /api/*). In that case
+//    requests are made as relative URLs like `/api/jobs`.
 const RAW_BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || '').trim();
 const BACKEND_URL = RAW_BACKEND_URL.replace(/\/+$/, ''); // strip trailing slash
 const BASE = `${BACKEND_URL}/api`;
@@ -39,17 +46,6 @@ export class ApiError extends Error {
 }
 
 async function request(path, { method = 'GET', body, auth = false } = {}) {
-  // Fail fast with a precise message if the production build was shipped
-  // without REACT_APP_BACKEND_URL — this is the single most common prod bug
-  // and the one that previously surfaced as "Something went wrong. Try again."
-  if (!BACKEND_URL) {
-    throw new ApiError(
-      0,
-      'Backend URL is not configured. Set REACT_APP_BACKEND_URL in the deployment environment variables and redeploy.',
-      { url: `${BASE}${path}` }
-    );
-  }
-
   const headers = { 'Content-Type': 'application/json' };
   if (auth) {
     const token = adminAuth.get();
@@ -67,9 +63,10 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
     });
   } catch (err) {
     // Fetch itself threw — this is a network / CORS / DNS / mixed-content failure
+    const target = BACKEND_URL || 'same-origin /api';
     throw new ApiError(
       0,
-      `Could not reach the backend at ${BACKEND_URL}. This usually means the backend is not deployed, the URL is wrong, CORS is blocking the request, or the production page is HTTPS while the backend is HTTP.`,
+      `Could not reach the backend at ${target}. This usually means the backend is not deployed, the URL is wrong, CORS is blocking the request, or the production page is HTTPS while the backend is HTTP.`,
       { url: fullUrl, cause: err }
     );
   }

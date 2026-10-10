@@ -1,9 +1,16 @@
 {
   "buildCommand": "cd frontend && yarn install --frozen-lockfile && CI=false yarn build",
   "outputDirectory": "frontend/build",
-  "installCommand": "echo 'no root install required — handled inside buildCommand'",
+  "installCommand": "echo 'no root install required'",
   "framework": null,
+  "functions": {
+    "api/[...path].py": {
+      "runtime": "@vercel/python@4.3.1",
+      "includeFiles": "backend/**",
+      "maxDuration": 10
+    }
+  },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
