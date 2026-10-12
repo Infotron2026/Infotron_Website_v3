@@ -167,3 +167,6 @@ credentials.json
 *.pem
 *.key
 .credentials
+
+# Local test credentials — never commit
+memory/test_credentials.md

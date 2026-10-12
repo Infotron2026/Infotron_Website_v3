@@ -1,0 +1,26 @@
+{
+  "summary": "Pre-deploy Vercel-config regression check. Verified /app/api/[...path].py imports and exposes the FastAPI app with all 10 /api/* routes resolved (openapi+docs confirm app object). /app/api/requirements.txt matches runtime imports (fastapi, pydantic, email-validator, motor, pymongo, pyjwt, bcrypt, python-dotenv, python-multipart). /app/vercel.json includes backend/** for the function and the SPA rewrite correctly excludes /api/*. Backend curl smoke: GET /api/jobs=200, GET /api/jobs/<missing>=404 ('Job not found'), POST /api/admin/login wrong=401 ('Invalid credentials'), correct=200 with JWT, GET /api/admin/jobs without token=403 ('Not authenticated'). Playwright end-to-end flow passed every assertion: wrong-password login shows 'Invalid email or password.' with NO data-testid='admin-login-error-detail'; correct login redirects to /admin/jobs; create job (published) appears in admin list with 'Published' badge; appears on public /careers list; detail page /careers/<slug> renders job-detail-title and all 6 apply-form data-testids; unpublish flips to 'Draft' and removes it from /careers; edit title persists and reflects in admin list; delete (confirm auto-accepted) removes the row; token persists in sessionStorage['infotron_admin_token'] across reload; signout clears token and redirects to /admin/login; unreachable-backend simulation (window.fetch monkeypatched to throw TypeError) surfaces 'Cannot reach the backend.' with a data-testid='admin-login-error-detail' child containing the configured BACKEND_URL. All test data cleaned up (created job was deleted). The api.js change allowing empty REACT_APP_BACKEND_URL did NOT regress the dev-origin flow — dev build still uses the configured absolute URL and the error UX contract from iteration_7 is intact.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_8.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "api/[...path].py: thin ASGI re-export is correct. sys.path insert is idempotent. One minor note — the file relies on vercel.json includeFiles='backend/**' to bundle backend/.env; verify that production env vars (MONGO_URL, DB_NAME, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD_HASH) are configured in the Vercel Project Settings → Environment Variables, since bundling .env from the repo would leak secrets. Prefer NOT shipping backend/.env and relying on Vercel-managed env vars only.",
+    "api/requirements.txt: slim list matches runtime imports. Pin motor==3.3.1 / pymongo==4.5.0 is compatible. Consider adding 'starlette' pin only if you hit a resolver issue — currently FastAPI pulls it transitively.",
+    "vercel.json: SPA rewrite /((?!api/).*) → /index.html correctly excludes the python function. maxDuration=10s is fine for CRUD; raise if resume uploads are proxied later. No 'cleanUrls' / 'trailingSlash' set — fine.",
+    "frontend/src/lib/api.js: empty-BACKEND_URL path now yields relative /api/* which is what same-origin Vercel deploys need. ApiError still carries status=0 for network errors so AdminLogin.jsx branching works unchanged. Good.",
+    "No sensitive values (JWT secret / bcrypt hash / Mongo URL) are leaked in any surfaced error message — error only contains the public BACKEND_URL.",
+    "Minor UX: cookie-consent banner at the bottom overlaps the lower part of the admin login card on 900px-tall viewports (pre-existing, not blocking)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100%", "frontend": "100%" },
+  "test_credentials": "admin@infotronsolutions.com / Infotron@2026!Admin (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created and deleted one 'TEST QA Role <ts>' job during the run. No residual test data; pre-existing seed jobs (e.g. 'Senior Full-Stack Engineer') were left untouched.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "AdminLogin inputs use data-testid='admin-email' and 'admin-password' (NOT 'admin-login-email'/'admin-login-password'). Submit button is 'admin-login-submit', error block 'admin-login-error', optional detail child 'admin-login-error-detail'. For same-origin production, REACT_APP_BACKEND_URL must be empty at build time so relative /api/* is used; the dev container has it set to the Emergent preview URL and that still works. Vercel env vars for the Python function must be set in Project Settings — do not rely on committing backend/.env."
+}
