@@ -6,7 +6,8 @@
   "functions": {
     "api/[...path].py": {
       "runtime": "@vercel/python@4.3.1",
-      "includeFiles": "backend/**",
+      "includeFiles": "backend/server.py",
+      "excludeFiles": "{frontend/**,**/node_modules/**,.pnpm-store/**,.yarn/**,tests/**,test_reports/**,memory/**,.emergent/**,.ruff_cache/**,.git/**,**/__pycache__/**,**/*.pyc,**/.env,**/.env.*,*.zip,*.md,yarn.lock,backend/requirements.txt}",
       "maxDuration": 10
     }
   },
