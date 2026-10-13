@@ -11,6 +11,7 @@ const BACKEND_URL = RAW_BACKEND_URL.replace(/\/+$/, ''); // strip trailing slash
 const BASE = `${BACKEND_URL}/api`;
 
 const ADMIN_TOKEN_KEY = 'infotron_admin_token';
+const REQUEST_TIMEOUT_MS = 20000;
 
 export const adminAuth = {
   get() {
@@ -54,14 +55,20 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
   }
 
   const fullUrl = `${BASE}${path}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   let res;
   try {
     res = await fetch(fullUrl, {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
     });
   } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new ApiError(0, 'The server took too long to respond. Please try again.', { url: fullUrl, cause: err });
+    }
     // Fetch itself threw — this is a network / CORS / DNS / mixed-content failure
     const target = BACKEND_URL || 'same-origin /api';
     throw new ApiError(
@@ -69,6 +76,10 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
       `Could not reach the backend at ${target}. This usually means the backend is not deployed, the URL is wrong, CORS is blocking the request, or the production page is HTTPS while the backend is HTTP.`,
       { url: fullUrl, cause: err }
     );
+  }
+
+  finally {
+    clearTimeout(timer);
   }
 
   if (res.status === 204) return null;
@@ -81,7 +92,9 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
   }
 
   if (!res.ok) {
-    const detail = (data && (data.detail || data.message)) || res.statusText || 'Unknown error';
+    let detail = data && (data.detail || data.message);
+    if (Array.isArray(detail)) detail = detail.map((d) => d.msg).join('; ');
+    if (!detail) detail = `Server error (HTTP ${res.status}). Please try again in a moment.`;
     throw new ApiError(res.status, detail, { url: fullUrl });
   }
 

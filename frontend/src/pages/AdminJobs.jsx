@@ -30,6 +30,7 @@ const AdminJobs = () => {
   const [editing, setEditing] = useState(null); // null | 'new' | job object
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [requestId, setRequestId] = useState(null);
 
   const sortedJobs = useMemo(
     () => [...jobs].sort((a, b) => (a.created_at < b.created_at ? 1 : -1)),
@@ -70,6 +71,7 @@ const AdminJobs = () => {
 
   const openNew = () => {
     setForm(emptyForm);
+    setRequestId(crypto.randomUUID());
     setEditing('new');
   };
 
@@ -99,6 +101,7 @@ const AdminJobs = () => {
 
   const onSave = async (e) => {
     e.preventDefault();
+    if (saving) return;
     setSaving(true);
     try {
       const payload = {
@@ -107,9 +110,12 @@ const AdminJobs = () => {
         requirements: form.requirements || null,
       };
       if (editing === 'new') {
-        const created = await adminApi.create(payload);
-        setJobs((prev) => [created, ...prev]);
-        toast({ title: 'Job created', description: created.title });
+        const created = await adminApi.create({ ...payload, client_request_id: requestId });
+        setJobs((prev) => [created, ...prev.filter((j) => j.id !== created.id)]);
+        toast({
+          title: created.published ? 'Job published — now live on Careers' : 'Job saved as draft',
+          description: created.title,
+        });
       } else {
         const updated = await adminApi.update(editing.id, payload);
         setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)));
@@ -118,7 +124,7 @@ const AdminJobs = () => {
       closeEditor();
     } catch (err) {
       if (!handleAuthError(err)) {
-        toast({ title: 'Save failed', description: err.message, variant: 'destructive' });
+        toast({ title: 'Save failed — job not saved', description: `${err.message} You can safely click Save again.`, variant: 'destructive' });
       }
     } finally {
       setSaving(false);

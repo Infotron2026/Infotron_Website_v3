@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import DuplicateKeyError
 import os
 import re
 import asyncio
@@ -21,8 +22,19 @@ load_dotenv(ROOT_DIR / '.env')
 
 # ─── Env / Mongo ───────────────────────────────────────────────────────────
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+DB_NAME = os.environ['DB_NAME']
+_mongo = {'loop': None, 'client': None}
+
+
+def get_db():
+    # Vercel runs each request in a new event loop; Motor clients are loop-bound.
+    loop = asyncio.get_running_loop()
+    if _mongo['loop'] is not loop:
+        if _mongo['client'] is not None:
+            _mongo['client'].close()
+        _mongo['client'] = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+        _mongo['loop'] = loop
+    return _mongo['client'][DB_NAME]
 
 ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 ADMIN_PASSWORD_HASH = os.environ['ADMIN_PASSWORD_HASH']
@@ -51,7 +63,7 @@ class JobBase(BaseModel):
 
 
 class JobCreate(JobBase):
-    pass
+    client_request_id: Optional[str] = Field(None, max_length=100)
 
 
 class JobUpdate(BaseModel):
@@ -97,7 +109,7 @@ async def _ensure_unique_slug(base: str, exclude_id: Optional[str] = None) -> st
         q = {'slug': slug}
         if exclude_id:
             q['id'] = {'$ne': exclude_id}
-        exists = await db.jobs.find_one(q, {'_id': 0, 'id': 1})
+        exists = await get_db().jobs.find_one(q, {'_id': 0, 'id': 1})
         if not exists:
             return slug
         slug = f"{base}-{i}"
@@ -141,7 +153,7 @@ async def health():
     env = {k: bool(os.environ.get(k)) for k in REQUIRED_ENV}
     env['ADMIN_PASSWORD_HASH_format_ok'] = bool(re.fullmatch(r'\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}', ADMIN_PASSWORD_HASH))
     try:
-        await asyncio.wait_for(db.command('ping'), timeout=5)
+        await asyncio.wait_for(get_db().command('ping'), timeout=5)
         mongo = 'ok'
     except Exception as e:
         mongo = f'error: {type(e).__name__}'
@@ -167,13 +179,13 @@ async def admin_me(user=Depends(require_admin)):
 # ─── Public jobs (published only) ──────────────────────────────────────────
 @api_router.get("/jobs", response_model=List[Job])
 async def list_published_jobs():
-    cursor = db.jobs.find({'published': True}, {'_id': 0}).sort('created_at', -1)
+    cursor = get_db().jobs.find({'published': True}, {'_id': 0}).sort('created_at', -1)
     return await cursor.to_list(500)
 
 
 @api_router.get("/jobs/{slug}", response_model=Job)
 async def get_published_job(slug: str):
-    doc = await db.jobs.find_one({'slug': slug, 'published': True}, {'_id': 0})
+    doc = await get_db().jobs.find_one({'slug': slug, 'published': True}, {'_id': 0})
     if not doc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
     return doc
@@ -182,13 +194,13 @@ async def get_published_job(slug: str):
 # ─── Admin jobs CRUD (auth required) ───────────────────────────────────────
 @api_router.get("/admin/jobs", response_model=List[Job])
 async def admin_list_jobs(user=Depends(require_admin)):
-    cursor = db.jobs.find({}, {'_id': 0}).sort('created_at', -1)
+    cursor = get_db().jobs.find({}, {'_id': 0}).sort('created_at', -1)
     return await cursor.to_list(1000)
 
 
 @api_router.get("/admin/jobs/{job_id}", response_model=Job)
 async def admin_get_job(job_id: str, user=Depends(require_admin)):
-    doc = await db.jobs.find_one({'id': job_id}, {'_id': 0})
+    doc = await get_db().jobs.find_one({'id': job_id}, {'_id': 0})
     if not doc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
     return doc
@@ -196,23 +208,36 @@ async def admin_get_job(job_id: str, user=Depends(require_admin)):
 
 @api_router.post("/admin/jobs", response_model=Job, status_code=status.HTTP_201_CREATED)
 async def admin_create_job(payload: JobCreate, user=Depends(require_admin)):
+    jobs = get_db().jobs
+    rid = payload.client_request_id
+    if rid:
+        # Retries with the same client_request_id return the job already created.
+        await jobs.create_index('client_request_id', unique=True, partialFilterExpression={'client_request_id': {'$type': 'string'}})
+        existing = await jobs.find_one({'client_request_id': rid}, {'_id': 0})
+        if existing:
+            return existing
     now = _now_iso()
     slug = await _ensure_unique_slug(_slugify(payload.title))
-    doc = payload.model_dump()
+    doc = payload.model_dump(exclude_none=False)
+    if not rid:
+        doc.pop('client_request_id', None)
     doc.update({
         'id': str(uuid.uuid4()),
         'slug': slug,
         'created_at': now,
         'updated_at': now,
     })
-    await db.jobs.insert_one(doc)
+    try:
+        await jobs.insert_one(doc)
+    except DuplicateKeyError:
+        return await jobs.find_one({'client_request_id': rid}, {'_id': 0})
     doc.pop('_id', None)
     return doc
 
 
 @api_router.put("/admin/jobs/{job_id}", response_model=Job)
 async def admin_update_job(job_id: str, payload: JobUpdate, user=Depends(require_admin)):
-    existing = await db.jobs.find_one({'id': job_id}, {'_id': 0})
+    existing = await get_db().jobs.find_one({'id': job_id}, {'_id': 0})
     if not existing:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
     updates = {k: v for k, v in payload.model_dump(exclude_unset=True).items() if v is not None or k in ('experience', 'requirements')}
@@ -220,14 +245,14 @@ async def admin_update_job(job_id: str, payload: JobUpdate, user=Depends(require
     if 'title' in updates and updates['title'] != existing['title']:
         updates['slug'] = await _ensure_unique_slug(_slugify(updates['title']), exclude_id=job_id)
     updates['updated_at'] = _now_iso()
-    await db.jobs.update_one({'id': job_id}, {'$set': updates})
+    await get_db().jobs.update_one({'id': job_id}, {'$set': updates})
     merged = {**existing, **updates}
     return merged
 
 
 @api_router.delete("/admin/jobs/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def admin_delete_job(job_id: str, user=Depends(require_admin)):
-    result = await db.jobs.delete_one({'id': job_id})
+    result = await get_db().jobs.delete_one({'id': job_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
     return None
@@ -250,4 +275,5 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    if _mongo['client'] is not None:
+        _mongo['client'].close()
