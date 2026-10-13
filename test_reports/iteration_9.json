@@ -1,0 +1,32 @@
+{
+  "summary": "Validated the fix for the 'Saving…' hang on /admin/jobs. Backend pytest (9/9 passed) covered /api/health (ok+mongo ok), public /api/jobs, admin login (good + bad), admin auth guard on /api/admin/jobs, published-vs-draft creation + public visibility, slug lookup 404 for drafts, update + delete + 404-after-delete, and crucially the client_request_id idempotency: posting the same payload twice with the same client_request_id returns the same job id (second call 200) and exactly one record exists. Playwright end-to-end on the preview URL: login landed on /admin/jobs; creating a published job showed the 'Job published — now live on Careers' toast, editor closed, job appeared in admin list and on /careers; creating a draft showed 'Job saved as draft' toast and the draft did NOT appear on /careers; opening the published detail page worked. Error path with page.route forcing POST /api/admin/jobs to HTTP 500 showed a destructive 'Save failed — job not saved' toast whose description contained 'Server error (HTTP 500)', the Save button text reverted from 'Saving…' to 'Create job', and the editor stayed open with the form data intact. Duplicate protection confirmed: after un-routing the 500 and clicking Save again from the same editor, exactly one job was created (verified via /api/admin/jobs listing). On /contact, intercepting the Formspree POST with HTTP 500 (never a real submission) surfaced the visible 'Submission Error' destructive toast — proving the shadcn Toaster is correctly mounted globally. All TEST QA jobs created during the run were deleted; only the pre-existing 'Senior Full-Stack Engineer' seed remains.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/contact (bottom)", "issues": ["Cookie-consent banner overlaps the lower CTA strip and partially overlaps the toast at 900px viewport (pre-existing, not blocking)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_jobs_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py admin_create_job creates the unique partial index on every POST (await jobs.create_index(...) inside the handler). MongoDB is idempotent about this but it adds an avoidable round-trip per request. Move the index creation to startup (or a cached-once flag) — minor perf nit, not a correctness issue.",
+    "server.py get_db() keeps only one AsyncIOMotorClient keyed to the latest loop and closes the previous one. On Vercel this works because each request is single-loop; in a long-lived ASGI server with multiple loops it would thrash. Current usage is fine, but worth a comment-of-intent in code.",
+    "api.js: the 20s AbortController timeout correctly rethrows ApiError(status=0, 'The server took too long to respond. Please try again.'). AdminJobs.onSave wraps the message with 'You can safely click Save again.' — good UX, matches the idempotency guarantee.",
+    "AdminJobs.jsx: requestId is generated per editor open (openNew) and reused on retries. On a successful save, closeEditor() is called so the next 'New job' click generates a fresh UUID — correct, no stale-rid reuse risk.",
+    "Contact.jsx uses raw fetch to Formspree (no AbortController timeout). A hung Formspree would leave Submitting… indefinitely; consider adding the same 20s timeout pattern. Non-blocking."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_jobs_api.py (new)"
+  ],
+  "success_rate": { "backend": "100% (9/9)", "frontend": "100% (7/7 scenarios)" },
+  "test_credentials": "admin@infotronsolutions.com / Infotron2026_XS1keb4G30sTpg (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created 3 TEST QA * jobs during the run; all 3 deleted via API in cleanup. Only pre-existing 'Senior Full-Stack Engineer' seed remains.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend admin password is 'Infotron2026_XS1keb4G30sTpg' (matches the hash in /app/backend/.env). Toast library is shadcn's useToast (components/ui/toaster) — toasts appear bottom-right with title + description. Success toast title for published jobs is exactly 'Job published — now live on Careers'; destructive title is 'Save failed — job not saved' with description including 'Server error (HTTP N). Please try again in a moment. You can safely click Save again.'. For intercepting Formspree in Playwright use page.route('https://formspree.io/**', ...) and never let a real POST through. For admin API tests, requests with python-requests UA work fine; python-urllib default UA may get 403 from the preview proxy — stick with requests."
+}
