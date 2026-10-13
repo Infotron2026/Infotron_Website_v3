@@ -143,5 +143,7 @@ Build a high-end, premium, global consulting website for **Infotron Solutions** 
 | Dec 22, 2025 | Premium dark theme, CEIPAL integration, scroll-to-top fix, testimonials refinement, hero section overhaul |
 | Jun 2026 | Pre-push verification (no code changes): secrets git-ignored (backend/.env, frontend/.env, memory/test_credentials.md), no credentials in tracked files, vercel.json + api/[...path].py ready. User pushing to main via Save to GitHub, then setting Vercel env vars (MONGO_URL, DB_NAME, ADMIN_EMAIL, ADMIN_PASSWORD_HASH, JWT_SECRET). |
 | Jun 2026 | Fixed Vercel 250 MB function limit (was 372.81 MB): root cause was @vercel/python bundling the whole repo incl. frontend/node_modules. Added `excludeFiles` + narrowed `includeFiles` to `backend/server.py` in vercel.json, added `.vercelignore`. Local `vercel build`: old config 435.8 MB/59,926 files → new 15.1 MB/760 files. Trimmed bundle tested standalone: jobs API, admin login, JWT guard, full job CRUD all pass. |
+| Jun 2026 | Prod login 404 fix: `api/[...path].py` only matched single-segment paths on Vercel (/api/admin/login → Vercel NOT_FOUND); /api/jobs crashed (FUNCTION_INVOCATION_FAILED). Replaced with `api/index.py` + rewrite `/api/(.*)` → `/api/index`; startup failure now returns safe 503 JSON (error type + missing env names only); added `GET /api/health` (env presence booleans, hash format, Mongo ping). Excluded `.vercel/**` from function. Local vercel build: 15.1 MB. Awaiting user push + live verification. |
+
 
 

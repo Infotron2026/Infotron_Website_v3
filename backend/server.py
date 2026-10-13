@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
+import asyncio
 import uuid
 import logging
 import bcrypt
@@ -130,6 +131,21 @@ def require_admin(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
 @api_router.get("/")
 async def root():
     return {"message": "Infotron API"}
+
+
+REQUIRED_ENV = ['MONGO_URL', 'DB_NAME', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'JWT_SECRET']
+
+
+@api_router.get("/health")
+async def health():
+    env = {k: bool(os.environ.get(k)) for k in REQUIRED_ENV}
+    env['ADMIN_PASSWORD_HASH_format_ok'] = bool(re.fullmatch(r'\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}', ADMIN_PASSWORD_HASH))
+    try:
+        await asyncio.wait_for(db.command('ping'), timeout=5)
+        mongo = 'ok'
+    except Exception as e:
+        mongo = f'error: {type(e).__name__}'
+    return {"status": "ok" if mongo == 'ok' and all(env.values()) else "degraded", "env": env, "mongo": mongo}
 
 
 # ─── Admin auth ────────────────────────────────────────────────────────────

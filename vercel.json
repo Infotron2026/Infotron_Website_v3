@@ -4,14 +4,21 @@
   "installCommand": "echo 'no root install required'",
   "framework": null,
   "functions": {
-    "api/[...path].py": {
+    "api/index.py": {
       "runtime": "@vercel/python@4.3.1",
       "includeFiles": "backend/server.py",
-      "excludeFiles": "{frontend/**,**/node_modules/**,.pnpm-store/**,.yarn/**,tests/**,test_reports/**,memory/**,.emergent/**,.ruff_cache/**,.git/**,**/__pycache__/**,**/*.pyc,**/.env,**/.env.*,*.zip,*.md,yarn.lock,backend/requirements.txt}",
+      "excludeFiles": "{frontend/**,.vercel/**,**/node_modules/**,.pnpm-store/**,.yarn/**,tests/**,test_reports/**,memory/**,.emergent/**,.ruff_cache/**,.git/**,**/__pycache__/**,**/*.pyc,**/.env,**/.env.*,*.zip,*.md,yarn.lock,backend/requirements.txt}",
       "maxDuration": 10
     }
   },
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
