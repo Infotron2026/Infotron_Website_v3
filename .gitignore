@@ -170,3 +170,4 @@ credentials.json
 
 # Local test credentials — never commit
 memory/test_credentials.md
+memory/admin_password.txt
