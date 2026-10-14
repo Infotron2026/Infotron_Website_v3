@@ -6,10 +6,10 @@ import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { ArrowLeft, MapPin, Briefcase, Clock, Loader2, Upload, FileText, X } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
-import { jobsApi, ApiError } from '../lib/api';
+import { jobsApi, ApiError, getBackendBaseUrl } from '../lib/api';
 
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mrerqvrb';
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
 const ALLOWED_FILE_TYPES = ['.pdf', '.doc', '.docx'];
 
 const JobDetail = () => {
@@ -59,7 +59,7 @@ const JobDetail = () => {
       setResumeFile(null); e.target.value = ''; return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      setFileError('File size must be less than 5MB.');
+      setFileError('File size must be 4MB or less.');
       setResumeFile(null); e.target.value = ''; return;
     }
     setResumeFile(file);
@@ -78,6 +78,12 @@ const JobDetail = () => {
 
     setSubmitting(true);
     try {
+      const uploadData = new FormData();
+      uploadData.append('file', resumeFile);
+      const up = await fetch(`${getBackendBaseUrl()}/api/applications/resume`, { method: 'POST', body: uploadData });
+      if (!up.ok) throw new Error('Resume upload failed');
+      const { resume_link } = await up.json();
+
       const fd = new FormData();
       fd.append('_subject', `Job Application – ${job.title} – ${form.name}`);
       fd.append('form_type', 'Job Application');
@@ -91,7 +97,8 @@ const JobDetail = () => {
       fd.append('phone', form.phone);
       fd.append('linkedin', form.linkedin || 'Not provided');
       fd.append('message', form.message || '');
-      fd.append('resume', resumeFile);
+      fd.append('resume_link', resume_link);
+      fd.append('resume_filename', resumeFile.name);
 
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
@@ -242,7 +249,7 @@ const JobDetail = () => {
                 <label className="flex items-center justify-center w-full h-24 rounded-md border-2 border-dashed border-slate-700 bg-[#0A192F]/50 cursor-pointer hover:border-blue-500/60 transition-colors">
                   <div className="text-center">
                     <Upload className="w-5 h-5 text-slate-500 mx-auto mb-1" />
-                    <span className="text-xs text-slate-400">Click to upload PDF, DOC, or DOCX (max 5MB)</span>
+                    <span className="text-xs text-slate-400">Click to upload PDF, DOC, or DOCX (max 4MB)</span>
                   </div>
                   <input
                     ref={fileInputRef}

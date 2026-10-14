@@ -1,12 +1,17 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request, UploadFile, File, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import DuplicateKeyError
+from urllib.parse import quote
 import os
 import re
 import asyncio
+import base64
+import hashlib
+import hmac
+import httpx
 import uuid
 import logging
 import bcrypt
@@ -157,7 +162,9 @@ async def health():
         mongo = 'ok'
     except Exception as e:
         mongo = f'error: {type(e).__name__}'
-    return {"status": "ok" if mongo == 'ok' and all(env.values()) else "degraded", "env": env, "mongo": mongo}
+    return {"status": "ok" if mongo == 'ok' and all(env.values()) else "degraded", "env": env, "mongo": mongo,
+            "resume_storage": {"read_write_token": bool(os.environ.get('BLOB_READ_WRITE_TOKEN')),
+                               "store_id": bool(os.environ.get('BLOB_STORE_ID'))}}
 
 
 # ─── Admin auth ────────────────────────────────────────────────────────────
@@ -256,6 +263,89 @@ async def admin_delete_job(job_id: str, user=Depends(require_admin)):
     if result.deleted_count == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Job not found')
     return None
+
+# ─── Resume uploads (private Vercel Blob store) ────────────────────────────
+RESUME_MAX_BYTES = 4 * 1024 * 1024  # Vercel function bodies are capped at 4.5 MB
+RESUME_TYPES = {
+    '.pdf': ('application/pdf', (b'%PDF',)),
+    '.doc': ('application/msword', (b'\xd0\xcf\x11\xe0',)),
+    '.docx': ('application/vnd.openxmlformats-officedocument.wordprocessingml.document', (b'PK\x03\x04',)),
+}
+
+
+def _blob_headers(request: Request) -> Optional[dict]:
+    # Same credential order as @vercel/blob: OIDC + BLOB_STORE_ID, else BLOB_READ_WRITE_TOKEN.
+    oidc = request.headers.get('x-vercel-oidc-token') or os.environ.get('VERCEL_OIDC_TOKEN')
+    store_id = os.environ.get('BLOB_STORE_ID', '').removeprefix('store_')
+    if oidc and store_id:
+        return {'Authorization': f'Bearer {oidc}', 'x-vercel-blob-store-id': store_id}
+    rw = os.environ.get('BLOB_READ_WRITE_TOKEN')
+    if rw:
+        parts = rw.split('_')
+        return {'Authorization': f'Bearer {rw}', 'x-vercel-blob-store-id': parts[3] if len(parts) > 3 else ''}
+    return None
+
+
+def _sign(value: str) -> str:
+    return hmac.new(JWT_SECRET.encode(), value.encode(), hashlib.sha256).hexdigest()
+
+
+@api_router.post("/applications/resume")
+async def upload_resume(request: Request, file: UploadFile = File(...)):
+    auth = _blob_headers(request)
+    if not auth:
+        raise HTTPException(status_code=503, detail='Resume storage is not configured')
+    ext = Path(file.filename or '').suffix.lower()
+    if ext not in RESUME_TYPES:
+        raise HTTPException(status_code=415, detail='Only PDF, DOC or DOCX files are allowed')
+    data = await file.read(RESUME_MAX_BYTES + 1)
+    if len(data) > RESUME_MAX_BYTES:
+        raise HTTPException(status_code=413, detail='Resume must be 4 MB or smaller')
+    content_type, magics = RESUME_TYPES[ext]
+    if not data.startswith(magics):
+        raise HTTPException(status_code=415, detail='File content does not match its type')
+
+    pathname = f"resumes/{uuid.uuid4()}{ext}"
+    async with httpx.AsyncClient(timeout=30) as client:
+        res = await client.put(
+            f"https://vercel.com/api/blob/?pathname={quote(pathname, safe='/')}",
+            content=data,
+            headers={
+                **auth,
+                'x-api-version': '12',
+                'x-vercel-blob-access': 'private',
+                'x-content-type': content_type,
+                'x-add-random-suffix': '1',
+            },
+        )
+    if res.status_code >= 400:
+        logger.error('Blob upload failed: HTTP %s %s', res.status_code, res.text[:300])
+        raise HTTPException(status_code=502, detail='Resume upload failed')
+    blob_url = res.json()['url']
+    ref = base64.urlsafe_b64encode(blob_url.encode()).decode().rstrip('=')
+    host = request.headers.get('x-forwarded-host') or request.headers.get('host')
+    return {'resume_link': f"https://{host}/api/applications/resume/{ref}.{_sign(ref)}"}
+
+
+@api_router.get("/applications/resume/{signed_ref}")
+async def download_resume(signed_ref: str, request: Request):
+    ref, _, sig = signed_ref.rpartition('.')
+    if not ref or not hmac.compare_digest(sig, _sign(ref)):
+        raise HTTPException(status_code=404, detail='Not found')
+    blob_url = base64.urlsafe_b64decode(ref + '=' * (-len(ref) % 4)).decode()
+    auth = _blob_headers(request) or {}
+    async with httpx.AsyncClient(timeout=30) as client:
+        res = await client.get(blob_url, headers={'Authorization': auth.get('Authorization', '')})
+    if res.status_code != 200:
+        raise HTTPException(status_code=404, detail='Not found')
+    filename = 'resume' + Path(blob_url.split('?')[0]).suffix
+    return Response(content=res.content, media_type=res.headers.get('content-type', 'application/octet-stream'), headers={
+        'Content-Disposition': f'attachment; filename="{filename}"',
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
+    })
+
+
 
 
 # ─── App wiring ────────────────────────────────────────────────────────────
